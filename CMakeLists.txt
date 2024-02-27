@@ -45,7 +45,11 @@ function(setup_vulkan_dependency
 endfunction()
 
 
-add_executable(${CMAKE_PROJECT_NAME} ./src/main.cpp)
+file(GLOB_RECURSE SHD_SOURCES
+    ./ShadeTech/**.cpp
+    ./ShadeTech/**.h)
+
+add_executable(${CMAKE_PROJECT_NAME} ${SHD_SOURCES})
 configure_compiler_warnings(${CMAKE_PROJECT_NAME})
 
 setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
