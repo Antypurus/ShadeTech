@@ -51,7 +51,7 @@ Instance::Instance()
     }
 }
 
-std::vector<std::string> Instance::ListSupportedExtensions()
+std::vector<std::string> Instance::GetSupportedExtensions()
 {
     unsigned int extension_count = 0;
 
@@ -70,9 +70,37 @@ std::vector<std::string> Instance::ListSupportedExtensions()
         return {};
     }
 
+    std::vector<std::string> supported_extensions(extension_count);
     for(VkExtensionProperties& extension : extensions)
     {
-        std::cout << (char*)extension.extensionName << '\n';
+        supported_extensions.emplace_back(extension.extensionName);
+    }
+
+    return supported_extensions;
+}
+
+std::vector<std::string> Instance::GetSupportedLayers()
+{
+    unsigned int layer_count = 0;
+
+    VkResult enum_result = vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+    if(enum_result != VK_SUCCESS)
+    {
+        std::cout << "failed to fetch layer count\n";
+        return {};
+    }
+
+    std::vector<VkLayerProperties> layers(layer_count);
+    enum_result = vkEnumerateInstanceLayerProperties(&layer_count, layers.data());
+    if(enum_result != VK_SUCCESS)
+    {
+        std::cout << "failed to fetch supported layers\n";
+        return {};
+    }
+
+    for(VkLayerProperties& layer: layers)
+    {
+        std::cout << (char*)layer.layerName << "\n\t" << (char*)layer.description << '\n';
     }
 
     return {};

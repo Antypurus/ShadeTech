@@ -23,7 +23,7 @@ int main()
         // Window or OpenGL context creation failed
     }
 
-    Vulkan::Instance::ListSupportedExtensions();
+    Vulkan::Instance::GetSupportedLayers();
     Vulkan::Instance instance;
 
     while(glfwWindowShouldClose(window) == 0)

@@ -20,7 +20,8 @@ private:
 public:
     Instance();
 
-    static std::vector<std::string> ListSupportedExtensions();
+    static std::vector<std::string> GetSupportedExtensions();
+    static std::vector<std::string> GetSupportedLayers();
 };
 
 }
