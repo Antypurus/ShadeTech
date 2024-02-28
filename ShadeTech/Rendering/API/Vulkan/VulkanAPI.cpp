@@ -72,7 +72,7 @@ std::vector<std::string> Instance::ListSupportedExtensions()
 
     for(VkExtensionProperties& extension : extensions)
     {
-        std::cout << extension.extensionName << std::endl;
+        std::cout << (char*)extension.extensionName << '\n';
     }
 
     return {};
