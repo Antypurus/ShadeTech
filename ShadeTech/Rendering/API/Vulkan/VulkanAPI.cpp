@@ -42,8 +42,13 @@ Instance::Instance()
     };
 
     const VkResult result = vkCreateInstance(&instance_info, nullptr, &this->m_instance);
-    if(result == VK_SUCCESS) { std::cout << "Vulkan Instance Created\n"; }
-    else { std::cout << "Failed to create Vulkan Instance\n"; }
+    if(result == VK_SUCCESS)
+    {
+        std::cout << "Vulkan Instance Created\n";
+    } else
+    {
+        std::cout << "Failed to create Vulkan Instance\n";
+    }
 }
 
 std::vector<std::string> Instance::ListSupportedExtensions()
