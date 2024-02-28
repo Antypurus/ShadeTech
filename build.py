@@ -169,7 +169,8 @@ def cmake_build_target(target):
     if target != "":
         cmake_build_command = cmake_build_command + " -t " + target
     cmake_build_command = cmake_build_command + " -j"
-    os.system(cmake_build_command)
+    retvalue = os.system(cmake_build_command)
+    return retvalue
 
 
 def run_target(target):
@@ -181,7 +182,7 @@ def run_target(target):
 
 def run_project_build():
     cmake_generate(BUILD_SYSTEM, COMPILER, CPP_COMPILER, BUILD_TYPE)
-    cmake_build_target(PROJECT_BUILD_TARGET_MAP[PROJECT])
+    retvalue = cmake_build_target(PROJECT_BUILD_TARGET_MAP[PROJECT])
 
     if RUN_PROJECT is True:
         run_target(PROJECT_RUN_TARGET_MAP[PROJECT])
@@ -196,6 +197,8 @@ def run_project_build():
         if RUN_TESTS is True:
             run_target(PROJECT_TEST_TARGET_MAP[PROJECT])
 
+    return retvalue
+
 
 def update_compile_commands():
     shutil.copyfile("compile_commands.json", "../../compile_commands.json")
@@ -207,5 +210,7 @@ if __name__ == "__main__":
     validate_build_configuration()
     print_build_details()
     create_build_dir()
-    run_project_build()
+    result = run_project_build()
     update_compile_commands()
+    if result is not 0:
+        sys.exit(-1)
