@@ -18,7 +18,8 @@ private:
     VkInstance m_instance;
 
 public:
-    Instance(const std::vector<std::string>& layers_to_enable = {},const std::vector<std::string>& extensions_to_enable = {});
+    Instance(const std::vector<std::string>& layers_to_enable = {},
+             const std::vector<std::string>& extensions_to_enable = {});
 
     static std::vector<std::string> GetSupportedExtensions();
     static std::vector<std::string> GetSupportedLayers();

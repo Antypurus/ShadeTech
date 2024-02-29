@@ -11,7 +11,8 @@ namespace Renderer
 namespace Vulkan
 {
 
-Instance::Instance(const std::vector<std::string>& layers_to_enable, const std::vector<std::string>& extensions_to_enable)
+Instance::Instance(const std::vector<std::string>& layers_to_enable,
+                   const std::vector<std::string>& extensions_to_enable)
 {
     const VkApplicationInfo app_info{
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -108,7 +109,7 @@ std::vector<std::string> Instance::GetSupportedLayers()
     std::vector<std::string> supported_layers;
     supported_layers.reserve(layer_count);
 
-    for(VkLayerProperties& layer: layers)
+    for(VkLayerProperties& layer : layers)
     {
         supported_layers.emplace_back(layer.layerName);
     }
