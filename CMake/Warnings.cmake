@@ -27,6 +27,7 @@ function(configure_compiler_warnings
     set(EDGELEAP_DISABLED_WARNINGS
         -Wno-error=unused-parameter
         -Wno-error=unused-private-field
+        -Wno-error=unused-variable
     )
 
     set(EDGELEAP_GCC_EXTRA_WARNINGS

@@ -11,12 +11,8 @@ namespace Renderer
 namespace Vulkan
 {
 
-Instance::Instance()
+Instance::Instance(const std::vector<std::string>& layers_to_enable, const std::vector<std::string>& extensions_to_enable)
 {
-    uint32_t extension_count = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
-    std::cout << "Number of supported extensions:" << extension_count << '\n';
-
     const VkApplicationInfo app_info{
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
         .pNext = nullptr,
@@ -27,16 +23,25 @@ Instance::Instance()
         .apiVersion = VK_API_VERSION_1_2,
     };
 
-    std::vector<const char*> extensions;
-    extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    std::vector<const char*> layers(layers_to_enable.size());
+    for(size_t i = 0; i < layers_to_enable.size(); ++i)
+    {
+        layers[i] = layers_to_enable[i].data();
+    }
+
+    std::vector<const char*> extensions(extensions_to_enable.size());
+    for(size_t i = 0; i < extensions_to_enable.size(); ++i)
+    {
+        extensions[i] = extensions_to_enable[i].data();
+    }
 
     const VkInstanceCreateInfo instance_info{
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pNext = nullptr,
-        .flags = 0UL | VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
+        .flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
         .pApplicationInfo = &app_info,
-        .enabledLayerCount = 0,
-        .ppEnabledLayerNames = nullptr,
+        .enabledLayerCount = (uint32_t)layers.size(),
+        .ppEnabledLayerNames = layers.data(),
         .enabledExtensionCount = (uint32_t)extensions.size(),
         .ppEnabledExtensionNames = extensions.data(),
     };
@@ -47,7 +52,7 @@ Instance::Instance()
         std::cout << "Vulkan Instance Created\n";
     } else
     {
-        std::cout << "Failed to create Vulkan Instance\n";
+        std::cout << "Failed to create Vulkan Instance " << result << "\n";
     }
 }
 
@@ -70,7 +75,9 @@ std::vector<std::string> Instance::GetSupportedExtensions()
         return {};
     }
 
-    std::vector<std::string> supported_extensions(extension_count);
+    std::vector<std::string> supported_extensions;
+    supported_extensions.reserve(extension_count);
+
     for(VkExtensionProperties& extension : extensions)
     {
         supported_extensions.emplace_back(extension.extensionName);
@@ -98,12 +105,15 @@ std::vector<std::string> Instance::GetSupportedLayers()
         return {};
     }
 
+    std::vector<std::string> supported_layers;
+    supported_layers.reserve(layer_count);
+
     for(VkLayerProperties& layer: layers)
     {
-        std::cout << (char*)layer.layerName << "\n\t" << (char*)layer.description << '\n';
+        supported_layers.emplace_back(layer.layerName);
     }
 
-    return {};
+    return supported_layers;
 }
 
 }
