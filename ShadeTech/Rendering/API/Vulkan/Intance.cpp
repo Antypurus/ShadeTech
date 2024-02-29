@@ -1,6 +1,7 @@
-#include "VulkanAPI.h"
+#include "Instance.h"
 
-#include <stdlib.h>
+#include "Helpers.h"
+
 #include <iostream>
 #include <vulkan/vulkan_core.h>
 
@@ -47,34 +48,17 @@ Instance::Instance(const std::vector<std::string>& layers_to_enable,
         .ppEnabledExtensionNames = extensions.data(),
     };
 
-    const VkResult result = vkCreateInstance(&instance_info, nullptr, &this->m_instance);
-    if(result == VK_SUCCESS)
-    {
-        std::cout << "Vulkan Instance Created\n";
-    } else
-    {
-        std::cout << "Failed to create Vulkan Instance " << result << "\n";
-    }
+    VK_CALL(vkCreateInstance(&instance_info, nullptr, &this->m_instance));
 }
 
 std::vector<std::string> Instance::GetSupportedExtensions()
 {
     unsigned int extension_count = 0;
 
-    VkResult enum_result = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
-    if(enum_result != VK_SUCCESS)
-    {
-        std::cout << "failed to fetch extension count\n";
-        return {};
-    }
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr))
 
     std::vector<VkExtensionProperties> extensions(extension_count);
-    enum_result = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data());
-    if(enum_result != VK_SUCCESS)
-    {
-        std::cout << "failed to fetch extensions";
-        return {};
-    }
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()));
 
     std::vector<std::string> supported_extensions;
     supported_extensions.reserve(extension_count);

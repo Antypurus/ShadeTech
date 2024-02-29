@@ -13,21 +13,17 @@
 #define WHITE_FG "\033[1;37m"
 #define RESET_FG "\033[0m"
 
-#define LOG_ERROR(message, ...) \
-    printf(RED_FG "[ERROR][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG \
-            __VA_OPT__(,) __VA_ARGS__)
+#define LOG_ERROR(message, ...)                                                                                        \
+    printf(RED_FG "[ERROR][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG __VA_OPT__(, ) __VA_ARGS__)
 
-#define LOG_WARN(message, ...) \
-    printf(YELLOW_FG "[WARNING][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG \
-            __VA_OPT__(,) __VA_ARGS__)
+#define LOG_WARN(message, ...)                                                                                         \
+    printf(YELLOW_FG "[WARNING][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG __VA_OPT__(, ) __VA_ARGS__)
 
-#define LOG_SUCCESS(message, ...) \
-    printf(GREEN_FG "[SUCCESS][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG \
-            __VA_OPT__(,) __VA_ARGS__)
+#define LOG_SUCCESS(message, ...)                                                                                      \
+    printf(GREEN_FG "[SUCCESS][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG __VA_OPT__(, ) __VA_ARGS__)
 
-#define LOG_INFO(message, ...) \
-    printf(WHITE_FG "[INFO][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG \
-            __VA_OPT__(,) __VA_ARGS__)
+#define LOG_INFO(message, ...)                                                                                         \
+    printf(WHITE_FG "[INFO][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG __VA_OPT__(, ) __VA_ARGS__)
 
 #else
 
