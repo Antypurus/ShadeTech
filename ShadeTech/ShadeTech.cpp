@@ -10,7 +10,7 @@ int main()
 {
     std::cout << "Welcome To the SDH Network Agent\n";
 
-    Vulkan::Instance instance(Vulkan::Instance::GetSupportedLayers(), Vulkan::Instance::GetSupportedExtensions());
+    Vulkan::Instance instance;
 
     uint32_t device_count = 0;
     VkResult result = vkEnumeratePhysicalDevices(instance.m_instance, &device_count, nullptr);

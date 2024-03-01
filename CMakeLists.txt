@@ -50,7 +50,8 @@ file(GLOB_RECURSE SHD_SOURCES
     ./ShadeTech/**.h)
 
 add_executable(${CMAKE_PROJECT_NAME} ${SHD_SOURCES})
-configure_compiler_warnings(${CMAKE_PROJECT_NAME})
-
-setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw ${GLFW_LIBRARIES})
+
+configure_compiler_warnings(${CMAKE_PROJECT_NAME})
+setup_vulkan_dependency(${CMAKE_PROJECT_NAME})

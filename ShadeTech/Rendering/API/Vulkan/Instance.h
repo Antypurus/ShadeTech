@@ -19,7 +19,6 @@ public:
 
 // instance methods
 public:
-    Instance() = default;
     Instance(const std::vector<std::string>& layers_to_enable = {},
              const std::vector<std::string>& extensions_to_enable = {});
 
