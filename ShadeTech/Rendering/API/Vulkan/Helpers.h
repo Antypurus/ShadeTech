@@ -4,7 +4,7 @@
 #include <Platform.h>
 
 #define _SHD_CONCAT(X,Y) X ## Y
-#define SHD_CONCAT(X,Y) _CONCAT(X,Y)
+#define SHD_CONCAT(X,Y) _SHD_CONCAT(X,Y)
 
 #define VK_CALL(X) \
     const VkResult SHD_CONCAT(result, __LINE__) = X;\
