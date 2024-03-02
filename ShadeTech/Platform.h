@@ -21,9 +21,7 @@
 #define PLATFORM_WINDOWS 0
 #endif
 
-
 #ifndef NDEBUG
-
 #if PLATFORM_WINDOWS
 #define TRIGGER_DEBUG_TRAP() __debugbreak()
 #elif PLATFORM_POSIX
@@ -32,9 +30,33 @@
 #else
 #define TRIGGER_DEBUG_TRAP()
 #endif
-
 #else
-
 #define TRIGGER_DEBUG_TRAP()
+#endif
+
+#ifdef _MSC_VER
+
+#ifdef __clang__
+#define COMPILER_GCC 0
+#define COMPILER_MSVC 0
+#define COMPILER_CLANG 1
+#else
+#define COMPILER_MSVC 1
+#define COMPILER_CLANG 0
+#define COMPILER_GCC 0
+#endif
+
+#elif defined(__clang__)
+
+#define COMPILER_CLANG 1
+#define COMPILER_MSVC 0
+#define COMPILER_GCC 0
+
+#elif defined(__GNUC__)
+
+#define COMPILER_GCC 1
+#define COMPILER_MSVC 0
+#define COMPILER_CLANG 0
 
 #endif
+
