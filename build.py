@@ -9,19 +9,19 @@ import shutil
 
 
 PROJECT_BUILD_TARGET_MAP = {
-    "":"",
+    "": "",
     "ShadeTech": "ShadeTech"
 }
 
 
 PROJECT_RUN_TARGET_MAP = {
-    "":"",
+    "": "",
     "ShadeTech": "ShadeTech"
 }
 
 
 PROJECT_TEST_TARGET_MAP = {
-    "":"",
+    "": "",
     "ShadeTech": "ShadeTech-tests"
 }
 
@@ -45,8 +45,12 @@ RUN_PROJECT = False
 BUILD_TESTS = False
 RUN_TESTS = False
 
-COMPILER = "clang"
-CPP_COMPILER = "clang++"
+if platform.system() == "Windows":
+    COMPILER = "Clang"
+    CPP_COMPILER = "Clang"
+else:
+    COMPILER = "clang"
+    CPP_COMPILER = "clang++"
 BUILD_SYSTEM = BuildSystem.Ninja
 BUILD_TYPE = BuildType.Debug
 TARGET_OS = platform.system()
@@ -65,6 +69,7 @@ def parse_input_arguments(argc, argv):
     global BUILD_TESTS
     global RUN_TESTS
     global COMPILER
+    global CPP_COMPILER
     global BUILD_TYPE
     global TARGET_OS
     global TARGET_ARCH
@@ -85,9 +90,15 @@ def parse_input_arguments(argc, argv):
             BUILD_TESTS = True
             RUN_TESTS = True
         elif argument == "--clang":
-            COMPILER = "clang"
+            if platform.system() == "Windows":
+                COMPILER = "Clang"
+                CPP_COMPILER = "Clang"
+            else:
+                COMPILER = "clang"
+                CPP_COMPILER = "clang++"
         elif argument == "--gcc":
             COMPILER = "gcc"
+            CPP_COMPILER = "g++"
         elif argument == "--msvc":
             COMPILER = "MSVC"
         elif argument == "--ninja":
@@ -149,17 +160,20 @@ def cmake_generate(generator, c_compiler, cpp_compiler, build_type):
         cmake_generate_command = cmake_generate_command + " -G " + generator.name
 
     cmake_generate_command = cmake_generate_command +\
-            " -D CMAKE_C_COMPILER=" + c_compiler +\
-            " -D CMAKE_CXX_COMPILER=" + cpp_compiler
+        " -D CMAKE_C_COMPILER=\"" + c_compiler +\
+        "\" -D CMAKE_CXX_COMPILER=\"" + cpp_compiler + "\""
 
     if build_type is BuildType.Release:
         cmake_generate_command = cmake_generate_command + " -DCMAKE_BUILD_TYPE=Release"
     elif build_type is BuildType.Debug:
         cmake_generate_command = cmake_generate_command + " -DCMAKE_BUILD_TYPE=Debug"
     elif build_type is BuildType.Optimized:
-        cmake_generate_command = cmake_generate_command + " -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+        cmake_generate_command = cmake_generate_command + \
+            " -DCMAKE_BUILD_TYPE=RelWithDebInfo"
 
     cmake_generate_command = cmake_generate_command + " ../.."
+
+    print(cmake_generate_command)
 
     os.system(cmake_generate_command)
 
