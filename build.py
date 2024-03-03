@@ -9,19 +9,19 @@ import shutil
 
 
 PROJECT_BUILD_TARGET_MAP = {
-    "": "",
+    "": "ShadeTech",
     "ShadeTech": "ShadeTech"
 }
 
 
 PROJECT_RUN_TARGET_MAP = {
-    "": "",
+    "": "ShadeTech",
     "ShadeTech": "ShadeTech"
 }
 
 
 PROJECT_TEST_TARGET_MAP = {
-    "": "",
+    "": "ShadeTech-tests",
     "ShadeTech": "ShadeTech-tests"
 }
 
@@ -188,9 +188,14 @@ def cmake_build_target(target):
 
 
 def run_target(target):
-    target_run_command = "./"+target
+    target_run_command = ""
+    if platform.system() == "Windows":
+        target_run_command = ".\\"+target
+    else:
+        target_run_command = "./"+target
     if TARGET_OS == "Windows":
         target_run_command = target_run_command + ".exe"
+    print(target_run_command)
     os.system(target_run_command)
 
 
