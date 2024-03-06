@@ -2,9 +2,6 @@
 
 #include "Helpers.h"
 
-#include <iostream>
-#include <vulkan/vulkan_core.h>
-
 namespace SHD
 {
 namespace Renderer
@@ -12,8 +9,16 @@ namespace Renderer
 namespace Vulkan
 {
 
-Instance::Instance(const std::vector<std::string>& layers_to_enable,
-                   const std::vector<std::string>& extensions_to_enable)
+static const size_t count_of_layers_to_enable = sizeof(layers_to_enable) / sizeof(layers_to_enable[0]);
+static const size_t count_of_extensions_to_enable = sizeof(extensions_to_enable) / sizeof(extensions_to_enable[0]);
+
+Instance::Instance()
+    : supported_layers(Instance::GetSupportedLayers()), supported_extensions(Instance::GetSupportedExtensions())
+{
+    this->CreateInstance();
+}
+
+void Instance::CreateInstance()
 {
     const VkApplicationInfo app_info{
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -25,40 +30,28 @@ Instance::Instance(const std::vector<std::string>& layers_to_enable,
         .apiVersion = VK_API_VERSION_1_2,
     };
 
-    std::vector<const char*> layers(layers_to_enable.size());
-    for(size_t i = 0; i < layers_to_enable.size(); ++i)
-    {
-        layers[i] = layers_to_enable[i].data();
-    }
-
-    std::vector<const char*> extensions(extensions_to_enable.size());
-    for(size_t i = 0; i < extensions_to_enable.size(); ++i)
-    {
-        extensions[i] = extensions_to_enable[i].data();
-    }
-
     const VkInstanceCreateInfo instance_info{
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pNext = nullptr,
         .flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
         .pApplicationInfo = &app_info,
-        .enabledLayerCount = (uint32_t)layers.size(),
-        .ppEnabledLayerNames = layers.data(),
-        .enabledExtensionCount = (uint32_t)extensions.size(),
-        .ppEnabledExtensionNames = extensions.data(),
+        .enabledLayerCount = count_of_layers_to_enable,
+        .ppEnabledLayerNames = (char**)layers_to_enable,
+        .enabledExtensionCount = count_of_extensions_to_enable,
+        .ppEnabledExtensionNames = (char**)extensions_to_enable,
     };
 
-    VK_CALL(vkCreateInstance(&instance_info, nullptr, &this->m_instance));
+    VK_CALL(vkCreateInstance(&instance_info, nullptr, &this->m_instance), "Failed to create Vulkan Instance");
 }
 
 std::vector<std::string> Instance::GetSupportedExtensions()
 {
     unsigned int extension_count = 0;
 
-    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr))
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr), "");
 
     std::vector<VkExtensionProperties> extensions(extension_count);
-    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()));
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()), "");
 
     std::vector<std::string> supported_extensions;
     supported_extensions.reserve(extension_count);
@@ -74,21 +67,10 @@ std::vector<std::string> Instance::GetSupportedExtensions()
 std::vector<std::string> Instance::GetSupportedLayers()
 {
     unsigned int layer_count = 0;
-
-    VkResult enum_result = vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
-    if(enum_result != VK_SUCCESS)
-    {
-        std::cout << "failed to fetch layer count\n";
-        return {};
-    }
+    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, nullptr), "");
 
     std::vector<VkLayerProperties> layers(layer_count);
-    enum_result = vkEnumerateInstanceLayerProperties(&layer_count, layers.data());
-    if(enum_result != VK_SUCCESS)
-    {
-        std::cout << "failed to fetch supported layers\n";
-        return {};
-    }
+    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, layers.data()), "");
 
     std::vector<std::string> supported_layers;
     supported_layers.reserve(layer_count);

@@ -1,5 +1,8 @@
 #pragma once
 
+#define _SHD_CONCAT(X,Y) X ## Y
+#define SHD_CONCAT(X,Y) _SHD_CONCAT(X,Y)
+
 #ifdef _WIN32
 #define PLATFORM_WINDOWS 1
 #define PLATFORM_POSIX 0
@@ -26,7 +29,7 @@
 #define TRIGGER_DEBUG_TRAP() __debugbreak()
 #elif PLATFORM_POSIX
 #include <signal.h>
-#define TRIGGER_DEBUG_TRAP() raise(SIGTRAP)
+#define TRIGGER_DEBUG_TRAP() (void)raise(SIGTRAP)
 #else
 #define TRIGGER_DEBUG_TRAP()
 #endif
