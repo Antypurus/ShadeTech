@@ -5,6 +5,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <vulkan/vulkan_core.h>
 
 namespace SHD
 {
@@ -21,6 +22,13 @@ static const char* const extensions_to_enable[] = {
     "VK_KHR_portability_enumeration"
 };
 
+struct PhysicalDeviceInfo
+{
+    VkPhysicalDevice device_handle = nullptr;
+    VkPhysicalDeviceProperties device_properties;
+    VkPhysicalDeviceFeatures device_features;
+};
+
 struct Instance
 {
 public:
@@ -33,6 +41,7 @@ private:
 // instance methods
 public:
     Instance();
+    ~Instance();
 
     inline VkInstance& GetInstance() {
         return this->m_instance;

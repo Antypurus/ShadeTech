@@ -1,6 +1,7 @@
 #include "Instance.h"
 
 #include "Helpers.h"
+#include <vulkan/vulkan_core.h>
 
 namespace SHD
 {
@@ -16,6 +17,11 @@ Instance::Instance()
     : supported_layers(Instance::GetSupportedLayers()), supported_extensions(Instance::GetSupportedExtensions())
 {
     this->CreateInstance();
+}
+
+Instance::~Instance()
+{
+    vkDestroyInstance(this->m_instance, nullptr);
 }
 
 void Instance::CreateInstance()
@@ -48,10 +54,10 @@ std::vector<std::string> Instance::GetSupportedExtensions()
 {
     unsigned int extension_count = 0;
 
-    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr), "");
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr), "Failed to get number of supported extensions");
 
     std::vector<VkExtensionProperties> extensions(extension_count);
-    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()), "");
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()), "Failed to get supported extensions");
 
     std::vector<std::string> supported_extensions;
     supported_extensions.reserve(extension_count);
@@ -67,10 +73,10 @@ std::vector<std::string> Instance::GetSupportedExtensions()
 std::vector<std::string> Instance::GetSupportedLayers()
 {
     unsigned int layer_count = 0;
-    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, nullptr), "");
+    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, nullptr), "Failed to get number of supported layers");
 
     std::vector<VkLayerProperties> layers(layer_count);
-    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, layers.data()), "");
+    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, layers.data()), "Failed to get supported layers");
 
     std::vector<std::string> supported_layers;
     supported_layers.reserve(layer_count);
