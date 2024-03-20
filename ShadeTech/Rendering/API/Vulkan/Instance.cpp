@@ -1,8 +1,8 @@
 #include "Instance.h"
 
+#include "Helpers.h"
 #include <Types.h>
 #include <vulkan/vulkan_core.h>
-#include "Helpers.h"
 
 namespace SHD
 {
@@ -11,11 +11,43 @@ namespace Renderer
 namespace Vulkan
 {
 
-PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle)
-    : device_handle(device_handle), device_properties({}), device_features({})
+PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle): device_handle(device_handle)
 {
     vkGetPhysicalDeviceFeatures(this->device_handle, &this->device_features);
     vkGetPhysicalDeviceProperties(this->device_handle, &this->device_properties);
+    vkGetPhysicalDeviceMemoryProperties(this->device_handle, &this->memory_properties);
+
+    this->PopulateQueueFamilyList();
+}
+
+VkDevice PhysicalDeviceInfo::CreateDevice()
+{
+
+    const VkDeviceCreateInfo device_create_info{.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+                                                .pNext = nullptr,
+                                                .flags = 0,
+                                                .queueCreateInfoCount = 0,   // will change
+                                                .pQueueCreateInfos = nullptr,// will change
+                                                .enabledLayerCount = 0,
+                                                .ppEnabledLayerNames = nullptr,
+                                                .enabledExtensionCount = 0,
+                                                .ppEnabledExtensionNames = nullptr,
+                                                .pEnabledFeatures = nullptr};
+
+    VkDevice result_device = nullptr;
+    VK_CALL(vkCreateDevice(this->device_handle, &device_create_info, nullptr, &result_device),
+            "Failed to create Vulkan Logical Device");
+
+    return result_device;
+}
+
+void PhysicalDeviceInfo::PopulateQueueFamilyList()
+{
+    uint32 queue_count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(this->device_handle, &queue_count, nullptr);
+
+    this->queue_famillies.resize(queue_count);
+    vkGetPhysicalDeviceQueueFamilyProperties(this->device_handle, &queue_count, this->queue_famillies.data());
 }
 
 Instance::Instance()
@@ -65,7 +97,8 @@ void Instance::PopulateDeviceList()
     VK_CALL(vkEnumeratePhysicalDevices(this->m_instance, &device_count, nullptr),
             "Failed to fetch physical device count");
 
-    //NOTE(Tiago): used to create an array so that we dont need to allocate such a small vector
+    // NOTE(Tiago): used to create an array so that we dont need to allocate such
+    // a small vector
     constexpr size_t max_physical_device_count = 16;
     VkPhysicalDevice devices[max_physical_device_count];
 

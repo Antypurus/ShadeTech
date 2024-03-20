@@ -11,5 +11,8 @@ int main()
     std::cout << "Welcome To the SDH Network Agent\n";
 
     Vulkan::Instance instance;
+
+    instance.devices[0].CreateDevice();
+
     return 0;
 }

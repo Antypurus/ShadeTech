@@ -19,8 +19,8 @@ def get_project_tree(project_root):
 
 
 def filter_files_for_analysis(files):
-    folder_filter = re.compile(".*\/(build|ThirdParty|tests|Tests|\.git|\.cache)\/.*")
-    file_filter = re.compile("^.*(\/).*(\.cpp|\.c|\.hpp|\.h)$")
+    folder_filter = re.compile(".*/(build|ThirdParty|tests|Tests|.git|.cache)/.*")
+    file_filter = re.compile("^.*(/).*(.cpp|.c|.hpp|.h)$")
     files_for_analysis = []
     for file in files:
         if not folder_filter.match(file) and file_filter.match(file):

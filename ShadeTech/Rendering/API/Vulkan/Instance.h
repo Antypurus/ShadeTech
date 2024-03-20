@@ -20,11 +20,18 @@ struct PhysicalDeviceInfo
 {
 public:
     VkPhysicalDevice device_handle = nullptr;
-    VkPhysicalDeviceProperties device_properties;
-    VkPhysicalDeviceFeatures device_features;
+    VkPhysicalDeviceProperties device_properties = {};
+    VkPhysicalDeviceFeatures device_features = {};
+    VkPhysicalDeviceMemoryProperties memory_properties = {};
+    std::vector<VkQueueFamilyProperties> queue_famillies;
 
 public:
     PhysicalDeviceInfo(VkPhysicalDevice device_handle);
+    VkDevice CreateDevice();
+
+private:
+    void PopulateQueueFamilyList();
+    void LogDeviceInformation() const;
 };
 
 struct Instance

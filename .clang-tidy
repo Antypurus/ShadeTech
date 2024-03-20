@@ -38,11 +38,12 @@ Checks: '*,
     -cppcoreguidelines-owning-memory,
     -cppcoreguidelines-no-malloc,
     -cppcoreguidelines-pro-bounds-constant-array-index,
+    -cppcoreguidelines-non-private-member-variables-in-classes,
     -hicpp-no-malloc,
     -hicpp-deprecated-headers,
     -bugprone-easily-swappable-parameters,
   '
-HeaderFilterRegex: '(Gaea|Vykur|Kolab).*'
+HeaderFilterRegex: '.*'
 WarningsAsErrors: '*,-clang-diagnostic-error'
 FormatStyle: none
 UseColor: true
