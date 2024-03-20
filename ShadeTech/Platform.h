@@ -1,7 +1,7 @@
 #pragma once
 
-#define _SHD_CONCAT(X,Y) X ## Y
-#define SHD_CONCAT(X,Y) _SHD_CONCAT(X,Y)
+#define _SHD_CONCAT(X, Y) X##Y
+#define SHD_CONCAT(X, Y) _SHD_CONCAT(X, Y)
 
 #ifdef _WIN32
 #define PLATFORM_WINDOWS 1
@@ -62,4 +62,3 @@
 #define COMPILER_CLANG 0
 
 #endif
-

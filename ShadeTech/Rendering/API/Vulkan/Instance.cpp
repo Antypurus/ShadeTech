@@ -1,7 +1,8 @@
 #include "Instance.h"
 
-#include "Helpers.h"
+#include <Types.h>
 #include <vulkan/vulkan_core.h>
+#include "Helpers.h"
 
 namespace SHD
 {
@@ -10,13 +11,18 @@ namespace Renderer
 namespace Vulkan
 {
 
-static const size_t count_of_layers_to_enable = sizeof(layers_to_enable) / sizeof(layers_to_enable[0]);
-static const size_t count_of_extensions_to_enable = sizeof(extensions_to_enable) / sizeof(extensions_to_enable[0]);
+PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle)
+    : device_handle(device_handle), device_properties({}), device_features({})
+{
+    vkGetPhysicalDeviceFeatures(this->device_handle, &this->device_features);
+    vkGetPhysicalDeviceProperties(this->device_handle, &this->device_properties);
+}
 
 Instance::Instance()
     : supported_layers(Instance::GetSupportedLayers()), supported_extensions(Instance::GetSupportedExtensions())
 {
     this->CreateInstance();
+    this->PopulateDeviceList();
 }
 
 Instance::~Instance()
@@ -26,6 +32,9 @@ Instance::~Instance()
 
 void Instance::CreateInstance()
 {
+    static const size_t count_of_layers_to_enable = sizeof(layers_to_enable) / sizeof(layers_to_enable[0]);
+    static const size_t count_of_extensions_to_enable = sizeof(extensions_to_enable) / sizeof(extensions_to_enable[0]);
+
     const VkApplicationInfo app_info{
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
         .pNext = nullptr,
@@ -50,14 +59,36 @@ void Instance::CreateInstance()
     VK_CALL(vkCreateInstance(&instance_info, nullptr, &this->m_instance), "Failed to create Vulkan Instance");
 }
 
+void Instance::PopulateDeviceList()
+{
+    uint32 device_count = 0;
+    VK_CALL(vkEnumeratePhysicalDevices(this->m_instance, &device_count, nullptr),
+            "Failed to fetch physical device count");
+
+    //NOTE(Tiago): used to create an array so that we dont need to allocate such a small vector
+    constexpr size_t max_physical_device_count = 16;
+    VkPhysicalDevice devices[max_physical_device_count];
+
+    VK_CALL(vkEnumeratePhysicalDevices(this->m_instance, &device_count, (VkPhysicalDevice*)devices),
+            "Failed to fetch handles of installed physical devices");
+
+    this->devices.reserve(device_count);
+    for(uint32 i = 0; i < device_count; ++i)
+    {
+        this->devices.emplace_back(devices[i]);
+    }
+}
+
 std::vector<std::string> Instance::GetSupportedExtensions()
 {
     unsigned int extension_count = 0;
 
-    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr), "Failed to get number of supported extensions");
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr),
+            "Failed to get number of supported extensions");
 
     std::vector<VkExtensionProperties> extensions(extension_count);
-    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()), "Failed to get supported extensions");
+    VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data()),
+            "Failed to get supported extensions");
 
     std::vector<std::string> supported_extensions;
     supported_extensions.reserve(extension_count);

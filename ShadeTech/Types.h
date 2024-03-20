@@ -10,10 +10,10 @@ using uint16 = unsigned short;
 using i16 = signed short;
 using int16 = signed short;
 
-using u32 = unsigned long;
-using uint32 = unsigned long;
-using i32 = signed long;
-using int32 = signed long;
+using u32 = unsigned int;
+using uint32 = unsigned int;
+using i32 = signed int;
+using int32 = signed int;
 
 using u64 = unsigned long long;
 using uint64 = unsigned long long;

@@ -17,7 +17,7 @@
 #if COMPILER_MSVC
 #define SHD_OPT_EXPAND(...) , __VA_ARGS__
 #else
-#define SHD_OPT_EXPAND(...) __VA_OPT__(,) __VA_ARGS__
+#define SHD_OPT_EXPAND(...) __VA_OPT__(, ) __VA_ARGS__
 #endif
 
 #define LOG_ERROR(message, ...)                                                                                        \
