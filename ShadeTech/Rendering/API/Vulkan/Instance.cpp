@@ -75,10 +75,10 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
         }
     }
 
-    LOG_INFO("Number of Queue Families: %lu", this->queue_famillies.size());
+    LOG_INFO("Number of Queue Families: %zu", this->queue_famillies.size());
     for (size_t i = 0; i < this->queue_famillies.size(); ++i) {
         const VkQueueFamilyProperties& queue = this->queue_famillies[i];
-        LOG_INFO("Queue #%lu\n"
+        LOG_INFO("Queue #%zu\n"
                  "\t Queue Count:%d\n"
                  "\t Graphics Queue:%d\n"
                  "\t Compute Queue:%d\n"
