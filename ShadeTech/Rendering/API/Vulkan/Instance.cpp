@@ -51,6 +51,30 @@ void PhysicalDeviceInfo::PopulateQueueFamilyList()
 
 void PhysicalDeviceInfo::LogDeviceInformation() const
 {
+    LOG_INFO("Device Name:%s", this->device_properties.deviceName);
+    switch (this->device_properties.deviceType) {
+        case (VK_PHYSICAL_DEVICE_TYPE_CPU): {
+            LOG_INFO("Device Type: CPU");
+            break;
+        }
+        case (VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU): {
+            LOG_INFO("Device Type: Integrated GPU");
+            break;
+        }
+        case (VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU): {
+            LOG_INFO("Device Type: Discrete GPU");
+            break;
+        }
+        case (VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU): {
+            LOG_INFO("Device Type: Virtual GPU");
+            break;
+        }
+        default: {
+            LOG_INFO("Device Type: Unknown");
+            break;
+        }
+    }
+
     LOG_INFO("Number of Queue Families: %lu", this->queue_famillies.size());
     for (size_t i = 0; i < this->queue_famillies.size(); ++i) {
         const VkQueueFamilyProperties& queue = this->queue_famillies[i];
@@ -61,7 +85,7 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
                  "\t Transfer Queue:%d\n"
                  "\t Sparse Binding Queue:%d\n"
                  "\t Video Decode Queue%d\n"
-                 "\t Optical Flow Queue:%d\n",
+                 "\t Optical Flow Queue:%d",
                  i,
                  queue.queueCount,
                  HAS_BITFLAG(queue.queueFlags, VK_QUEUE_GRAPHICS_BIT),

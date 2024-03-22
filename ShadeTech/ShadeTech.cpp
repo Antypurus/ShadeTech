@@ -13,7 +13,7 @@ int main()
     Vulkan::Instance instance;
 
     instance.devices[0].LogDeviceInformation();
-    instance.devices[0].CreateDevice();
+    //instance.devices[0].CreateDevice();
 
     return 0;
 }
