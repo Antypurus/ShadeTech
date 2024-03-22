@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Rendering/API/Vulkan/VulkanAPI.h"
 #include "Log.h"
+#include "Rendering/API/Vulkan/VulkanAPI.h"
 
 using namespace SHD;
 using namespace SHD::Renderer;

@@ -2,19 +2,16 @@
 
 #include <vulkan/vulkan.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace SHD
-{
-namespace Renderer
-{
-namespace Vulkan
-{
+namespace SHD {
+namespace Renderer {
+namespace Vulkan {
 
-static const char* const layers_to_enable[] = {"VK_LAYER_KHRONOS_validation"};
+static const char* const layers_to_enable[] = { "VK_LAYER_KHRONOS_validation" };
 
-static const char* const extensions_to_enable[] = {"VK_KHR_portability_enumeration"};
+static const char* const extensions_to_enable[] = { "VK_KHR_portability_enumeration" };
 
 struct PhysicalDeviceInfo
 {
@@ -49,10 +46,7 @@ public:
     Instance();
     ~Instance();
 
-    inline VkInstance& GetInstance()
-    {
-        return this->m_instance;
-    }
+    inline VkInstance& GetInstance() { return this->m_instance; }
 
 private:
     void CreateInstance();
