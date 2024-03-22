@@ -4,14 +4,12 @@
 #include <Types.h>
 #include <vulkan/vulkan_core.h>
 
-namespace SHD
-{
-namespace Renderer
-{
-namespace Vulkan
-{
+namespace SHD {
+namespace Renderer {
+namespace Vulkan {
 
-PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle): device_handle(device_handle)
+PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle) :
+    device_handle(device_handle)
 {
     vkGetPhysicalDeviceFeatures(this->device_handle, &this->device_features);
     vkGetPhysicalDeviceProperties(this->device_handle, &this->device_properties);
@@ -22,17 +20,18 @@ PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle): device_h
 
 VkDevice PhysicalDeviceInfo::CreateDevice()
 {
-
-    const VkDeviceCreateInfo device_create_info{.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-                                                .pNext = nullptr,
-                                                .flags = 0,
-                                                .queueCreateInfoCount = 0,   // will change
-                                                .pQueueCreateInfos = nullptr,// will change
-                                                .enabledLayerCount = 0,
-                                                .ppEnabledLayerNames = nullptr,
-                                                .enabledExtensionCount = 0,
-                                                .ppEnabledExtensionNames = nullptr,
-                                                .pEnabledFeatures = nullptr};
+    const VkDeviceCreateInfo device_create_info{
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .queueCreateInfoCount = 0,
+        .pQueueCreateInfos = nullptr,
+        .enabledLayerCount = 0,
+        .ppEnabledLayerNames = nullptr,
+        .enabledExtensionCount = 0,
+        .ppEnabledExtensionNames = nullptr,
+        .pEnabledFeatures = nullptr,
+    };
 
     VkDevice result_device = nullptr;
     VK_CALL(vkCreateDevice(this->device_handle, &device_create_info, nullptr, &result_device),
@@ -50,8 +49,9 @@ void PhysicalDeviceInfo::PopulateQueueFamilyList()
     vkGetPhysicalDeviceQueueFamilyProperties(this->device_handle, &queue_count, this->queue_famillies.data());
 }
 
-Instance::Instance()
-    : supported_layers(Instance::GetSupportedLayers()), supported_extensions(Instance::GetSupportedExtensions())
+Instance::Instance() :
+    supported_layers(Instance::GetSupportedLayers()),
+    supported_extensions(Instance::GetSupportedExtensions())
 {
     this->CreateInstance();
     this->PopulateDeviceList();
@@ -97,8 +97,8 @@ void Instance::PopulateDeviceList()
     VK_CALL(vkEnumeratePhysicalDevices(this->m_instance, &device_count, nullptr),
             "Failed to fetch physical device count");
 
-    // NOTE(Tiago): used to create an array so that we dont need to allocate such
-    // a small vector
+    // NOTE(Tiago): used to create an array so that we dont need to allocate
+    // such a small vector
     constexpr size_t max_physical_device_count = 16;
     VkPhysicalDevice devices[max_physical_device_count];
 
@@ -106,8 +106,7 @@ void Instance::PopulateDeviceList()
             "Failed to fetch handles of installed physical devices");
 
     this->devices.reserve(device_count);
-    for(uint32 i = 0; i < device_count; ++i)
-    {
+    for (uint32 i = 0; i < device_count; ++i) {
         this->devices.emplace_back(devices[i]);
     }
 }
@@ -126,8 +125,7 @@ std::vector<std::string> Instance::GetSupportedExtensions()
     std::vector<std::string> supported_extensions;
     supported_extensions.reserve(extension_count);
 
-    for(VkExtensionProperties& extension : extensions)
-    {
+    for (VkExtensionProperties& extension : extensions) {
         supported_extensions.emplace_back(extension.extensionName);
     }
 
@@ -145,14 +143,13 @@ std::vector<std::string> Instance::GetSupportedLayers()
     std::vector<std::string> supported_layers;
     supported_layers.reserve(layer_count);
 
-    for(VkLayerProperties& layer : layers)
-    {
+    for (VkLayerProperties& layer : layers) {
         supported_layers.emplace_back(layer.layerName);
     }
 
     return supported_layers;
 }
 
-}
-}
-}
+} // namespace Vulkan
+} // namespace Renderer
+} // namespace SHD
