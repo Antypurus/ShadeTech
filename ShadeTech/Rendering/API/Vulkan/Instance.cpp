@@ -49,6 +49,30 @@ void PhysicalDeviceInfo::PopulateQueueFamilyList()
     vkGetPhysicalDeviceQueueFamilyProperties(this->device_handle, &queue_count, this->queue_famillies.data());
 }
 
+void PhysicalDeviceInfo::LogDeviceInformation() const
+{
+    LOG_INFO("Number of Queue Families: %lu", this->queue_famillies.size());
+    for (size_t i = 0; i < this->queue_famillies.size(); ++i) {
+        const VkQueueFamilyProperties& queue = this->queue_famillies[i];
+        LOG_INFO("Queue #%lu\n"
+                 "\t Queue Count:%d\n"
+                 "\t Graphics Queue:%d\n"
+                 "\t Compute Queue:%d\n"
+                 "\t Transfer Queue:%d\n"
+                 "\t Sparse Binding Queue:%d\n"
+                 "\t Video Decode Queue%d\n"
+                 "\t Optical Flow Queue:%d\n",
+                 i,
+                 queue.queueCount,
+                 HAS_BITFLAG(queue.queueFlags, VK_QUEUE_GRAPHICS_BIT),
+                 HAS_BITFLAG(queue.queueFlags, VK_QUEUE_COMPUTE_BIT),
+                 HAS_BITFLAG(queue.queueFlags, VK_QUEUE_TRANSFER_BIT),
+                 HAS_BITFLAG(queue.queueFlags, VK_QUEUE_SPARSE_BINDING_BIT),
+                 HAS_BITFLAG(queue.queueFlags, VK_QUEUE_VIDEO_DECODE_BIT_KHR),
+                 HAS_BITFLAG(queue.queueFlags, VK_QUEUE_OPTICAL_FLOW_BIT_NV));
+    }
+}
+
 Instance::Instance() :
     supported_layers(Instance::GetSupportedLayers()),
     supported_extensions(Instance::GetSupportedExtensions())

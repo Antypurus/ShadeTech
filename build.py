@@ -231,5 +231,5 @@ if __name__ == "__main__":
     create_build_dir()
     result = run_project_build()
     update_compile_commands()
-    if result is not 0:
+    if result != 0:
         sys.exit(-1)
