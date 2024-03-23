@@ -2,7 +2,8 @@
 
 #include "Helpers.h"
 #include <Types.h>
-#include <vulkan/vulkan_core.h>
+
+#include <cassert>
 
 namespace SHD {
 namespace Renderer {
@@ -20,21 +21,36 @@ PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle) :
 
 VkDevice PhysicalDeviceInfo::CreateDevice()
 {
-    const VkDeviceCreateInfo device_create_info{
+    const float priorities[] = { 0.0 };
+
+    const VkDeviceQueueCreateInfo queue_create_params{
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .queueFamilyIndex = 0,
+        .queueCount = 1,
+        .pQueuePriorities = (const float*)priorities,
+    };
+
+    const char* extensions[] = {
+        "VK_KHR_portability_subset",
+    };
+
+    const VkDeviceCreateInfo device_create_params{
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .pNext = nullptr,
         .flags = 0,
-        .queueCreateInfoCount = 0,
-        .pQueueCreateInfos = nullptr,
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &queue_create_params,
         .enabledLayerCount = 0,
         .ppEnabledLayerNames = nullptr,
-        .enabledExtensionCount = 0,
-        .ppEnabledExtensionNames = nullptr,
-        .pEnabledFeatures = nullptr,
+        .enabledExtensionCount = 1,
+        .ppEnabledExtensionNames = (char**)extensions,
+        .pEnabledFeatures = &this->device_features,
     };
 
     VkDevice result_device = nullptr;
-    VK_CALL(vkCreateDevice(this->device_handle, &device_create_info, nullptr, &result_device),
+    VK_CALL(vkCreateDevice(this->device_handle, &device_create_params, nullptr, &result_device),
             "Failed to create Vulkan Logical Device");
 
     return result_device;
