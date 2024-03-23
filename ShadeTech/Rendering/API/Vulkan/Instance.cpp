@@ -51,7 +51,7 @@ void PhysicalDeviceInfo::PopulateQueueFamilyList()
 
 void PhysicalDeviceInfo::LogDeviceInformation() const
 {
-    LOG_INFO("Device Name:%s", this->device_properties.deviceName);
+    LOG_INFO("Device Name:%s", (char*)this->device_properties.deviceName);
     switch (this->device_properties.deviceType) {
         case (VK_PHYSICAL_DEVICE_TYPE_CPU): {
             LOG_INFO("Device Type: CPU");
@@ -95,6 +95,36 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
                  HAS_BITFLAG(queue.queueFlags, VK_QUEUE_VIDEO_DECODE_BIT_KHR),
                  HAS_BITFLAG(queue.queueFlags, VK_QUEUE_OPTICAL_FLOW_BIT_NV));
     }
+
+    LOG_INFO("Number of types of heap memory:%d", this->memory_properties.memoryTypeCount);
+    LOG_INFO("Number of memory heaps:%d", this->memory_properties.memoryHeapCount);
+    for (size_t i = 0; i < this->memory_properties.memoryHeapCount; ++i) {
+        const VkMemoryHeap& heap = this->memory_properties.memoryHeaps[i];
+
+        std::string heap_features = "{";
+        if (HAS_BITFLAG(heap.flags, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)) {
+            heap_features += "Device Heap";
+        } else {
+            heap_features += "Host Heap";
+        }
+        if (HAS_BITFLAG(heap.flags, VK_MEMORY_HEAP_MULTI_INSTANCE_BIT)) {
+            heap_features += " | Multi-Device Allocation Replication";
+        }
+        heap_features += "}";
+
+        LOG_INFO("Heap #%zu \n"
+                 "\t Size: %llu MiB\n"
+                 "\t Heap Features: %s\n",
+                 i,
+                 (heap.size / MiB),
+                 heap_features.c_str());
+    }
+
+    const VkPhysicalDeviceLimits& limits = this->device_properties.limits;
+    LOG_INFO("Device Max 1D Res:%d", limits.maxImageDimension1D);
+    LOG_INFO("Device Max 2D Res:%d", limits.maxImageDimension2D);
+    LOG_INFO("Device Max 3D Res:%d", limits.maxImageDimension3D);
+    LOG_INFO("Device Max CubeMap Res:%d", limits.maxImageDimensionCube);
 }
 
 Instance::Instance() :
