@@ -75,6 +75,12 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
         }
     }
 
+    const VkPhysicalDeviceLimits& limits = this->device_properties.limits;
+    LOG_INFO("Device Max 1D Res:%d", limits.maxImageDimension1D);
+    LOG_INFO("Device Max 2D Res:%d", limits.maxImageDimension2D);
+    LOG_INFO("Device Max 3D Res:%d", limits.maxImageDimension3D);
+    LOG_INFO("Device Max CubeMap Res:%d", limits.maxImageDimensionCube);
+
     LOG_INFO("Number of Queue Families: %zu", this->queue_famillies.size());
     for (size_t i = 0; i < this->queue_famillies.size(); ++i) {
         const VkQueueFamilyProperties& queue = this->queue_famillies[i];
@@ -96,7 +102,6 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
                  HAS_BITFLAG(queue.queueFlags, VK_QUEUE_OPTICAL_FLOW_BIT_NV));
     }
 
-    LOG_INFO("Number of types of heap memory:%d", this->memory_properties.memoryTypeCount);
     LOG_INFO("Number of memory heaps:%d", this->memory_properties.memoryHeapCount);
     for (size_t i = 0; i < this->memory_properties.memoryHeapCount; ++i) {
         const VkMemoryHeap& heap = this->memory_properties.memoryHeaps[i];
@@ -112,7 +117,7 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
         }
         heap_features += "}";
 
-        LOG_INFO("Heap #%zu \n"
+        LOG_INFO("Heap #%zu\n"
                  "\t Size: %llu MiB\n"
                  "\t Heap Features: %s\n",
                  i,
@@ -120,11 +125,40 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
                  heap_features.c_str());
     }
 
-    const VkPhysicalDeviceLimits& limits = this->device_properties.limits;
-    LOG_INFO("Device Max 1D Res:%d", limits.maxImageDimension1D);
-    LOG_INFO("Device Max 2D Res:%d", limits.maxImageDimension2D);
-    LOG_INFO("Device Max 3D Res:%d", limits.maxImageDimension3D);
-    LOG_INFO("Device Max CubeMap Res:%d", limits.maxImageDimensionCube);
+    LOG_INFO("Number of types of heap memory:%d", this->memory_properties.memoryTypeCount);
+    for (size_t i = 0; i < this->memory_properties.memoryTypeCount; ++i) {
+        const VkMemoryType& memory_type = this->memory_properties.memoryTypes[i];
+
+        std::string features = "{";
+        if (HAS_BITFLAG(memory_type.propertyFlags, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+            features += "Device Memory";
+        } else {
+            features += "Host Memory";
+        }
+        if (HAS_BITFLAG(memory_type.propertyFlags, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)) {
+            features += " | Host Visible";
+        }
+        if (HAS_BITFLAG(memory_type.propertyFlags, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
+            features += " | Automatic Device <-> Host cache flushing";
+        }
+        if (HAS_BITFLAG(memory_type.propertyFlags, VK_MEMORY_PROPERTY_HOST_CACHED_BIT)) {
+            features += " | Host Cached";
+        }
+        if (HAS_BITFLAG(memory_type.propertyFlags, VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT)) {
+            features += " | Device Only Visible & Possibly Lazilly ALlocated";
+        }
+        if (HAS_BITFLAG(memory_type.propertyFlags, VK_MEMORY_PROPERTY_PROTECTED_BIT)) {
+            features += " | Device Only Visible & Allows Protected Queue Ops";
+        }
+        features += "}";
+
+        LOG_INFO("Memory Type #%zu\n"
+                 "\tAssociated Heap Index: %d\n"
+                 "\tMemory Type Features: %s\n",
+                 i,
+                 memory_type.heapIndex,
+                 features.c_str());
+    }
 }
 
 Instance::Instance() :
