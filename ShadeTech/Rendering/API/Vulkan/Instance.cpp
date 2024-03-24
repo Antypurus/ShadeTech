@@ -75,9 +75,8 @@ void PhysicalDeviceInfo::PopulateSupportedLayerList()
             "Failed to fetch device extension count");
 
     this->supported_layers.reserve(layer_count);
-    std::vector<VkLayerProperties> layers;
-    layers.resize(layer_count);
 
+    std::vector<VkLayerProperties> layers(layer_count);
     VK_CALL(vkEnumerateDeviceLayerProperties(this->device_handle, &layer_count, layers.data()),
             "Failed to fetch device layers");
 
@@ -92,11 +91,10 @@ void PhysicalDeviceInfo::PopulateSupportedExtensionList()
     VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, nullptr, &extension_count, nullptr),
             "Failed to fetch base vulkan extension count");
 
-    std::vector<VkExtensionProperties> extensions;
-    extensions.resize(extension_count);
-
+    std::vector<VkExtensionProperties> extensions(extension_count);
     VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, nullptr, &extension_count, extensions.data()),
             "Failed to fetch base vulkan extensions");
+
     for (size_t i = 0; i < extension_count; ++i) {
         this->supported_extensions.emplace_back(extensions[i].extensionName);
     }
@@ -104,6 +102,7 @@ void PhysicalDeviceInfo::PopulateSupportedExtensionList()
     for (std::string& layer : this->supported_layers) {
         VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, layer.c_str(), &extension_count, nullptr),
                 "Failed to fetch layer extension count");
+
         extensions.resize(extension_count);
         VK_CALL(vkEnumerateDeviceExtensionProperties(
                     this->device_handle, layer.c_str(), &extension_count, extensions.data()),
@@ -296,7 +295,6 @@ void Instance::PopulateDeviceList()
 std::vector<std::string> Instance::GetSupportedExtensions()
 {
     unsigned int extension_count = 0;
-
     VK_CALL(vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr),
             "Failed to get number of supported extensions");
 
@@ -306,9 +304,22 @@ std::vector<std::string> Instance::GetSupportedExtensions()
 
     std::vector<std::string> supported_extensions;
     supported_extensions.reserve(extension_count);
-
     for (VkExtensionProperties& extension : extensions) {
         supported_extensions.emplace_back(extension.extensionName);
+    }
+
+    std::vector<std::string> layers = Instance::GetSupportedLayers();
+    for (std::string& layer : layers) {
+        VK_CALL(vkEnumerateInstanceExtensionProperties(layer.c_str(), &extension_count, nullptr),
+                "Failed to fetch layer extension count");
+
+        extensions.resize(extension_count);
+        VK_CALL(vkEnumerateInstanceExtensionProperties(layer.c_str(), &extension_count, extensions.data()),
+                "Failed to fetch extension properties");
+
+        for (size_t i = 0; i < extension_count; ++i) {
+            supported_extensions.emplace_back(extensions[i].extensionName);
+        }
     }
 
     return supported_extensions;
@@ -317,10 +328,11 @@ std::vector<std::string> Instance::GetSupportedExtensions()
 std::vector<std::string> Instance::GetSupportedLayers()
 {
     unsigned int layer_count = 0;
-    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, nullptr), "Failed to get number of supported layers");
+    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, nullptr),
+            "Failed to get number of supported instance layers");
 
     std::vector<VkLayerProperties> layers(layer_count);
-    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, layers.data()), "Failed to get supported layers");
+    VK_CALL(vkEnumerateInstanceLayerProperties(&layer_count, layers.data()), "Failed to get supported instance layers");
 
     std::vector<std::string> supported_layers;
     supported_layers.reserve(layer_count);

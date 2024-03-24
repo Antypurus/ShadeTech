@@ -12,7 +12,17 @@ int main()
 
     Vulkan::Instance instance;
 
-    instance.devices[0].LogDeviceInformation();
+    auto layers = instance.GetSupportedLayers();
+    for (auto& layer : layers) {
+        LOG_INFO("%s", layer.c_str());
+    }
+
+    auto extensions = instance.GetSupportedExtensions();
+    for (auto& extension : extensions) {
+        LOG_INFO("%s", extension.c_str());
+    }
+
+    // instance.devices[0].LogDeviceInformation();
     instance.devices[0].CreateDevice();
 
     return 0;
