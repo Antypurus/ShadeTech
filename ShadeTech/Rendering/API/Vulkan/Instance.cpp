@@ -4,6 +4,7 @@
 #include <Types.h>
 
 #include <cassert>
+#include <vulkan/vulkan_core.h>
 
 namespace SHD {
 namespace Renderer {
@@ -16,6 +17,8 @@ PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle) :
     vkGetPhysicalDeviceProperties(this->device_handle, &this->device_properties);
     vkGetPhysicalDeviceMemoryProperties(this->device_handle, &this->memory_properties);
 
+    this->PopulateSupportedLayerList();
+    this->PopulateSupportedExtensionList();
     this->PopulateQueueFamilyList();
 }
 
@@ -63,6 +66,53 @@ void PhysicalDeviceInfo::PopulateQueueFamilyList()
 
     this->queue_famillies.resize(queue_count);
     vkGetPhysicalDeviceQueueFamilyProperties(this->device_handle, &queue_count, this->queue_famillies.data());
+}
+
+void PhysicalDeviceInfo::PopulateSupportedLayerList()
+{
+    uint32 layer_count = 0;
+    VK_CALL(vkEnumerateDeviceLayerProperties(this->device_handle, &layer_count, nullptr),
+            "Failed to fetch device extension count");
+
+    this->supported_layers.reserve(layer_count);
+    std::vector<VkLayerProperties> layers;
+    layers.resize(layer_count);
+
+    VK_CALL(vkEnumerateDeviceLayerProperties(this->device_handle, &layer_count, layers.data()),
+            "Failed to fetch device layers");
+
+    for (size_t i = 0; i < layer_count; ++i) {
+        this->supported_layers.emplace_back(layers[i].layerName);
+    }
+}
+
+void PhysicalDeviceInfo::PopulateSupportedExtensionList()
+{
+    uint32 extension_count = 0;
+    VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, nullptr, &extension_count, nullptr),
+            "Failed to fetch base vulkan extension count");
+
+    std::vector<VkExtensionProperties> extensions;
+    extensions.resize(extension_count);
+
+    VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, nullptr, &extension_count, extensions.data()),
+            "Failed to fetch base vulkan extensions");
+    for (size_t i = 0; i < extension_count; ++i) {
+        this->supported_extensions.emplace_back(extensions[i].extensionName);
+    }
+
+    for (std::string& layer : this->supported_layers) {
+        VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, layer.c_str(), &extension_count, nullptr),
+                "Failed to fetch layer extension count");
+        extensions.resize(extension_count);
+        VK_CALL(vkEnumerateDeviceExtensionProperties(
+                    this->device_handle, layer.c_str(), &extension_count, extensions.data()),
+                "Failed to fetch layer extensions");
+
+        for (size_t i = 0; i < extension_count; ++i) {
+            this->supported_extensions.emplace_back(extensions[i].extensionName);
+        }
+    }
 }
 
 void PhysicalDeviceInfo::LogDeviceInformation() const
@@ -174,6 +224,10 @@ void PhysicalDeviceInfo::LogDeviceInformation() const
                  i,
                  memory_type.heapIndex,
                  features.c_str());
+    }
+
+    for (auto& extension : this->supported_extensions) {
+        LOG_INFO("%s", extension.c_str());
     }
 }
 
