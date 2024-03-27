@@ -8,7 +8,7 @@ using namespace SHD::Renderer;
 
 int main()
 {
-    std::cout << "Welcome To the SDH Network Agent\n";
+    LOG_SUCCESS("Welcome To the SDH Network Agent");
 
     Vulkan::Instance::GetInstance().devices[0].LogDeviceInformation();
 
