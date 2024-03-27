@@ -46,9 +46,7 @@ public:
 private:
     VkInstance m_instance = nullptr;
 
-    // instance methods
 public:
-    Instance();
     ~Instance();
 
     Instance(const Instance& other) = delete;
@@ -57,14 +55,20 @@ public:
     Instance(Instance&& other) = delete;
     Instance& operator=(Instance&& other) = delete;
 
-    inline VkInstance& GetInstance() { return this->m_instance; }
+    operator VkInstance() { return this->m_instance; }
 
 private:
+    Instance();
     void CreateInstance();
     void PopulateDeviceList();
 
-    // static methods
 public:
+    static inline Instance& GetInstance()
+    {
+        static Instance s_instance;
+        return s_instance;
+    }
+
     static std::vector<std::string> GetSupportedExtensions();
     static std::vector<std::string> GetSupportedLayers();
 };
