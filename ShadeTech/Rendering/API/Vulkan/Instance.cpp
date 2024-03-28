@@ -3,9 +3,6 @@
 #include "Helpers.h"
 #include <Types.h>
 
-#include <cassert>
-#include <vulkan/vulkan_core.h>
-
 namespace SHD {
 namespace Renderer {
 namespace Vulkan {
@@ -270,6 +267,28 @@ void Instance::CreateInstance()
     };
 
     VK_CALL(vkCreateInstance(&instance_info, nullptr, &this->m_instance), "Failed to create Vulkan Instance");
+}
+
+bool Instance::IsLayerSupported(const char* queried_layer) const
+{
+    for (const std::string& layer : this->supported_layers) {
+        if (layer == queried_layer) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Instance::IsExtensionSupported(const char* queried_extension) const
+{
+    for (const std::string& extension : this->supported_extensions) {
+        if (extension == queried_extension) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Instance::PopulateDeviceList()

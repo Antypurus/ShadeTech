@@ -51,10 +51,11 @@ public:
 
     Instance(const Instance& other) = delete;
     Instance& operator=(const Instance& other) = delete;
-
     Instance(Instance&& other) = delete;
     Instance& operator=(Instance&& other) = delete;
 
+    bool IsLayerSupported(const char* queried_layer) const;
+    bool IsExtensionSupported(const char* queried_extension) const;
     operator VkInstance() { return this->m_instance; }
 
 private:
