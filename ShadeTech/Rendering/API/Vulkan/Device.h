@@ -11,6 +11,7 @@ class Device
 {
 private:
     VkDevice m_device = nullptr;
+    VkQueue m_command_queue = nullptr;
 
 public:
     Device();
@@ -19,6 +20,7 @@ public:
 
 private:
     VkDevice CreateVKDevice(uint32 device_index) const;
+    VkQueue CreateCommandQueue(uint32 family_index, uint32 queue_index) const;
 };
 
 }

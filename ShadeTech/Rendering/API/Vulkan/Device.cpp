@@ -5,20 +5,30 @@
 
 #include "Helpers.h"
 #include "Instance.h"
+#include "Types.h"
 
 namespace SHD {
 namespace Renderer {
 namespace Vulkan {
 
+/* TODOS:
+ *  - [ ] Queue Creation Is Pretty much still hard coded to a single queue
+ *        Need to come up with a system to determine how many queues to create
+ *        and maximize paralelism and still be correct
+ */
+
 Device::Device() :
     m_device(this->CreateVKDevice(0))
 {
+    this->CreateCommandQueue(0, 0);
 }
 
 Device::Device(uint32 device_index) :
     m_device(this->CreateVKDevice(device_index))
 {
     assert(device_index <= Instance::GetInstance().devices.size());
+
+    this->CreateCommandQueue(0, 0);
 }
 
 Device::~Device()
@@ -68,6 +78,13 @@ VkDevice Device::CreateVKDevice(uint32 device_index) const
             "Failed to create Vulkan logical device");
 
     return device;
+}
+
+VkQueue Device::CreateCommandQueue(uint32 family_index, uint32 queue_index) const
+{
+    VkQueue command_queue = nullptr;
+    vkGetDeviceQueue(this->m_device, family_index, queue_index, &command_queue);
+    return command_queue;
 }
 
 }
