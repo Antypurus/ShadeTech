@@ -59,7 +59,7 @@ void PhysicalDeviceInfo::PopulateSupportedExtensionList()
         this->supported_extensions.emplace_back(extensions[i].extensionName);
     }
 
-    for (std::string& layer : this->supported_layers) {
+    for (const std::string& layer : this->supported_layers) {
         VK_CALL(vkEnumerateDeviceExtensionProperties(this->device_handle, layer.c_str(), &extension_count, nullptr),
                 "Failed to fetch layer extension count");
 
@@ -290,8 +290,8 @@ std::vector<std::string> Instance::GetSupportedExtensions()
         supported_extensions.emplace_back(extension.extensionName);
     }
 
-    std::vector<std::string> layers = Instance::GetSupportedLayers();
-    for (std::string& layer : layers) {
+    const std::vector<std::string> layers = Instance::GetSupportedLayers();
+    for (const std::string& layer : layers) {
         VK_CALL(vkEnumerateInstanceExtensionProperties(layer.c_str(), &extension_count, nullptr),
                 "Failed to fetch layer extension count");
 

@@ -5,13 +5,24 @@
 #include <string>
 #include <vector>
 
+#include "Platform.h"
+
 namespace SHD {
 namespace Renderer {
 namespace Vulkan {
 
 static const char* const layers_to_enable[] = { "VK_LAYER_KHRONOS_validation" };
 
-static const char* const extensions_to_enable[] = { "VK_KHR_portability_enumeration" };
+static const char* const extensions_to_enable[] = {
+    "VK_KHR_portability_enumeration",
+    "VK_KHR_surface",
+#if PLATFORM_MACOS
+    "VK_EXT_metal_surface",
+#endif
+#if PLATFORM_WINDOWS
+    "VK_KHR_win32_surface",
+#endif
+};
 
 struct PhysicalDeviceInfo
 {

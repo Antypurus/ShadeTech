@@ -42,6 +42,9 @@ Checks: '*,
     -hicpp-no-malloc,
     -hicpp-deprecated-headers,
     -bugprone-easily-swappable-parameters,
+    -cert-dcl16-c,
+    -hicpp-uppercase-literal-suffix,
+    -cppcoreguidelines-prefer-member-initializer
   '
 HeaderFilterRegex: '.*'
 WarningsAsErrors: '*,-clang-diagnostic-error'

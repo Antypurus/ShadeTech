@@ -8,7 +8,7 @@
 #define MiB (KiB * KiB)
 #define GiB (MiB * KiB)
 
-#define HAS_BITFLAG(value, flag) (value & flag) == flag ? true : false
+#define HAS_BITFLAG(value, flag) ((value) & (flag)) == (flag) ? true : false
 
 #define VK_CALL(OP, ERROR_MESSAGE)                                                                                     \
     {                                                                                                                  \

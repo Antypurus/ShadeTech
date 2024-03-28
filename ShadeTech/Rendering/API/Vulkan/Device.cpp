@@ -20,15 +20,14 @@ namespace Vulkan {
 Device::Device() :
     m_device(this->CreateVKDevice(0))
 {
-    this->CreateCommandQueue(0, 0);
+    this->m_command_queue = this->CreateCommandQueue(0, 0);
 }
 
 Device::Device(uint32 device_index) :
     m_device(this->CreateVKDevice(device_index))
 {
-    assert(device_index <= Instance::GetInstance().devices.size());
-
-    this->CreateCommandQueue(0, 0);
+    assert((device_index + 1) <= Instance::GetInstance().devices.size());
+    this->m_command_queue = this->CreateCommandQueue(0, 0);
 }
 
 Device::~Device()
