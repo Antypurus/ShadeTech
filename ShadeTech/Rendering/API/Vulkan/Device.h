@@ -15,6 +15,7 @@ private:
 public:
     Device();
     Device(uint32 device_index);
+    ~Device();
 
 private:
     VkDevice CreateVKDevice(uint32 device_index) const;

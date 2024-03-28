@@ -21,6 +21,13 @@ Device::Device(uint32 device_index) :
     assert(device_index <= Instance::GetInstance().devices.size());
 }
 
+Device::~Device()
+{
+    if (this->m_device != nullptr) {
+        vkDestroyDevice(this->m_device, nullptr);
+    }
+}
+
 VkDevice Device::CreateVKDevice(uint32 device_index) const
 {
     assert(device_index <= Instance::GetInstance().devices.size());
@@ -40,7 +47,7 @@ VkDevice Device::CreateVKDevice(uint32 device_index) const
     // the portability extension can only be enabled for non-conformant vulkan implementation
     // conformant implementations will not report it.
     if (Instance::GetInstance().IsExtensionSupported(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME)) {
-        device_extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        device_extensions.push_back("VK_KHR_portability_subset");
     }
 
     const VkDeviceCreateInfo device_create_info{

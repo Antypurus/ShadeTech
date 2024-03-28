@@ -26,8 +26,6 @@ public:
 
 public:
     PhysicalDeviceInfo(VkPhysicalDevice device_handle);
-    VkDevice CreateDevice();
-
     void LogDeviceInformation() const;
 
 private:

@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "Log.h"
-#include "Rendering/API/Vulkan/Instance.h"
 #include "Rendering/API/Vulkan/Device.h"
 
 using namespace SHD;
