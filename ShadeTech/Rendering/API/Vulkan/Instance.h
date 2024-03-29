@@ -13,8 +13,7 @@ namespace Vulkan {
 
 static const char* const layers_to_enable[] = { "VK_LAYER_KHRONOS_validation" };
 
-static const char* const extensions_to_enable[] = {
-    "VK_KHR_portability_enumeration",
+static std::vector<const char*> extensions_to_enable = {
     "VK_KHR_surface",
 #if PLATFORM_MACOS
     "VK_EXT_metal_surface",

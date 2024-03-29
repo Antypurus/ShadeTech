@@ -2,6 +2,7 @@
 
 #include "Helpers.h"
 #include <Types.h>
+#include <vulkan/vulkan_core.h>
 
 namespace SHD {
 namespace Renderer {
@@ -206,7 +207,12 @@ Instance::~Instance()
 void Instance::CreateInstance()
 {
     static const size_t count_of_layers_to_enable = sizeof(layers_to_enable) / sizeof(layers_to_enable[0]);
-    static const size_t count_of_extensions_to_enable = sizeof(extensions_to_enable) / sizeof(extensions_to_enable[0]);
+
+    VkInstanceCreateFlags flags = 0;
+    if (this->IsExtensionSupported(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME)) {
+        extensions_to_enable.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+    }
 
     const VkApplicationInfo app_info{
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -221,12 +227,12 @@ void Instance::CreateInstance()
     const VkInstanceCreateInfo instance_info{
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
         .pNext = nullptr,
-        .flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
+        .flags = flags,
         .pApplicationInfo = &app_info,
         .enabledLayerCount = count_of_layers_to_enable,
         .ppEnabledLayerNames = (char**)layers_to_enable,
-        .enabledExtensionCount = count_of_extensions_to_enable,
-        .ppEnabledExtensionNames = (char**)extensions_to_enable,
+        .enabledExtensionCount = (uint32)extensions_to_enable.size(),
+        .ppEnabledExtensionNames = (char**)extensions_to_enable.data(),
     };
 
     VK_CALL(vkCreateInstance(&instance_info, nullptr, &this->m_instance), "Failed to create Vulkan Instance");
@@ -263,14 +269,14 @@ void Instance::PopulateDeviceList()
     // NOTE(Tiago): used to create an array so that we dont need to allocate
     // such a small vector
     constexpr size_t max_physical_device_count = 16;
-    VkPhysicalDevice devices[max_physical_device_count];
+    VkPhysicalDevice l_devices[max_physical_device_count];
 
-    VK_CALL(vkEnumeratePhysicalDevices(this->m_instance, &device_count, (VkPhysicalDevice*)devices),
+    VK_CALL(vkEnumeratePhysicalDevices(this->m_instance, &device_count, (VkPhysicalDevice*)l_devices),
             "Failed to fetch handles of installed physical devices");
 
     this->devices.reserve(device_count);
     for (uint32 i = 0; i < device_count; ++i) {
-        this->devices.emplace_back(devices[i]);
+        this->devices.emplace_back(l_devices[i]);
     }
 }
 

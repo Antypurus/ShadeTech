@@ -56,7 +56,7 @@ VkDevice Device::CreateVKDevice(uint32 device_index) const
     // the portability extension can only be enabled for non-conformant vulkan implementation
     // conformant implementations will not report it.
     if (Instance::GetInstance().IsExtensionSupported(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME)) {
-        device_extensions.push_back("VK_KHR_portability_subset");
+        //device_extensions.push_back("VK_KHR_portability_subset");
     }
 
     const VkDeviceCreateInfo device_create_info{
