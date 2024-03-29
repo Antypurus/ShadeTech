@@ -36,6 +36,8 @@ public:
 
 public:
     PhysicalDeviceInfo(VkPhysicalDevice device_handle);
+
+    bool IsExtensionSupported(const char* queried_extension) const;
     void LogDeviceInformation() const;
 
 private:

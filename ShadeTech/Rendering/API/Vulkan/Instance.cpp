@@ -20,6 +20,16 @@ PhysicalDeviceInfo::PhysicalDeviceInfo(VkPhysicalDevice device_handle) :
     this->PopulateQueueFamilyList();
 }
 
+bool PhysicalDeviceInfo::IsExtensionSupported(const char* queried_extension) const
+{
+    for (const std::string& extension : this->supported_extensions) {
+        if (extension == queried_extension) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void PhysicalDeviceInfo::PopulateQueueFamilyList()
 {
     uint32 queue_count = 0;
