@@ -10,16 +10,13 @@ using namespace SHD::Renderer;
 int main()
 {
     LOG_SUCCESS("Welcome To the SDH Network Agent");
+
     Vulkan::Device device;
 
     Window window("test", 640, 480);
-    Window window2("test2", 640, 480);
-
-
-    while(window.IsOpen() || window2.IsOpen())
+    while(window.IsOpen())
     {
         window.Update();
-        window2.Update();
     }
 
 

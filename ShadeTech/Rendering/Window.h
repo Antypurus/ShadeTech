@@ -16,7 +16,7 @@ public:
 
 private:
     GLFWwindow* m_window_handle = nullptr;
-    std::thread m_window_thread;
+    bool m_is_open = false;
 
 public:
     Window(std::string_view title, int32 width, int32 height);
