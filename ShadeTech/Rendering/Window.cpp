@@ -4,6 +4,8 @@
 #include <cassert>
 #include <unordered_map>
 
+#include "Log.h"
+
 /* NOTE(Tiago): seems that on macos the even poll function
  * can only be called from the main thread. Unlike on windows,
  * moving windows creation to the dedicated window thread does
@@ -28,8 +30,20 @@ Window::Window(std::string_view title, int32 width, int32 height) :
 
     glfwSetWindowCloseCallback(this->m_window_handle, [](GLFWwindow* window) {
         Window* current = g_window_handle_map[window];
+        assert(current != nullptr);
+
         current->m_is_open = false;
         glfwDestroyWindow(window);
+    });
+
+    glfwSetWindowSizeCallback(this->m_window_handle, [](GLFWwindow* window, int32 new_width, int32 new_height) {
+        Window* current = g_window_handle_map[window];
+        assert(current != nullptr);
+
+        current->width = (uint32)new_width;
+        current->height = (uint32)new_height;
+
+        LOG_INFO("Window has been resized to %dx%d", new_width, new_height);
     });
 }
 
