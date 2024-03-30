@@ -1,6 +1,7 @@
 #include "Window.h"
-#include "GLFW/glfw3.h"
 
+#include "GLFW/glfw3.h"
+#include <cassert>
 #include <unordered_map>
 
 /* NOTE(Tiago): seems that on macos the even poll function
@@ -38,6 +39,16 @@ void Window::Update()
         glfwSwapBuffers(this->m_window_handle);
         glfwPollEvents();
     }
+}
+
+void Window::Resize(int32 width, int32 height)
+{
+    assert(this->m_window_handle != nullptr);
+    assert(this->m_is_open);
+
+    glfwSetWindowSize(this->m_window_handle, width, height);
+    this->width = (uint32)width;
+    this->height = (uint32)height;
 }
 
 bool Window::IsOpen() const

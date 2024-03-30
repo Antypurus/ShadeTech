@@ -23,6 +23,8 @@ public:
     ~Window();
 
     void Update();
+    void Resize(int32 width, int32 height);
+
     bool IsOpen() const;
 };
 
