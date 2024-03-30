@@ -1,18 +1,27 @@
 #include <iostream>
 
-#include "GLFW/glfw3.h"
 #include "Log.h"
 #include "Rendering/API/Vulkan/Device.h"
+#include "Rendering/Window.h"
 
 using namespace SHD;
 using namespace SHD::Renderer;
 
 int main()
 {
-    glfwInit();
     LOG_SUCCESS("Welcome To the SDH Network Agent");
-
     Vulkan::Device device;
+
+    Window window("test", 640, 480);
+    Window window2("test2", 640, 480);
+
+
+    while(window.IsOpen() || window2.IsOpen())
+    {
+        window.Update();
+        window2.Update();
+    }
+
 
     return 0;
 }
