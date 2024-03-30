@@ -54,7 +54,9 @@ VkDevice Device::CreateVKDevice(uint32 device_index) const
 
     std::vector<const char*> device_extensions;
     // the portability extension can only be enabled for non-conformant vulkan implementation
-    // conformant implementations will not report it.
+    // conformant implementations will not report it. The weird thing is that some conformant
+    // implementations will report it at the instance level but then the required device
+    // extension will not be reported as being supported, so we need to account of that.
     if (Instance::GetInstance().IsExtensionSupported(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME) &&
         physical_device.IsExtensionSupported("VK_KHR_portability_subset")) {
         device_extensions.push_back("VK_KHR_portability_subset");

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <thread>
+#include <string_view>
 
 #include <Types.h>
 
