@@ -40,10 +40,9 @@ Window::Window(std::string_view title, int32 width, int32 height) :
         Window* current = g_window_handle_map[window];
         assert(current != nullptr);
 
+        glfwGetFramebufferSize(window, &new_width, &new_height);
         current->width = (uint32)new_width;
         current->height = (uint32)new_height;
-
-        LOG_INFO("Window has been resized to %dx%d", new_width, new_height);
     });
 }
 
