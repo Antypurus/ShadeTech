@@ -45,7 +45,7 @@ function(setup_vulkan_dependency
 endfunction()
 
 
-file(GLOB_RECURSE SHD_SOURCES
+file(GLOB_RECURSE SHD_SOURCES CONFIGURE_DEPENDS
     ./ShadeTech/**.cpp
     ./ShadeTech/**.h)
 

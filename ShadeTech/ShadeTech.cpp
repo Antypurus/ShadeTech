@@ -14,6 +14,7 @@ int main()
     Vulkan::Device device;
 
     Window window("test", 640, 480);
+    window.SetTitle("SHD-ISAC Terminal");
     window.Resize(1920, 1080);
     while(window.IsOpen())
     {
