@@ -10,6 +10,7 @@ namespace Vulkan {
 class Device
 {
 private:
+    PhysicalDeviceInfo* m_device_info_ref = nullptr;
     VkDevice m_device = nullptr;
     VkQueue m_command_queue = nullptr;
 

@@ -14,10 +14,6 @@ int main()
 
     Window window("SHD-ISAC Terminal", 1280, 720);
     Vulkan::Device device;
-
-    auto* surface = window.CreateVulkanSurface();
-    auto modes = Vulkan::Instance::GetInstance().devices[0].GetSurfacePresentationModes(surface);
-
     while (window.IsOpen()) {
         window.Update();
     }
