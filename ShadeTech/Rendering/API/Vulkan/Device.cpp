@@ -18,6 +18,7 @@ namespace Vulkan {
  */
 
 Device::Device() :
+
     m_device(this->CreateVKDevice(0))
 {
     this->m_command_queue = this->CreateCommandQueue(0, 0);
@@ -52,7 +53,9 @@ VkDevice Device::CreateVKDevice(uint32 device_index) const
         .pQueuePriorities = (float*)queue_priorities,
     };
 
-    std::vector<const char*> device_extensions;
+    std::vector<const char*> device_extensions{
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+    };
     // the portability extension can only be enabled for non-conformant vulkan implementation
     // conformant implementations will not report it. The weird thing is that some conformant
     // implementations will report it at the instance level but then the required device

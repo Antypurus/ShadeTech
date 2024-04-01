@@ -45,6 +45,20 @@ int32 PhysicalDeviceInfo::IsSurfaceSupported(VkSurfaceKHR surface) const
     return -1;
 }
 
+std::vector<VkPresentModeKHR> PhysicalDeviceInfo::GetSurfacePresentationModes(VkSurfaceKHR surface) const
+{
+    uint32 present_mode_count = 0;
+    VK_CALL(vkGetPhysicalDeviceSurfacePresentModesKHR(this->device_handle, surface, &present_mode_count, nullptr),
+            "Failed to query number of supported presentation modes for surface");
+
+    std::vector<VkPresentModeKHR> presentation_modes(present_mode_count);
+    VK_CALL(vkGetPhysicalDeviceSurfacePresentModesKHR(
+                this->device_handle, surface, &present_mode_count, presentation_modes.data()),
+            "Failed to query presentation modes for surface");
+
+    return presentation_modes;
+}
+
 void PhysicalDeviceInfo::PopulateQueueFamilyList()
 {
     uint32 queue_count = 0;

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Rendering/API/Vulkan/Instance.h"
 #include "Types.h"
-#include "VulkanAPI.h"
 
 namespace SHD {
 namespace Renderer {

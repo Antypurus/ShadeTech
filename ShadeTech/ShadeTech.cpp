@@ -13,15 +13,14 @@ int main()
     LOG_SUCCESS("Welcome To the SDH Network Agent");
 
     Window window("SHD-ISAC Terminal", 1280, 720);
-    VkSurfaceKHR surface = window.CreateVulkanSurface();
-
     Vulkan::Device device;
 
-    while(window.IsOpen())
-    {
+    auto* surface = window.CreateVulkanSurface();
+    auto modes = Vulkan::Instance::GetInstance().devices[0].GetSurfacePresentationModes(surface);
+
+    while (window.IsOpen()) {
         window.Update();
     }
-
 
     return 0;
 }

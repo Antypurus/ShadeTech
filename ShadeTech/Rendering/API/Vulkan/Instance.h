@@ -40,6 +40,8 @@ public:
 
     bool IsExtensionSupported(const char* queried_extension) const;
     int32 IsSurfaceSupported(VkSurfaceKHR surface) const;
+    std::vector<VkPresentModeKHR> GetSurfacePresentationModes(VkSurfaceKHR surface) const;
+
     void LogDeviceInformation() const;
 
 private:
