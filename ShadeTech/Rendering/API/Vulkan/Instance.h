@@ -41,6 +41,7 @@ public:
     int32 IsSurfaceSupported(VkSurfaceKHR surface) const;
     std::vector<VkPresentModeKHR> GetSurfacePresentationModes(VkSurfaceKHR surface) const;
     VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(VkSurfaceKHR surface) const;
+    std::vector<VkSurfaceFormatKHR> GetSupportedSurfaceFormats(VkSurfaceKHR surface) const;
 
     void LogDeviceInformation() const;
 
