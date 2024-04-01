@@ -13,9 +13,9 @@ int main()
 
     Vulkan::Device device;
 
-    Window window("test", 640, 480);
-    window.SetTitle("SHD-ISAC Terminal");
-    window.Resize(1920, 1080);
+    Window window("SHD-ISAC Terminal", 1280, 720);
+    VkSurfaceKHR surface = window.CreateVulkanSurface();
+
     while(window.IsOpen())
     {
         window.Update();

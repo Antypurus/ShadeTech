@@ -4,6 +4,9 @@
 #include <cassert>
 #include <unordered_map>
 
+#include <Rendering/API/Vulkan/Helpers.h>
+#include <Rendering/API/Vulkan/Instance.h>
+
 #include "Log.h"
 
 /* NOTE(Tiago): seems that on macos the even poll function
@@ -16,13 +19,16 @@
 namespace SHD {
 namespace Renderer {
 
-static std::unordered_map<GLFWwindow*, Window*> g_window_handle_map;
-
 Window::Window(std::string_view title, int32 width, int32 height) :
     width((uint32)width),
     height((uint32)height)
 {
+    static std::unordered_map<GLFWwindow*, Window*> g_window_handle_map;
     glfwInit();
+
+    /*NOTE(Tiago): Hint must be set otherwise an OpenGL Context will be created
+     * which in turn prevents from creating a vulkan surface with this window*/
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     this->m_window_handle = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
     g_window_handle_map[this->m_window_handle] = this;
@@ -44,6 +50,13 @@ Window::Window(std::string_view title, int32 width, int32 height) :
         current->width = (uint32)new_width;
         current->height = (uint32)new_height;
     });
+}
+
+Window::~Window()
+{
+    if (this->m_window_handle != nullptr && this->m_is_open) {
+        glfwDestroyWindow(this->m_window_handle);
+    }
 }
 
 void Window::Update()
@@ -79,11 +92,15 @@ bool Window::IsOpen() const
     return this->m_is_open;
 }
 
-Window::~Window()
+VkSurfaceKHR Window::CreateVulkanSurface()
 {
-    if (this->m_window_handle != nullptr && this->m_is_open) {
-        glfwDestroyWindow(this->m_window_handle);
-    }
+    assert(this->m_window_handle != nullptr);
+    assert(this->m_is_open);
+
+    VkSurfaceKHR surface = nullptr;
+    VK_CALL(glfwCreateWindowSurface(Vulkan::Instance::GetInstance(), this->m_window_handle, nullptr, &surface),
+            "Failed to create Vulkan Surface from GLFW Window");
+    return surface;
 }
 
 }

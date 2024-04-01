@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
 #include <string_view>
 
@@ -25,8 +26,9 @@ public:
     void Update();
     void Resize(int32 width, int32 height);
     void SetTitle(std::string_view title);
-
     bool IsOpen() const;
+
+    VkSurfaceKHR CreateVulkanSurface();
 };
 
 }
