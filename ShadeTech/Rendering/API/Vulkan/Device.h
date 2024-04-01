@@ -19,6 +19,8 @@ public:
     Device(uint32 device_index);
     ~Device();
 
+    operator VkDevice&() { return this->m_device; }
+
 private:
     VkDevice CreateVKDevice(uint32 device_index) const;
     VkQueue CreateCommandQueue(uint32 family_index, uint32 queue_index) const;

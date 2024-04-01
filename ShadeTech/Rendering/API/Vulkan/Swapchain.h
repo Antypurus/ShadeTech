@@ -13,10 +13,14 @@ class Swapchain
 {
 private:
     VkSurfaceKHR m_surface = nullptr;
+    VkSwapchainKHR m_swapchain = nullptr;
 
 public:
     Swapchain(Device& device, Window& window);
     ~Swapchain();
+
+private:
+    VkSwapchainKHR CreateSwapchain(Device& device) const;
 };
 
 }
