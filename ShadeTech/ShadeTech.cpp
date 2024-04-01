@@ -2,6 +2,7 @@
 
 #include "Log.h"
 #include "Rendering/API/Vulkan/Device.h"
+#include "Rendering/API/Vulkan/Instance.h"
 #include "Rendering/Window.h"
 
 using namespace SHD;
@@ -11,10 +12,10 @@ int main()
 {
     LOG_SUCCESS("Welcome To the SDH Network Agent");
 
-    Vulkan::Device device;
-
     Window window("SHD-ISAC Terminal", 1280, 720);
     VkSurfaceKHR surface = window.CreateVulkanSurface();
+
+    Vulkan::Device device;
 
     while(window.IsOpen())
     {

@@ -30,6 +30,21 @@ bool PhysicalDeviceInfo::IsExtensionSupported(const char* queried_extension) con
     return false;
 }
 
+// TODO(Tiago): really dont like the way that we are reporting that no queue supports the surface here
+// should rethink this interface in the future. Maybe with a Result<T>
+int32 PhysicalDeviceInfo::IsSurfaceSupported(VkSurfaceKHR surface) const
+{
+    for (uint32 i = 0; i < this->queue_famillies.size(); ++i) {
+        VkBool32 supported = VK_FALSE;
+        VK_CALL(vkGetPhysicalDeviceSurfaceSupportKHR(this->device_handle, i, surface, &supported),
+                "Failed to determine if surface is supported");
+        if (supported == VK_TRUE) {
+            return (int32)i;
+        }
+    }
+    return -1;
+}
+
 void PhysicalDeviceInfo::PopulateQueueFamilyList()
 {
     uint32 queue_count = 0;

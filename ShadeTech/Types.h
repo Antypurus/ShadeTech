@@ -19,3 +19,9 @@ using u64 = unsigned long long;
 using uint64 = unsigned long long;
 using i64 = signed long long;
 using int64 = signed long long;
+
+//TODO(Tiago): need a proper system to
+//determine which size to give these
+//arch-dependent types
+using usize = u64;
+using isize = i64;

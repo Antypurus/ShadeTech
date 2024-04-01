@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Platform.h"
+#include <Types.h>
 
 namespace SHD {
 namespace Renderer {
@@ -38,6 +39,7 @@ public:
     PhysicalDeviceInfo(VkPhysicalDevice device_handle);
 
     bool IsExtensionSupported(const char* queried_extension) const;
+    int32 IsSurfaceSupported(VkSurfaceKHR surface) const;
     void LogDeviceInformation() const;
 
 private:
