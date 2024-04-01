@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-
+#include <vulkan/vulkan_core.h>
 #include <string>
 #include <vector>
 
@@ -41,6 +40,7 @@ public:
     bool IsExtensionSupported(const char* queried_extension) const;
     int32 IsSurfaceSupported(VkSurfaceKHR surface) const;
     std::vector<VkPresentModeKHR> GetSurfacePresentationModes(VkSurfaceKHR surface) const;
+    VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(VkSurfaceKHR surface) const;
 
     void LogDeviceInformation() const;
 

@@ -59,6 +59,13 @@ std::vector<VkPresentModeKHR> PhysicalDeviceInfo::GetSurfacePresentationModes(Vk
     return presentation_modes;
 }
 
+VkSurfaceCapabilitiesKHR PhysicalDeviceInfo::GetSurfaceCapabilities(VkSurfaceKHR surface) const
+{
+    VkSurfaceCapabilitiesKHR surface_capabilities;
+    VK_CALL(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(this->device_handle, surface, &surface_capabilities), "Failed to query surface capabilities");
+    return surface_capabilities;
+}
+
 void PhysicalDeviceInfo::PopulateQueueFamilyList()
 {
     uint32 queue_count = 0;
