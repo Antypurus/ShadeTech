@@ -14,6 +14,7 @@ class Swapchain
 private:
     VkSurfaceKHR m_surface = nullptr;
     VkSwapchainKHR m_swapchain = nullptr;
+    Device* m_device_ref = nullptr;
 
 public:
     Swapchain(Device& device, Window& window);
