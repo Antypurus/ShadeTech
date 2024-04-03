@@ -17,6 +17,16 @@ Swapchain::Swapchain(Device& device, Window& window) :
     this->m_swapchain = this->CreateSwapchain(device, window);
 }
 
+Swapchain::~Swapchain()
+{
+    if (this->m_swapchain != nullptr) {
+        vkDestroySwapchainKHR(*this->m_device_ref, this->m_swapchain, nullptr);
+    }
+    if (this->m_surface != nullptr) {
+        vkDestroySurfaceKHR(Instance::GetInstance(), this->m_surface, nullptr);
+    }
+}
+
 VkSwapchainKHR Swapchain::CreateSwapchain(Device& device, Window& window) const
 {
     const uint32 queues[] = {
@@ -52,14 +62,33 @@ VkSwapchainKHR Swapchain::CreateSwapchain(Device& device, Window& window) const
     return swapchain;
 }
 
-Swapchain::~Swapchain()
+Swapchain::Swapchain(Swapchain&& other)
 {
-    if (this->m_swapchain != nullptr) {
-        vkDestroySwapchainKHR(*this->m_device_ref, this->m_swapchain, nullptr);
-    }
-    if (this->m_surface != nullptr) {
-        vkDestroySurfaceKHR(Instance::GetInstance(), this->m_surface, nullptr);
-    }
+    this->m_surface = other.m_surface;
+    other.m_surface = nullptr;
+
+    this->m_swapchain = other.m_swapchain;
+    other.m_swapchain = nullptr;
+
+    this->m_device_ref = other.m_device_ref;
+    other.m_device_ref = nullptr;
+}
+
+Swapchain& Swapchain::operator=(Swapchain&& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->m_surface = other.m_surface;
+    other.m_surface = nullptr;
+
+    this->m_swapchain = other.m_swapchain;
+    other.m_swapchain = nullptr;
+
+    this->m_device_ref = other.m_device_ref;
+    other.m_device_ref = nullptr;
+
+    return *this;
 }
 
 }

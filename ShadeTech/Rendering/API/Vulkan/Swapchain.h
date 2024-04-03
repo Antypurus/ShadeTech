@@ -20,8 +20,17 @@ public:
     Swapchain(Device& device, Window& window);
     ~Swapchain();
 
+    Swapchain(Swapchain&& other);
+    Swapchain& operator=(Swapchain&& other);
+
 private:
     VkSwapchainKHR CreateSwapchain(Device& device, Window& window) const;
+
+public:
+    // deleted member constructors/operators
+    Swapchain() = delete;
+    Swapchain(const Swapchain& other) = delete;
+    Swapchain& operator=(const Swapchain& other) = delete;
 };
 
 }
