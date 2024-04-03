@@ -1,5 +1,6 @@
 #include "Swapchain.h"
 
+#include <cassert>
 #include <vulkan/vulkan_core.h>
 
 #include "Helpers.h"
@@ -13,8 +14,12 @@ namespace Vulkan {
 Swapchain::Swapchain(Device& device, Window& window) :
     m_device_ref(&device)
 {
+    assert(device != nullptr);
+    assert(window.IsOpen());
+
     this->m_surface = window.CreateVulkanSurface();
     this->m_swapchain = this->CreateSwapchain(device, window);
+    this->FetchSwapchainResources(device);
 }
 
 Swapchain::~Swapchain()
@@ -29,6 +34,10 @@ Swapchain::~Swapchain()
 
 VkSwapchainKHR Swapchain::CreateSwapchain(Device& device, Window& window) const
 {
+    assert(device != nullptr);
+    assert(window.IsOpen());
+    assert(this->m_surface != nullptr);
+
     const uint32 queues[] = {
         0,
     };
@@ -60,6 +69,17 @@ VkSwapchainKHR Swapchain::CreateSwapchain(Device& device, Window& window) const
     VkSwapchainKHR swapchain = nullptr;
     VK_CALL(vkCreateSwapchainKHR(device, &swapchain_description, nullptr, &swapchain), "Failed to create swapchain");
     return swapchain;
+}
+
+void Swapchain::FetchSwapchainResources(Device& device)
+{
+    assert(device != nullptr);
+    assert(this->m_swapchain != nullptr);
+
+    uint32 swapchain_framebuffer_count = 2;
+    VK_CALL(vkGetSwapchainImagesKHR(
+                device, this->m_swapchain, &swapchain_framebuffer_count, (VkImage*)this->m_framebuffer_resources),
+            "Failed to fetch underlying swapchain framebuffer resources");
 }
 
 Swapchain::Swapchain(Swapchain&& other)
