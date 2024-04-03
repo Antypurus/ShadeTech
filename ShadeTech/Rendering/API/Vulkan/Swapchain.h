@@ -20,7 +20,7 @@ public:
     ~Swapchain();
 
 private:
-    VkSwapchainKHR CreateSwapchain(Device& device) const;
+    VkSwapchainKHR CreateSwapchain(Device& device, Window& window) const;
 };
 
 }
