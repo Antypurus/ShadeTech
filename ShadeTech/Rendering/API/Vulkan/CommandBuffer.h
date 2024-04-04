@@ -16,11 +16,21 @@ private:
     Device* m_device_ref = nullptr;
 
 public:
+    CommandPool() = default;
     CommandPool(Device& device, uint8 queue_index);
     ~CommandPool();
 
+    CommandPool(CommandPool&& other);
+    CommandPool& operator=(CommandPool&& other);
+
 private:
     VkCommandPool CreateCommandPool(Device& device, uint8 queue_index);
+
+public:
+    //deleted constructors & operators
+    CommandPool(const CommandPool& other) = delete;
+    CommandPool& operator=(const CommandPool& other) = delete;
+
 };
 
 }

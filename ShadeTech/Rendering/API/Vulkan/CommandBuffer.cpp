@@ -34,6 +34,30 @@ VkCommandPool CommandPool::CreateCommandPool(Device& device, uint8 queue_index)
     return command_poll;
 }
 
+CommandPool::CommandPool(CommandPool&& other)
+{
+    if (this == &other)
+        return;
+
+    this->m_command_poll = other.m_command_poll;
+    this->m_device_ref = other.m_device_ref;
+    other.m_command_poll = nullptr;
+    other.m_device_ref = nullptr;
+}
+
+CommandPool& CommandPool::operator=(CommandPool&& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->m_command_poll = other.m_command_poll;
+    this->m_device_ref = other.m_device_ref;
+    other.m_command_poll = nullptr;
+    other.m_device_ref = nullptr;
+
+    return *this;
+}
+
 }
 }
 }
