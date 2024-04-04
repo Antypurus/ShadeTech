@@ -9,8 +9,14 @@ namespace Renderer {
 namespace Vulkan {
 
 CommandPool::CommandPool(Device& device, uint8 queue_index) :
-    m_command_poll(this->CreateCommandPool(device, queue_index))
+    m_command_poll(this->CreateCommandPool(device, queue_index)),
+    m_device_ref(&device)
 {
+}
+
+CommandPool::~CommandPool()
+{
+    vkDestroyCommandPool(*this->m_device_ref, this->m_command_poll, nullptr);
 }
 
 VkCommandPool CommandPool::CreateCommandPool(Device& device, uint8 queue_index)
