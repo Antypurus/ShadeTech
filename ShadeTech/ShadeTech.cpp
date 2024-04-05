@@ -19,6 +19,8 @@ int main()
     Vulkan::Swapchain swapchain(device, window);
     Vulkan::CommandPool command_pool(device, 0);
 
+    Vulkan::CommandBuffer command_buffer(device, command_pool);
+
     while (window.IsOpen()) {
         window.Update();
     }

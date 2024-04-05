@@ -1,5 +1,6 @@
 #include "CommandBuffer.h"
 
+#include <cassert>
 #include <vulkan/vulkan_core.h>
 
 #include "Helpers.h"
@@ -16,10 +17,12 @@ CommandPool::CommandPool(Device& device, uint8 queue_index) :
 
 CommandPool::~CommandPool()
 {
-    vkDestroyCommandPool(*this->m_device_ref, this->m_command_poll, nullptr);
+    if (this->m_command_poll != nullptr) {
+        vkDestroyCommandPool(*this->m_device_ref, this->m_command_poll, nullptr);
+    }
 }
 
-VkCommandPool CommandPool::CreateCommandPool(Device& device, uint8 queue_index)
+VkCommandPool CommandPool::CreateCommandPool(Device& device, uint8 queue_index) const
 {
     VkCommandPoolCreateInfo command_pool_descripion = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
@@ -54,6 +57,66 @@ CommandPool& CommandPool::operator=(CommandPool&& other)
     this->m_device_ref = other.m_device_ref;
     other.m_command_poll = nullptr;
     other.m_device_ref = nullptr;
+
+    return *this;
+}
+
+CommandBuffer::CommandBuffer(Device& device, CommandPool& command_pool) :
+    m_command_buffer(this->CreateCommandBuffer(device, command_pool)),
+    m_device_ref(&device),
+    m_command_pool_ref(&command_pool)
+{
+    assert(device != nullptr);
+    assert(command_pool != nullptr);
+}
+
+CommandBuffer::~CommandBuffer()
+{
+    if (this->m_command_buffer != nullptr) {
+        vkFreeCommandBuffers(*m_device_ref, *m_command_pool_ref, 1, &this->m_command_buffer);
+    }
+}
+
+VkCommandBuffer CommandBuffer::CreateCommandBuffer(Device& device, CommandPool& command_pool) const
+{
+    const VkCommandBufferAllocateInfo command_buffer_desc = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+        .pNext = nullptr,
+        .commandPool = command_pool,
+        .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        .commandBufferCount = 1,
+    };
+
+    VkCommandBuffer command_buffer = nullptr;
+    VK_CALL(vkAllocateCommandBuffers(device, &command_buffer_desc, &command_buffer),
+            "Failed to allocate command buffer");
+    return command_buffer;
+}
+
+CommandBuffer::CommandBuffer(CommandBuffer&& other)
+{
+    if (this == &other)
+        return;
+
+    this->m_command_buffer = other.m_command_buffer;
+    this->m_device_ref = other.m_device_ref;
+    this->m_command_pool_ref = other.m_command_pool_ref;
+    other.m_command_buffer = nullptr;
+    other.m_device_ref = nullptr;
+    other.m_command_pool_ref = nullptr;
+}
+
+CommandBuffer& CommandBuffer::operator=(CommandBuffer&& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->m_command_buffer = other.m_command_buffer;
+    this->m_device_ref = other.m_device_ref;
+    this->m_command_pool_ref = other.m_command_pool_ref;
+    other.m_command_buffer = nullptr;
+    other.m_device_ref = nullptr;
+    other.m_command_pool_ref = nullptr;
 
     return *this;
 }
