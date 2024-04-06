@@ -51,6 +51,10 @@ public:
 
     operator VkCommandBuffer&() { return this->m_command_buffer; }
 
+    void BeginRecording();
+    void StopRecording();
+    void Reset();
+
 private:
     VkCommandBuffer CreateCommandBuffer(Device& device, CommandPool& command_pool) const;
 

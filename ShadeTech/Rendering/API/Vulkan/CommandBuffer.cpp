@@ -77,6 +77,28 @@ CommandBuffer::~CommandBuffer()
     }
 }
 
+void CommandBuffer::BeginRecording()
+{
+    const VkCommandBufferBeginInfo recording_desc = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .pInheritanceInfo = nullptr,
+    };
+    VK_CALL(vkBeginCommandBuffer(this->m_command_buffer, &recording_desc), "Failed to start recording command buffer");
+}
+
+void CommandBuffer::StopRecording()
+{
+    VK_CALL(vkEndCommandBuffer(this->m_command_buffer), "Failed to stop recording command buffer");
+}
+
+void CommandBuffer::Reset()
+{
+    VK_CALL(vkResetCommandBuffer(this->m_command_buffer, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT),
+            "Failed to reset command buffer");
+}
+
 VkCommandBuffer CommandBuffer::CreateCommandBuffer(Device& device, CommandPool& command_pool) const
 {
     const VkCommandBufferAllocateInfo command_buffer_desc = {
