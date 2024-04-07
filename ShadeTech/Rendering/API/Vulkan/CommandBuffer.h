@@ -25,6 +25,8 @@ public:
 
     operator VkCommandPool&() { return this->m_command_poll; }
 
+    void Reset();
+
 private:
     VkCommandPool CreateCommandPool(Device& device, uint8 queue_index) const;
 

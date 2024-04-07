@@ -22,6 +22,11 @@ CommandPool::~CommandPool()
     }
 }
 
+void CommandPool::Reset()
+{
+    VK_CALL(vkResetCommandPool(*this->m_device_ref, this->m_command_poll, 0), "Failed to reset command pool");
+}
+
 VkCommandPool CommandPool::CreateCommandPool(Device& device, uint8 queue_index) const
 {
     VkCommandPoolCreateInfo command_pool_descripion = {
