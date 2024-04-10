@@ -105,8 +105,7 @@ PipelineEvent::PipelineEvent(Device& device)
 
 PipelineEvent::~PipelineEvent()
 {
-    if(this->m_event != nullptr)
-    {
+    if (this->m_event != nullptr) {
         assert(this->m_device_ref != nullptr);
         vkDestroyEvent(*this->m_device_ref, this->m_event, nullptr);
     }
@@ -114,15 +113,45 @@ PipelineEvent::~PipelineEvent()
 
 VkEvent PipelineEvent::CreatePipelineEvent(Device& device) const
 {
-    const VkEventCreateInfo even_desc = {
-        .sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO,
-        .pNext = nullptr,
-        .flags = 0
-    };
+    const VkEventCreateInfo even_desc = { .sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO, .pNext = nullptr, .flags = 0 };
 
     VkEvent event = nullptr;
     VK_CALL(vkCreateEvent(device, &even_desc, nullptr, &event), "Failed to create Vulkan Pipeline Sync Event");
     return event;
+}
+
+bool PipelineEvent::HasBeenSignaled() const
+{
+    VkResult result = vkGetEventStatus(*this->m_device_ref, this->m_event);
+    switch (result) {
+        case (VK_EVENT_SET): {
+            return true;
+            break;
+        }
+        case (VK_EVENT_RESET): {
+            return false;
+            break;
+        }
+        default: {
+            LOG_ERROR("Failed to fetch current state of pipeline sync event. Error code = %d", (uint32)result);
+#ifndef NDEBUG
+            TRIGGER_DEBUG_TRAP();
+            abort();
+#endif
+            return false;
+            break;
+        }
+    }
+}
+
+void PipelineEvent::Signal()
+{
+    VK_CALL(vkSetEvent(*this->m_device_ref, this->m_event), "Failed to signal vulkan pipeline event");
+}
+
+void PipelineEvent::Reset()
+{
+    VK_CALL(vkResetEvent(*this->m_device_ref, this->m_event), "Failed to reset vulkan pipeline event");
 }
 
 }

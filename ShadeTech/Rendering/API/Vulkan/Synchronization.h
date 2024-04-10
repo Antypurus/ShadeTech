@@ -38,6 +38,10 @@ public:
     PipelineEvent(Device& device);
     ~PipelineEvent();
 
+    bool HasBeenSignaled() const;
+    void Signal();
+    void Reset();
+
 private:
     VkEvent CreatePipelineEvent(Device& device) const;
 };
