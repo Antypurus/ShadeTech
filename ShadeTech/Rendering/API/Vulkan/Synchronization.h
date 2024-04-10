@@ -18,6 +18,9 @@ public:
     Fence(Device& device);
     ~Fence();
 
+    bool HasBeenSignaled() const;
+    bool WaitForSignal(uint64 timeout = 0) const;
+
 private:
     VkFence CreateFence(Device& device);
 };
