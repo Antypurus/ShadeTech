@@ -18,11 +18,28 @@ public:
     Fence(Device& device);
     ~Fence();
 
+    operator VkFence&() { return this->m_fence; }
+
     bool HasBeenSignaled() const;
     bool WaitForSignal(uint64 timeout = 0) const;
+    void Reset();
 
 private:
-    VkFence CreateFence(Device& device);
+    VkFence CreateFence(Device& device) const;
+};
+
+class PipelineEvent
+{
+private:
+    VkEvent m_event = nullptr;
+    Device* m_device_ref = nullptr;
+
+public:
+    PipelineEvent(Device& device);
+    ~PipelineEvent();
+
+private:
+    VkEvent CreatePipelineEvent(Device& device) const;
 };
 
 }
