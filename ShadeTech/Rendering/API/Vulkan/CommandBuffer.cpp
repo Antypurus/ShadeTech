@@ -82,44 +82,6 @@ CommandBuffer::~CommandBuffer()
     }
 }
 
-void CommandBuffer::BeginRecording()
-{
-    const VkCommandBufferBeginInfo recording_desc = {
-        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-        .pNext = nullptr,
-        .flags = 0,
-        .pInheritanceInfo = nullptr,
-    };
-    VK_CALL(vkBeginCommandBuffer(this->m_command_buffer, &recording_desc), "Failed to start recording command buffer");
-}
-
-void CommandBuffer::StopRecording()
-{
-    VK_CALL(vkEndCommandBuffer(this->m_command_buffer), "Failed to stop recording command buffer");
-}
-
-void CommandBuffer::Reset()
-{
-    VK_CALL(vkResetCommandBuffer(this->m_command_buffer, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT),
-            "Failed to reset command buffer");
-}
-
-VkCommandBuffer CommandBuffer::CreateCommandBuffer(Device& device, CommandPool& command_pool) const
-{
-    const VkCommandBufferAllocateInfo command_buffer_desc = {
-        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-        .pNext = nullptr,
-        .commandPool = command_pool,
-        .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-        .commandBufferCount = 1,
-    };
-
-    VkCommandBuffer command_buffer = nullptr;
-    VK_CALL(vkAllocateCommandBuffers(device, &command_buffer_desc, &command_buffer),
-            "Failed to allocate command buffer");
-    return command_buffer;
-}
-
 CommandBuffer::CommandBuffer(CommandBuffer&& other)
 {
     if (this == &other)
@@ -146,6 +108,54 @@ CommandBuffer& CommandBuffer::operator=(CommandBuffer&& other)
     other.m_command_pool_ref = nullptr;
 
     return *this;
+}
+
+VkCommandBuffer CommandBuffer::CreateCommandBuffer(Device& device, CommandPool& command_pool) const
+{
+    const VkCommandBufferAllocateInfo command_buffer_desc = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+        .pNext = nullptr,
+        .commandPool = command_pool,
+        .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        .commandBufferCount = 1,
+    };
+
+    VkCommandBuffer command_buffer = nullptr;
+    VK_CALL(vkAllocateCommandBuffers(device, &command_buffer_desc, &command_buffer),
+            "Failed to allocate command buffer");
+    return command_buffer;
+}
+
+void CommandBuffer::BeginRecording()
+{
+    const VkCommandBufferBeginInfo recording_desc = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+        .pInheritanceInfo = nullptr,
+    };
+    VK_CALL(vkBeginCommandBuffer(this->m_command_buffer, &recording_desc), "Failed to start recording command buffer");
+}
+
+void CommandBuffer::StopRecording()
+{
+    VK_CALL(vkEndCommandBuffer(this->m_command_buffer), "Failed to stop recording command buffer");
+}
+
+void CommandBuffer::Reset()
+{
+    VK_CALL(vkResetCommandBuffer(this->m_command_buffer, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT),
+            "Failed to reset command buffer");
+}
+
+void CommandBuffer::SignalPipelineEvent(PipelineEvent& event)
+{
+    vkCmdSetEvent(this->m_command_buffer, event, 0);
+}
+
+void CommandBuffer::ResetPipelineEvent(PipelineEvent& event)
+{
+    vkCmdResetEvent(this->m_command_buffer, event, 0);
 }
 
 }

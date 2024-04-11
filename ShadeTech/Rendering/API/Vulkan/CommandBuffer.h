@@ -3,6 +3,7 @@
 #include <vulkan/vulkan_core.h>
 
 #include "Device.h"
+#include "Synchronization.h"
 #include <Types.h>
 
 namespace SHD {
@@ -56,6 +57,10 @@ public:
     void BeginRecording();
     void StopRecording();
     void Reset();
+
+    void SignalPipelineEvent(
+        PipelineEvent& event /* TODO(Tiago):need to set a system for specifying pipeline stages */);
+    void ResetPipelineEvent(PipelineEvent& event /* TODO(Tiago):need to set a system for specifying pipeline stages */);
 
 private:
     VkCommandBuffer CreateCommandBuffer(Device& device, CommandPool& command_pool) const;

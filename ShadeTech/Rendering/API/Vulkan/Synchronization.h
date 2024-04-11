@@ -38,6 +38,8 @@ public:
     PipelineEvent(Device& device);
     ~PipelineEvent();
 
+    operator VkEvent&() { return this->m_event; }
+
     bool HasBeenSignaled() const;
     void Signal();
     void Reset();
