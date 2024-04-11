@@ -18,7 +18,7 @@ public:
     Fence(Device& device);
     ~Fence();
 
-    operator VkFence&() { return this->m_fence; }
+    inline operator VkFence&() { return this->m_fence; }
 
     bool HasBeenSignaled() const;
     bool WaitForSignal(uint64 timeout = 0) const;
@@ -41,7 +41,7 @@ public:
     PipelineEvent(PipelineEvent&& other);
     PipelineEvent& operator=(PipelineEvent&& other);
 
-    operator VkEvent&() { return this->m_event; }
+    inline operator VkEvent&() { return this->m_event; }
 
     bool HasBeenSignaled() const;
     void Signal();
@@ -60,12 +60,19 @@ class DeviceSemaphore
 {
 private:
     VkSemaphore m_semaphore = nullptr;
+    Device* m_device_ref = nullptr;
 
 public:
     DeviceSemaphore(Device& device);
+    ~DeviceSemaphore();
+
+    DeviceSemaphore(DeviceSemaphore&& other);
+    DeviceSemaphore& operator=(DeviceSemaphore&& other);
+
+    inline operator VkSemaphore&() { return this->m_semaphore; }
 
 private:
-    VkSemaphore CreateSemaphore(Device& device);
+    VkSemaphore CreateSemaphore(Device& device) const;
 
 public:
     // deleted constructors & operators

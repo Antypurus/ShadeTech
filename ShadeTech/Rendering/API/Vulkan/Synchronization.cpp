@@ -184,6 +184,58 @@ void PipelineEvent::Reset()
     VK_CALL(vkResetEvent(*this->m_device_ref, this->m_event), "Failed to reset vulkan pipeline event");
 }
 
+DeviceSemaphore::DeviceSemaphore(Device& device)
+{
+    this->m_device_ref = &device;
+    this->m_semaphore = this->CreateSemaphore(device);
+}
+
+DeviceSemaphore::~DeviceSemaphore()
+{
+    if (this->m_semaphore != nullptr) {
+        assert(this->m_device_ref != nullptr);
+        vkDestroySemaphore(*this->m_device_ref, this->m_semaphore, nullptr);
+    }
+}
+
+DeviceSemaphore::DeviceSemaphore(DeviceSemaphore&& other)
+{
+    if (this == &other)
+        return;
+
+    this->m_semaphore = other.m_semaphore;
+    this->m_device_ref = other.m_device_ref;
+    other.m_semaphore = nullptr;
+    other.m_device_ref = nullptr;
+}
+
+DeviceSemaphore& DeviceSemaphore::operator=(DeviceSemaphore&& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->m_semaphore = other.m_semaphore;
+    this->m_device_ref = other.m_device_ref;
+    other.m_semaphore = nullptr;
+    other.m_device_ref = nullptr;
+
+    return *this;
+}
+
+VkSemaphore DeviceSemaphore::CreateSemaphore(Device& device) const
+{
+    const VkSemaphoreCreateInfo semaphore_desc = {
+        .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+    };
+
+    VkSemaphore semaphore = nullptr;
+    VK_CALL(vkCreateSemaphore(device, &semaphore_desc, nullptr, &semaphore),
+            "Failed to create a Vulkan Device Semaphore");
+    return semaphore;
+}
+
 }
 }
 }
