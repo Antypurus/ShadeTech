@@ -49,6 +49,11 @@ public:
 
 private:
     VkEvent CreatePipelineEvent(Device& device) const;
+
+public:
+    // deleted constructors & operators
+    PipelineEvent(const PipelineEvent& other) = delete;
+    PipelineEvent& operator=(const PipelineEvent& other) = delete;
 };
 
 class DeviceSemaphore
@@ -63,7 +68,7 @@ private:
     VkSemaphore CreateSemaphore(Device& device);
 
 public:
-    //deleted constructors & operators
+    // deleted constructors & operators
     DeviceSemaphore(const DeviceSemaphore& other) = delete;
     DeviceSemaphore& operator=(const DeviceSemaphore& other) = delete;
 };
