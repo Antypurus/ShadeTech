@@ -111,9 +111,39 @@ PipelineEvent::~PipelineEvent()
     }
 }
 
+PipelineEvent::PipelineEvent(PipelineEvent&& other)
+{
+    if (this == &other)
+        return;
+
+    this->m_event = other.m_event;
+    this->m_device_ref = other.m_device_ref;
+
+    other.m_event = nullptr;
+    other.m_device_ref = nullptr;
+}
+
+PipelineEvent& PipelineEvent::operator=(PipelineEvent&& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->m_event = other.m_event;
+    this->m_device_ref = other.m_device_ref;
+
+    other.m_event = nullptr;
+    other.m_device_ref = nullptr;
+
+    return *this;
+}
+
 VkEvent PipelineEvent::CreatePipelineEvent(Device& device) const
 {
-    const VkEventCreateInfo even_desc = { .sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO, .pNext = nullptr, .flags = 0 };
+    const VkEventCreateInfo even_desc = {
+        .sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO,
+        .pNext = nullptr,
+        .flags = 0,
+    };
 
     VkEvent event = nullptr;
     VK_CALL(vkCreateEvent(device, &even_desc, nullptr, &event), "Failed to create Vulkan Pipeline Sync Event");

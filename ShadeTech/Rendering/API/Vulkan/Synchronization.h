@@ -38,6 +38,9 @@ public:
     PipelineEvent(Device& device);
     ~PipelineEvent();
 
+    PipelineEvent(PipelineEvent&& other);
+    PipelineEvent& operator=(PipelineEvent&& other);
+
     operator VkEvent&() { return this->m_event; }
 
     bool HasBeenSignaled() const;
@@ -46,6 +49,23 @@ public:
 
 private:
     VkEvent CreatePipelineEvent(Device& device) const;
+};
+
+class DeviceSemaphore
+{
+private:
+    VkSemaphore m_semaphore = nullptr;
+
+public:
+    DeviceSemaphore(Device& device);
+
+private:
+    VkSemaphore CreateSemaphore(Device& device);
+
+public:
+    //deleted constructors & operators
+    DeviceSemaphore(const DeviceSemaphore& other) = delete;
+    DeviceSemaphore& operator=(const DeviceSemaphore& other) = delete;
 };
 
 }
