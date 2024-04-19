@@ -21,6 +21,9 @@ static std::vector<const char*> extensions_to_enable = {
 #if PLATFORM_WINDOWS
     "VK_KHR_win32_surface",
 #endif
+#if PLATFORM_LINUX
+    "VK_KHR_xcb_surface",
+#endif
 };
 
 struct PhysicalDeviceInfo
