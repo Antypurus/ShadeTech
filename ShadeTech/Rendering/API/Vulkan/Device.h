@@ -7,12 +7,34 @@ namespace SHD {
 namespace Renderer {
 namespace Vulkan {
 
+class Device;
+
+enum class QueueType
+{
+    Graphics,
+    Compute,
+    Transfer,
+    Unknown
+};
+
+class Queue
+{
+private:
+    VkQueue m_queue = nullptr;
+    QueueType m_type = QueueType::Unknown;
+
+public:
+    Queue() = default;
+    Queue(VkQueue queue_handle);
+
+};
+
 class Device
 {
 private:
     PhysicalDeviceInfo* m_device_info_ref = nullptr;
     VkDevice m_device = nullptr;
-    VkQueue m_command_queue = nullptr;
+    Queue m_command_queue = nullptr;
 
 public:
     Device();

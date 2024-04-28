@@ -17,6 +17,12 @@ namespace Vulkan {
  *        and maximize paralelism and still be correct
  */
 
+Queue::Queue(VkQueue queue_handle)
+{
+    this->m_type = QueueType::Unknown;
+    this->m_queue = queue_handle;
+}
+
 Device::Device() :
     m_device(this->CreateVKDevice(0))
 {
