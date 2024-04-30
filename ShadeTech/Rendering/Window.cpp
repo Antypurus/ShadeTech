@@ -67,15 +67,15 @@ void Window::Update()
     }
 }
 
-void Window::Resize(int32 width, int32 height)
+void Window::Resize(int32 new_width, int32 new_height)
 {
-    assert(width > 0 && height > 0);
+    assert(new_width > 0 && new_height > 0);
     assert(this->m_window_handle != nullptr);
     assert(this->m_is_open);
 
-    glfwSetWindowSize(this->m_window_handle, width, height);
-    this->width = (uint32)width;
-    this->height = (uint32)height;
+    glfwSetWindowSize(this->m_window_handle, new_width, new_height);
+    this->width = (uint32)new_width;
+    this->height = (uint32)new_height;
 }
 
 void Window::SetTitle(std::string_view title)

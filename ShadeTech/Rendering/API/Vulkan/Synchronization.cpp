@@ -55,8 +55,9 @@ bool Fence::HasBeenSignaled() const
 #ifndef NDEBUG
             TRIGGER_DEBUG_TRAP();
             abort();
-#endif
+#else
             return false;
+#endif
             break;
         }
     }
@@ -85,8 +86,9 @@ bool Fence::WaitForSignal(uint64 timeout) const
 #ifndef NDEBUG
             TRIGGER_DEBUG_TRAP();
             abort();
-#endif
+#else
             return false;
+#endif
             break;
         }
     }
@@ -167,8 +169,9 @@ bool PipelineEvent::HasBeenSignaled() const
 #ifndef NDEBUG
             TRIGGER_DEBUG_TRAP();
             abort();
-#endif
+#else
             return false;
+#endif
             break;
         }
     }
