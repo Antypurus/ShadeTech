@@ -13,17 +13,5 @@ int main()
 {
     LOG_SUCCESS("Welcome To the SDH Network Agent");
 
-    Window window("SHD-ISAC Terminal", 1280, 720);
-
-    Vulkan::Device device;
-    Vulkan::Swapchain swapchain(device, window);
-    Vulkan::CommandPool command_pool(device, 0);
-
-    Vulkan::CommandBuffer command_buffer(device, command_pool);
-
-    while (window.IsOpen()) {
-        window.Update();
-    }
-
     return 0;
 }
