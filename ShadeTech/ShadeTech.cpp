@@ -1,13 +1,7 @@
 #include <iostream>
 
 #include "Log.h"
-#include "Rendering/API/Vulkan/Device.h"
-#include "Rendering/Window.h"
-#include "Rendering/API/Vulkan/Swapchain.h"
-#include "Rendering/API/Vulkan/CommandBuffer.h"
-
-using namespace SHD;
-using namespace SHD::Renderer;
+#include "Rendering/Rendering.h"
 
 int main()
 {
