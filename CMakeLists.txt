@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.10)
-project(ShadeTech)
+cmake_minimum_required(VERSION 3.28)
+project(ShadeTech LANGUAGES C CXX)
 
 # C++ Basic Configuration
 set(CMAKE_CXX_STANDARD 20)
@@ -44,14 +44,21 @@ function(setup_vulkan_dependency
 
 endfunction()
 
+file(GLOB_RECURSE SHD_MODULE_SOURCES CONFIGURE_DEPENDS
+    ShadeTech/**.cxx)
+add_library(modules)
+target_sources(modules
+        PUBLIC
+        FILE_SET CXX_MODULES FILES
+        ${SHD_MODULE_SOURCES}
+)
+target_include_directories(modules PRIVATE
+    ./ShadeTech/
+)
+target_link_libraries(modules PRIVATE glfw ${GLFW_LIBRARIES})
+configure_compiler_warnings(modules)
+setup_vulkan_dependency(modules)
 
-file(GLOB_RECURSE SHD_SOURCES CONFIGURE_DEPENDS
-    ./ShadeTech/**.cpp
-    ./ShadeTech/**.h)
-
-add_executable(${CMAKE_PROJECT_NAME} ${SHD_SOURCES})
+add_executable(${CMAKE_PROJECT_NAME} ShadeTech/ShadeTech.cpp)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw ${GLFW_LIBRARIES})
-
-configure_compiler_warnings(${CMAKE_PROJECT_NAME})
-setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
+target_link_libraries(${CMAKE_PROJECT_NAME} modules)
