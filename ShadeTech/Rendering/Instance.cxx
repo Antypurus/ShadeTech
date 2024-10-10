@@ -1,8 +1,7 @@
 module;
 
 // #include <vulkan/vulkan.h>
-
-export module rendering:vulkan;
+export module core.rendering.vulkan;
 
 
 export class Instance

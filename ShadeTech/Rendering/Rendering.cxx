@@ -1,6 +1,6 @@
 module;
 
-export module rendering;
+export module core.rendering;
 
-export import :vulkan;
+export import core.rendering.vulkan;
 

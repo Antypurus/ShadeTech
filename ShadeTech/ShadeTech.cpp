@@ -1,7 +1,6 @@
-#include <iostream>
-#include "Log.h"
+import core;
 
-import rendering;
+#include "Log.h"
 
 int main()
 {

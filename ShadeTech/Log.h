@@ -1,5 +1,5 @@
 #include <Platform.h>
-#include <stdio.h>
+#include <iostream>
 
 #define LOGGING_ENABLED 1
 
