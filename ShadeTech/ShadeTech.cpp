@@ -3,8 +3,15 @@ import core;
 #include "Log.h"
 #include "assert.h"
 
+#if PLATFORM_WINDOWS
 #include <Windows.h>
 #include <dbghelp.h>
+#else
+#include <execinfo.h>
+#include <dlfcn.h>
+#include <libunwind.h>
+#include <libdwarf.h>
+#endif
 
 using namespace SHD::Rendering::RHI::Vulkan;
 
@@ -73,6 +80,20 @@ int main()
     }
 
     SymCleanup(process);
+#else
+    const int maxFrames = 300;
+    void* addressList[maxFrames];
+
+    int addressCount = backtrace((void**)addressList, maxFrames);
+    for(size_t i = 0 ; i < addressCount; ++i)
+    {
+        Dl_info info;
+        dladdr(addressList[i], &info);
+
+        std::cout << "Name:" << info.dli_sname << ":" << ((char*)addressList[i] - (char*)info.dli_saddr) << std::endl;
+    }
+
+
 #endif
 
     return 0;
