@@ -18,7 +18,7 @@ import core;
 
 using namespace SHD::Rendering::RHI::Vulkan;
 
-int main()
+int main(int argc, char** argv)
 {
     LOG_SUCCESS("Welcome To the SDH Network Agent");
 
@@ -84,22 +84,41 @@ int main()
 
     SymCleanup(process);
 #else
+    std::cout << argv[0] << std::endl;
+
     unw_cursor_t cursor;
     unw_context_t context;
 
     unw_getcontext(&context);
     unw_init_local(&cursor, &context);
 
-    do{
+    do {
         unw_word_t ip, offset;
         unw_get_reg(&cursor, UNW_REG_IP, &ip);
         unw_get_proc_name(&cursor, nullptr, 0, &offset);
 
 
+#if PLATFORM_LINUX
         int fd = open("/proc/self/exe", O_RDONLY);
+#elif PLATFORM_MACOS
+        int fd = open(argv[0], O_RDONLY);
+#endif
+        if(fd < 0)
+        {
+            std::cout << "Failed to open process file" << std::endl;
+        }
+
         Dwarf_Debug dbg = nullptr;
         Dwarf_Error err;
-        dwarf_init(fd, nullptr, nullptr, nullptr, &dbg, &err);
+        auto ret = dwarf_init_b(fd, DW_GROUPNUMBER_ANY, nullptr, nullptr, &dbg, &err);
+        if(ret == DW_DLV_ERROR) {
+            std::cout << "failed to init libdwarf based on current process:"
+                << dwarf_errmsg(err)
+                << std::endl;;
+        }
+        else if(ret == DW_DLV_NO_ENTRY) {
+            std::cout << "no entry error" << std::endl;
+        }
 
     }while (unw_step(&cursor) > 0);
 
