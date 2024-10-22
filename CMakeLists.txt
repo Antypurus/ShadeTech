@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.28)
 project(ShadeTech LANGUAGES C CXX)
 
+find_program(DSYMUTIL_PROGRAM dsymutil)
+if (DSYMUTIL_PROGRAM)
+  foreach(lang C CXX)
+    foreach(var LINK_EXECUTABLE CREATE_SHARED_LIBRARY)
+      set(CMAKE_${lang}_${var} "${CMAKE_${lang}_${var}}" "${DSYMUTIL_PROGRAM} <TARGET>")
+    endforeach()
+  endforeach()
+endif()
+
 # C++ Basic Configuration
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -65,6 +74,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME} modules)
 if(WIN32)
     target_link_libraries(${CMAKE_PROJECT_NAME} dbghelp.lib)
 else()
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g2")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g2")
+
     find_library(DWARF_LIB dwarf)
     find_path(DWARF_HEADERS NAMES dwarf.h PATH_SUFFIXES libdwarf libdwarf-0)
     target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${DWARF_HEADERS})
