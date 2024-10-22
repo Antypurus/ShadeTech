@@ -7,10 +7,13 @@ import core;
 #include <Windows.h>
 #include <dbghelp.h>
 #else
-#include <execinfo.h>
 #include <dlfcn.h>
-#include <libunwind.h>
+#include <execinfo.h>
 #include <libdwarf.h>
+#include <dwarf.h>
+#include <libunwind.h>
+#include <fcntl.h>
+#include <unistd.h>
 #endif
 
 using namespace SHD::Rendering::RHI::Vulkan;
@@ -81,18 +84,24 @@ int main()
 
     SymCleanup(process);
 #else
-    const int maxFrames = 300;
-    void* addressList[maxFrames];
+    unw_cursor_t cursor;
+    unw_context_t context;
 
-    int addressCount = backtrace((void**)addressList, maxFrames);
-    for(size_t i = 0 ; i < addressCount; ++i)
-    {
-        Dl_info info;
-        dladdr(addressList[i], &info);
+    unw_getcontext(&context);
+    unw_init_local(&cursor, &context);
 
-        std::cout << "Name:" << info.dli_sname << ":" << ((char*)addressList[i] - (char*)info.dli_saddr) << std::endl;
-    }
+    do{
+        unw_word_t ip, offset;
+        unw_get_reg(&cursor, UNW_REG_IP, &ip);
+        unw_get_proc_name(&cursor, nullptr, 0, &offset);
 
+
+        int fd = open("/proc/self/exe", O_RDONLY);
+        Dwarf_Debug dbg = nullptr;
+        Dwarf_Error err;
+        dwarf_init(fd, nullptr, nullptr, nullptr, &dbg, &err);
+
+    }while (unw_step(&cursor) > 0);
 
 #endif
 

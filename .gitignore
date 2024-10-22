@@ -32,6 +32,8 @@
 *.app
 
 build/
+cmake-build-*/
 compile_commands.json
 .nvimrc
 .cache
+.idea
