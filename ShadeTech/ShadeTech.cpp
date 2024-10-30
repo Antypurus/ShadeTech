@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 #else
         std::string path = std::string(argv[0]) + ".dSYM/Contents/Resources/DWARF/" + std::string(argv[0]);
 #endif
-        int fd = open(path.c_str(), O_RDONLY);
+        int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
         if (fd < 0) {
             std::cout << "Failed to open process file" << std::endl;
         }
