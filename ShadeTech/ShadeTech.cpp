@@ -91,14 +91,14 @@ int main(int argc, char** argv)
     unw_init_local(&cursor, &context);
 
     do {
-        unw_word_t ip, offset;
+        unw_word_t ip = 0, offset = 0;
         unw_get_reg(&cursor, UNW_REG_IP, &ip);
         unw_get_proc_name(&cursor, nullptr, 0, &offset);
 
 #if PLATFORM_LINUX
         std::string path = "/proc/self/exe";
 #else
-        std::string path = std::string(argv[0]) + ".dSYM/Contents/Resources/DWARF/" + std::string(argv[0]);
+        std::string path = std::string(argv[0]) + ".dSYM/Contents/Resources/DWARF/shadetech";
 #endif
         int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
         if (fd < 0) {
@@ -110,13 +110,44 @@ int main(int argc, char** argv)
         auto ret = dwarf_init_b(fd, DW_GROUPNUMBER_ANY, nullptr, nullptr, &dbg, &err);
         if (ret == DW_DLV_ERROR) {
             std::cout << "failed to init libdwarf based on current process:" << dwarf_errmsg(err) << std::endl;
-            ;
         } else if (ret == DW_DLV_NO_ENTRY) {
             std::cout << "no entry error" << std::endl;
-        }
-        else{
+        } else {
             LOG_SUCCESS("libdwarf initialized");
         }
+
+        Dwarf_Unsigned cu_header_length;
+        Dwarf_Unsigned abbrev_offset;
+        Dwarf_Unsigned type_offset;
+        Dwarf_Unsigned next_cu_header;
+        Dwarf_Half version;
+        Dwarf_Half address_size;
+        Dwarf_Half offset_size;
+        Dwarf_Half extension_size;
+        Dwarf_Half header_type;
+        Dwarf_Sig8 signature;
+        Dwarf_Die cu_debug_info;
+
+        while (dwarf_next_cu_header_e(dbg,
+                                      1,
+                                      &cu_debug_info,
+                                      &cu_header_length,
+                                      &version,
+                                      &abbrev_offset,
+                                      &address_size,
+                                      &offset_size,
+                                      &extension_size,
+                                      &signature,
+                                      &type_offset,
+                                      &next_cu_header,
+                                      &header_type,
+                                      &err) == DW_DLV_OK) {
+            LOG_INFO("Got Header info");
+        }
+
+        // de-init dwarf
+        dwarf_finish(dbg);
+        close(fd);
 
     } while (unw_step(&cursor) > 0);
 
