@@ -16,6 +16,8 @@ import core;
 #include <unistd.h>
 #endif
 
+#include <cpptrace/cpptrace.hpp>
+
 using namespace SHD::Rendering::RHI::Vulkan;
 
 int main(int argc, char** argv)
@@ -116,42 +118,14 @@ int main(int argc, char** argv)
             LOG_SUCCESS("libdwarf initialized");
         }
 
-        Dwarf_Unsigned cu_header_length;
-        Dwarf_Unsigned abbrev_offset;
-        Dwarf_Unsigned type_offset;
-        Dwarf_Unsigned next_cu_header;
-        Dwarf_Half version;
-        Dwarf_Half address_size;
-        Dwarf_Half offset_size;
-        Dwarf_Half extension_size;
-        Dwarf_Half header_type;
-        Dwarf_Sig8 signature;
-        Dwarf_Die cu_debug_info;
-
-        while (dwarf_next_cu_header_e(dbg,
-                                      1,
-                                      &cu_debug_info,
-                                      &cu_header_length,
-                                      &version,
-                                      &abbrev_offset,
-                                      &address_size,
-                                      &offset_size,
-                                      &extension_size,
-                                      &signature,
-                                      &type_offset,
-                                      &next_cu_header,
-                                      &header_type,
-                                      &err) == DW_DLV_OK) {
-            LOG_INFO("Got Header info");
-        }
-
         // de-init dwarf
         dwarf_finish(dbg);
         close(fd);
 
     } while (unw_step(&cursor) > 0);
-
 #endif
+
+    cpptrace::generate_trace().print();
 
     return 0;
 }

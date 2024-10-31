@@ -36,6 +36,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(ThirdParty/GLFW EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/Catch2 EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/cpptrace)
 
 function(setup_vulkan_dependency
         target_name #input
@@ -70,7 +71,7 @@ setup_vulkan_dependency(modules)
 
 add_executable(${CMAKE_PROJECT_NAME} ShadeTech/ShadeTech.cpp)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
-target_link_libraries(${CMAKE_PROJECT_NAME} modules)
+target_link_libraries(${CMAKE_PROJECT_NAME} modules cpptrace::cpptrace)
 if(WIN32)
     target_link_libraries(${CMAKE_PROJECT_NAME} dbghelp.lib)
 else()
