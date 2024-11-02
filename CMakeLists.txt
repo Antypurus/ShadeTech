@@ -37,7 +37,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(ThirdParty/GLFW EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/Catch2 EXCLUDE_FROM_ALL)
 
-set(CPPTRACE_GET_SYMBOLS_WITH_ADDR2LINE ON)
+if(NOT WIN32)
+    set(CPPTRACE_GET_SYMBOLS_WITH_ADDR2LINE ON)
+endif()
 add_subdirectory(ThirdParty/cpptrace)
 
 function(setup_vulkan_dependency
