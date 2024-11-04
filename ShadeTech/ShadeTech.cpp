@@ -86,43 +86,67 @@ int main(int argc, char** argv)
 
     SymCleanup(process);
 #else
+
+#if PLATFORM_LINUX
+    std::string path = "/proc/self/exe";
+#else
+    std::string path = std::string(argv[0]) + ".dSYM/Contents/Resources/DWARF/ShadeTech";
+#endif
+    int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd < 0) {
+        std::cout << "Failed to open process file" << std::endl;
+    }
+
+    Dwarf_Debug dbg = nullptr;
+    Dwarf_Error err;
+    auto ret = dwarf_init_b(fd, DW_GROUPNUMBER_ANY, nullptr, nullptr, &dbg, &err);
+    if (ret == DW_DLV_ERROR) {
+        std::cout << "failed to init libdwarf based on current process:" << dwarf_errmsg(err) << std::endl;
+    } else if (ret == DW_DLV_NO_ENTRY) {
+        std::cout << "no entry error" << std::endl;
+    } else {
+        LOG_SUCCESS("libdwarf initialized");
+    }
+
+    Dwarf_Unsigned next_cu_header;
+    Dwarf_Half next_cu_type;
+    ret = dwarf_next_cu_header_d(
+            dbg,
+            true,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr,
+            &next_cu_header,
+            &next_cu_type,
+            &err
+            );
+    if(ret != DW_DLV_OK)
+    {
+        LOG_ERROR("Failed to get cu header debug data");
+    }
+    else
+    {
+        LOG_INFO("GOT CU Data");
+    }
+
     unw_cursor_t cursor;
     unw_context_t context;
-
     unw_getcontext(&context);
     unw_init_local(&cursor, &context);
-
     do {
         unw_word_t ip = 0, offset = 0;
         unw_get_reg(&cursor, UNW_REG_IP, &ip);
         unw_get_proc_name(&cursor, nullptr, 0, &offset);
-
-#if PLATFORM_LINUX
-        std::string path = "/proc/self/exe";
-#else
-        std::string path = std::string(argv[0]) + ".dSYM/Contents/Resources/DWARF/shadetech";
-#endif
-        int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
-        if (fd < 0) {
-            std::cout << "Failed to open process file" << std::endl;
-        }
-
-        Dwarf_Debug dbg = nullptr;
-        Dwarf_Error err;
-        auto ret = dwarf_init_b(fd, DW_GROUPNUMBER_ANY, nullptr, nullptr, &dbg, &err);
-        if (ret == DW_DLV_ERROR) {
-            std::cout << "failed to init libdwarf based on current process:" << dwarf_errmsg(err) << std::endl;
-        } else if (ret == DW_DLV_NO_ENTRY) {
-            std::cout << "no entry error" << std::endl;
-        } else {
-            LOG_SUCCESS("libdwarf initialized");
-        }
-
-        // de-init dwarf
-        dwarf_finish(dbg);
-        close(fd);
-
     } while (unw_step(&cursor) > 0);
+    
+    // de-init dwarf
+    dwarf_finish(dbg);
+    close(fd);
 #endif
 
     cpptrace::generate_trace().print();
