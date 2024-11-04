@@ -110,29 +110,35 @@ int main(int argc, char** argv)
 
     Dwarf_Unsigned next_cu_header;
     Dwarf_Half next_cu_type;
-    ret = dwarf_next_cu_header_d(
-            dbg,
-            true,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr,
-            &next_cu_header,
-            &next_cu_type,
-            &err
-            );
-    if(ret != DW_DLV_OK)
-    {
+    ret = dwarf_next_cu_header_d(dbg,
+                                 true,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 nullptr,
+                                 &next_cu_header,
+                                 &next_cu_type,
+                                 &err);
+    if (ret != DW_DLV_OK) {
         LOG_ERROR("Failed to get cu header debug data");
-    }
-    else
-    {
+    } else {
         LOG_INFO("GOT CU Data");
     }
+
+    Dwarf_Die sibling = nullptr;
+    do {
+        ret = dwarf_siblingof_b(dbg, sibling, true, &sibling, &err);
+        if (ret != DW_DLV_OK) {
+            LOG_ERROR("Failed to get sibling");
+            break;
+        } else {
+            LOG_INFO("Sibling Acquired");
+        }
+    } while (sibling != nullptr);
 
     unw_cursor_t cursor;
     unw_context_t context;
@@ -143,7 +149,7 @@ int main(int argc, char** argv)
         unw_get_reg(&cursor, UNW_REG_IP, &ip);
         unw_get_proc_name(&cursor, nullptr, 0, &offset);
     } while (unw_step(&cursor) > 0);
-    
+
     // de-init dwarf
     dwarf_finish(dbg);
     close(fd);
