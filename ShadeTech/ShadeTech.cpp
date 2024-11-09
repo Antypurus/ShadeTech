@@ -110,35 +110,31 @@ int main(int argc, char** argv)
 
     Dwarf_Unsigned next_cu_header;
     Dwarf_Half next_cu_type;
-    ret = dwarf_next_cu_header_d(dbg,
-                                 true,
-                                 nullptr,
-                                 nullptr,
-                                 nullptr,
-                                 nullptr,
-                                 nullptr,
-                                 nullptr,
-                                 nullptr,
-                                 nullptr,
-                                 &next_cu_header,
-                                 &next_cu_type,
-                                 &err);
-    if (ret != DW_DLV_OK) {
-        LOG_ERROR("Failed to get cu header debug data");
-    } else {
-        LOG_INFO("GOT CU Data");
-    }
-
-    Dwarf_Die sibling = nullptr;
-    do {
-        ret = dwarf_siblingof_b(dbg, sibling, true, &sibling, &err);
-        if (ret != DW_DLV_OK) {
-            LOG_ERROR("Failed to get sibling");
-            break;
-        } else {
-            LOG_INFO("Sibling Acquired");
+    while (dwarf_next_cu_header_d(dbg,
+                                  true,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  nullptr,
+                                  &next_cu_header,
+                                  &next_cu_type,
+                                  &err) == DW_DLV_OK) {
+        Dwarf_Die die = nullptr;
+        if (dwarf_siblingof_b(dbg, nullptr, true, &die, &err) != DW_DLV_OK) {
+            LOG_WARN("Could not obtain DIE for CU, moving onto next CU");
+            continue;
         }
-    } while (sibling != nullptr);
+
+        Dwarf_Addr cu_base_addr;
+        if (dwarf_lowpc(die, &cu_base_addr, &err) != DW_DLV_OK) {
+            LOG_WARN("Failed to obtain CU base address");
+            continue;
+        }
+    }
 
     unw_cursor_t cursor;
     unw_context_t context;
