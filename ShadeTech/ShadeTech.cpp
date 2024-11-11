@@ -10,7 +10,7 @@ using namespace SHD::Rendering::RHI::Vulkan;
 int main(int argc, char** argv)
 {
     LOG_SUCCESS("Welcome To the SDH Network Agent");
-    cpptrace::generate_trace().print();
+    ASSERT(false, "");
 
     return 0;
 }
