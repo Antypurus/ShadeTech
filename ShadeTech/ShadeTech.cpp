@@ -1,16 +1,6 @@
-import core;
-
-#include "Log.h"
-#include "assert.h"
-
-#include <cpptrace/cpptrace.hpp>
-
-using namespace SHD::Rendering::RHI::Vulkan;
+import Application;
 
 int main(int argc, char** argv)
 {
-    LOG_SUCCESS("Welcome To the SDH Network Agent");
-    ASSERT(false, "");
-
-    return 0;
+    return SHD::RunApplication(argc, argv);
 }

@@ -69,10 +69,10 @@ target_sources(modules
 target_include_directories(modules PRIVATE
     ./ShadeTech/
 )
-target_link_libraries(modules PRIVATE glfw ${GLFW_LIBRARIES})
+target_link_libraries(modules PRIVATE glfw ${GLFW_LIBRARIES} cpptrace::cpptrace)
 configure_compiler_warnings(modules)
 setup_vulkan_dependency(modules)
 
 add_executable(${CMAKE_PROJECT_NAME} ShadeTech/ShadeTech.cpp)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
-target_link_libraries(${CMAKE_PROJECT_NAME} modules cpptrace::cpptrace)
+target_link_libraries(${CMAKE_PROJECT_NAME} modules)
