@@ -73,6 +73,11 @@ target_link_libraries(modules PRIVATE glfw ${GLFW_LIBRARIES} cpptrace::cpptrace)
 configure_compiler_warnings(modules)
 setup_vulkan_dependency(modules)
 
+if(WIN32)
+    #windows networking lib
+    target_link_libraries(modules PRIVATE Ws2_32)
+endif()
+
 add_executable(${CMAKE_PROJECT_NAME} ShadeTech/ShadeTech.cpp)
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
 target_link_libraries(${CMAKE_PROJECT_NAME} modules)

@@ -4,6 +4,10 @@ module;
 #include "Log.h"
 #include "assert.h"
 
+import socket;
+using namespace SHD::Windows;
+
+
 export module Application;
 
 namespace SHD {
@@ -19,15 +23,11 @@ public:
     u32 Run();
 
     void Init() {
+        TCPSocket socket;
     };
 
     void Update() {
-        static u32 count = 0;
-        if(count++ > 5)
-        {
-            this->m_running = false;
-        }
-        LOG_INFO("Hello");
+        this->m_running = false;
     };
 
     void Shutdown() {
