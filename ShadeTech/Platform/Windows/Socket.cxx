@@ -28,4 +28,15 @@ public:
 }
 }
 
+#else
+
+export module socket;
+
+namespace SHD {
+namespace Windows {
+export class TCPSocket
+{};
+}
+}
+
 #endif
