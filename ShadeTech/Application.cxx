@@ -24,6 +24,7 @@ public:
 
     void Init() {
         TCPSocket socket;
+        socket.listen();
     };
 
     void Update() {
