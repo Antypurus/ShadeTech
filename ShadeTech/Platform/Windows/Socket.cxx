@@ -13,13 +13,13 @@ export module socket;
 namespace SHD {
 namespace Windows {
 
-export class TCPSocket
+export class TCPServer
 {
 private:
     SOCKET m_socket = INVALID_SOCKET;
 
 public:
-    TCPSocket()
+    TCPServer()
     {
         WSADATA wsaData;
         int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -68,7 +68,7 @@ public:
             result = recv(connection_socket, buffer, MTU, 0);
             if (result > 0) {
                 LOG_SUCCESS("--- GOT DATA ---");
-                std::cout << std::hex << buffermessage, ... << std::endl;
+                std::cout << std::hex << buffer << std::endl;
             }
         } while (result > 0);
     }

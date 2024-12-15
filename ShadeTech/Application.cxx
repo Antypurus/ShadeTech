@@ -1,12 +1,11 @@
 module;
 
-#include "Types.h"
 #include "Log.h"
+#include "Types.h"
 #include "assert.h"
 
 import socket;
 using namespace SHD::Windows;
-
 
 export module Application;
 
@@ -22,17 +21,15 @@ public:
     ~Application();
     u32 Run();
 
-    void Init() {
-        TCPSocket socket;
+    void Init()
+    {
+        TCPServer socket;
         socket.listen();
     };
 
-    void Update() {
-        this->m_running = false;
-    };
+    void Update() { this->m_running = false; };
 
-    void Shutdown() {
-    };
+    void Shutdown() {};
 };
 
 Application::Application(u32 argumentCount, char** arguments)
