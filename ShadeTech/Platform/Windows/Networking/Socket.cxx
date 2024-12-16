@@ -83,8 +83,12 @@ export module socket;
 
 namespace SHD {
 namespace Windows {
-export class TCPSocket
-{};
+export class TCPServer
+{
+public:
+    TCPServer() = default;
+    void listen() {};
+};
 }
 }
 

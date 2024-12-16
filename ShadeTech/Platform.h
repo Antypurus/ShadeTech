@@ -28,7 +28,7 @@
 #if PLATFORM_WINDOWS
 #define TRIGGER_DEBUG_TRAP() __debugbreak()
 #elif PLATFORM_POSIX
-#include <signal.h>
+#include <sys/signal.h>
 #define TRIGGER_DEBUG_TRAP() (void)raise(SIGTRAP)
 #else
 #define TRIGGER_DEBUG_TRAP()
