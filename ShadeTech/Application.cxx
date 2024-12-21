@@ -4,8 +4,7 @@ module;
 #include "Types.h"
 #include "assert.h"
 
-import socket;
-using namespace SHD::Windows;
+import posix.socket;
 
 export module Application;
 
@@ -23,8 +22,6 @@ public:
 
     void Init()
     {
-        TCPServer socket;
-        socket.listen();
     };
 
     void Update() { this->m_running = false; };
