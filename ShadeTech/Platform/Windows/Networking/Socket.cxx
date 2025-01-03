@@ -9,17 +9,17 @@ module;
 #include <WS2tcpip.h>
 #include <winsock2.h>
 
-export module socket;
-namespace SHD {
-namespace Windows {
+export module windows.socket;
 
-export class TCPServer
+namespace SHD::Windows::Networking {
+
+export class TCPServerSocket
 {
 private:
     SOCKET m_socket = INVALID_SOCKET;
 
 public:
-    TCPServer()
+    TCPServerSocket(u32 port = 8080)
     {
         WSADATA wsaData;
         int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -34,7 +34,7 @@ public:
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
 
-        result = getaddrinfo(NULL, "8080", &hints, &resultInfo);
+        result = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &resultInfo);
         ASSERT(result == 0, "Failed to get address info");
 
         SOCKET server_socket = socket(resultInfo->ai_family, resultInfo->ai_socktype, resultInfo->ai_protocol);
@@ -67,7 +67,6 @@ public:
 
             result = recv(connection_socket, buffer, MTU, 0);
             if (result > 0) {
-                LOG_SUCCESS("--- GOT DATA ---");
                 std::cout << std::hex << buffer << std::endl;
             }
         } while (result > 0);
@@ -75,21 +74,9 @@ public:
 };
 
 }
-}
 
 #else
 
-export module socket;
-
-namespace SHD {
-namespace Windows {
-export class TCPServer
-{
-public:
-    TCPServer() = default;
-    void listen() {};
-};
-}
-}
+export module windows.socket;
 
 #endif
