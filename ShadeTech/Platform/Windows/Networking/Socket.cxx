@@ -74,7 +74,7 @@ public:
         ASSERT(this->m_socket != INVALID_SOCKET, "Socket is not connected");
         i32 totalDataSend = 0;
         while (totalDataSend < packet_size) {
-            const i32 result = ::send(this->m_socket, (const char*)packet, packet_size, 0);
+            const i32 result = ::send(this->m_socket, (const char*)packet, packet_size - totalDataSend, 0);
             totalDataSend += result;
             if (result == SOCKET_ERROR) {
                 LOG_WARN("Data Transfer Failed");

@@ -6,6 +6,7 @@ module;
 
 #include "Log.h"
 #include "Types.h"
+#include "assert.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -17,6 +18,15 @@ export module posix.socket;
 
 namespace SHD::POSIX::Networking {
 
+export constexpr u32 MTU = 1500;
+export struct Packet
+{
+    u8 packet[MTU] = {};
+    i64 packet_size = 0;
+
+    bool isValid() { return this->packet_size != -1; }
+};
+
 export class TCPConnectionSocket
 {
 private:
@@ -27,15 +37,61 @@ public:
     TCPConnectionSocket(int socket_fd) :
         m_socket(socket_fd) {};
 
-    TCPConnectionSocket(TCPConnectionSocket&& other);
-    TCPConnectionSocket& operator=(TCPConnectionSocket&& other);
+    TCPConnectionSocket(TCPConnectionSocket&& other) :
+        m_socket(other.m_socket)
+    {
+        other.m_socket = -1;
+    }
+
+    TCPConnectionSocket& operator=(TCPConnectionSocket&& other)
+    {
+        this->~TCPConnectionSocket();
+
+        this->m_socket = other.m_socket;
+        other.m_socket = -1;
+
+        return *this;
+    }
 
     ~TCPConnectionSocket()
     {
         if (this->m_socket != -1) {
-            close(this->m_socket);
-            this->m_socket = -1;
+            this->closeConnection();
         }
+    }
+
+    Packet receive()
+    {
+        ASSERT(this->m_socket != -1, "Socket is not connected");
+        Packet result;
+        result.packet_size = ::recv(this->m_socket, (char*)result.packet, MTU, 0);
+        if (result.packet_size == -1) {
+            LOG_WARN("Failed to read from socket");
+            this->closeConnection();
+        }
+        return result;
+    }
+
+    void send(const u8* packet, u64 packet_size)
+    {
+        ASSERT(this->m_socket != -1, "Socket is not connected");
+        u64 totalDataSent = 0;
+        while (totalDataSent < packet_size) {
+            const i64 result = ::send(this->m_socket, (const char*)packet, packet_size - totalDataSent, 0);
+            totalDataSent += (u64)result;
+            if (result == -1) {
+                LOG_WARN("Data Transfer Failed");
+                this->closeConnection();
+                return;
+            }
+        }
+    }
+
+    void closeConnection()
+    {
+        ASSERT(this->m_socket != -1, "Socket is not connected");
+        ::close(this->m_socket);
+        this->m_socket = -1;
     }
 
 public:

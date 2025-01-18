@@ -1,5 +1,7 @@
 module;
 
+#include <iostream>
+
 #include "Platform.h"
 #include "Types.h"
 
@@ -20,7 +22,9 @@ public:
         using namespace SHD::POSIX::Networking;
 #endif
         TCPServerSocket server;
-        //server.listen();
+        auto con = server.listenForConnection();
+        auto packet = con.receive();
+        std::cout << packet.packet << std::endl;
         return 0;
     }
 };
