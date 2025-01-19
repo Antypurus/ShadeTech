@@ -106,21 +106,15 @@ private:
 public:
     TCPServerSocket(u32 port = 8080)
     {
-        // TODO(Tiago): need to extract this into a network module initialization step
-        WSADATA wsaData;
-        int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        ASSERT(result == 0, "Failed to initialize Window Networking (Winsock2)");
-        LOG_SUCCESS("Windows Networking Initialized");
-
-        addrinfo* resultInfo;
-        addrinfo hints;
+        addrinfo* resultInfo = nullptr;
+        addrinfo hints = {};
         ZeroMemory(&hints, sizeof(hints));
         hints.ai_flags = AI_PASSIVE;
         hints.ai_family = AF_INET;
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
 
-        result = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &resultInfo);
+        int result = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &resultInfo);
         ASSERT(result == 0, "Failed to get address info");
 
         SOCKET server_socket = socket(resultInfo->ai_family, resultInfo->ai_socktype, resultInfo->ai_protocol);
@@ -137,7 +131,7 @@ public:
         ASSERT(result != SOCKET_ERROR, "failed to listen to socket");
     }
 
-    TCPConnectionSocket listen()
+    TCPConnectionSocket listenForConnection()
     {
         sockaddr connection_address;
         int connection_addr_len = sizeof(sockaddr);

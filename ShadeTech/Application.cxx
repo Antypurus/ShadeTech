@@ -1,16 +1,23 @@
 module;
 
 #include "Log.h"
+#include "Platform.h"
 #include "Types.h"
-#include "assert.h"
 
 #include <iostream>
+
+#if PLATFORM_WINDOWS
+import windows.application;
+#define PLATFORM_APPLICATION_DERIVE :private Windows::Application
+#else
+#define PLATFORM_APPLICATION_DERIVE
+#endif
 
 export module Application;
 
 namespace SHD {
 
-export class Application
+export class Application PLATFORM_APPLICATION_DERIVE
 {
 public:
     Application() = default;
@@ -19,7 +26,6 @@ public:
     template<typename Subclass>
     static i32 RunApplication(Subclass application, u32 argument_count, char** arguments)
     {
-        std::cout << "test" << std::endl;
         return application.Run(argument_count, arguments);
     };
 

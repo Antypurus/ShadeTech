@@ -6,7 +6,7 @@ module;
 #include "Types.h"
 
 import posix.socket;
-import windows.socket;
+import windows.networking;
 import Application;
 
 export module ShadeTech;
