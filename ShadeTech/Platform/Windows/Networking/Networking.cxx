@@ -4,13 +4,13 @@ module;
 #include "Platform.h"
 #include "assert.h"
 
-export module windows.networking;
 
 #if PLATFORM_WINDOWS
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <winsock2.h>
 
+export module windows.networking;
 export import windows.socket;
 
 namespace SHD::Windows::Networking {
@@ -22,4 +22,9 @@ export void InitNetworkingModule()
     LOG_SUCCESS("Windows Networking Initialized");
 };
 }
+
+#else
+
+export module windows.networking;
+
 #endif
