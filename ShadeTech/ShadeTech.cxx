@@ -1,6 +1,7 @@
 module;
 
 #include <iostream>
+#include <string>
 
 #include "Platform.h"
 #include "Types.h"
@@ -21,10 +22,21 @@ public:
 #else
         using namespace SHD::POSIX::Networking;
 #endif
+
+#if 0
         TCPServerSocket server;
         auto con = server.listenForConnection();
         auto packet = con.receive();
         std::cout << packet.packet << std::endl;
+#else
+        TCPClientSocket client("192.168.1.237", 8080);
+
+        while (true) {
+            std::string input;
+            getline(std::cin, input);
+            client.send((const u8*)input.c_str(), input.size());
+        }
+#endif
         return 0;
     }
 };
