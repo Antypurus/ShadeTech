@@ -4,8 +4,6 @@ module;
 
 #define BYTE(value, byte) ((value & (0xFFull << (byte * 8ull))) >> (byte * 8ull))
 
-#if PLATFORM_POSIX
-
 #include "Log.h"
 #include "Types.h"
 #include "assert.h"
@@ -204,8 +202,3 @@ public:
 
 }
 
-#else
-
-export module posix.socket;
-
-#endif

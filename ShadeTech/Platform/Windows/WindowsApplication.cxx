@@ -6,7 +6,6 @@ module;
 import windows.networking;
 export module windows.application;
 
-#if PLATFORM_WINDOWS
 namespace SHD::Windows {
 export class Application
 {
@@ -18,5 +17,3 @@ public:
     }
 };
 }
-
-#endif

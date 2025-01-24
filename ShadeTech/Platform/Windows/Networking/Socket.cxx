@@ -1,8 +1,5 @@
 module;
 
-#include "Platform.h"
-#if PLATFORM_WINDOWS
-
 #include "Types.h"
 #include "assert.h"
 
@@ -145,9 +142,3 @@ public:
 };
 
 }
-
-#else
-
-export module windows.socket;
-
-#endif

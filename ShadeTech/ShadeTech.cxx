@@ -6,9 +6,8 @@ module;
 #include "Platform.h"
 #include "Types.h"
 
-import posix.socket;
-import windows.networking;
 import Application;
+import Networking;
 
 export module ShadeTech;
 

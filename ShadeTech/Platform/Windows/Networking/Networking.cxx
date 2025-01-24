@@ -4,8 +4,6 @@ module;
 #include "Platform.h"
 #include "assert.h"
 
-
-#if PLATFORM_WINDOWS
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <winsock2.h>
@@ -22,9 +20,3 @@ export void InitNetworkingModule()
     LOG_SUCCESS("Windows Networking Initialized");
 };
 }
-
-#else
-
-export module windows.networking;
-
-#endif
