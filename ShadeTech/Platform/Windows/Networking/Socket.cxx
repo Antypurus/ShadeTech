@@ -21,7 +21,7 @@ export struct Packet
 
 export class TCPConnectionSocket
 {
-private:
+protected:
     SOCKET m_socket = INVALID_SOCKET;
 
 public:
@@ -95,13 +95,54 @@ public:
     TCPConnectionSocket& operator=(const TCPConnectionSocket& other) = delete;
 };
 
+export class TCPClientSocket : public TCPConnectionSocket
+{
+public:
+    TCPClientSocket(const char* hostname, u16 port)
+    {
+        addrinfo* targetAddress = nullptr;
+        addrinfo targetAddressHints = {};
+        targetAddressHints.ai_flags = AI_PASSIVE;
+        targetAddressHints.ai_family = AF_INET;
+        targetAddressHints.ai_socktype = SOCK_STREAM;
+        targetAddressHints.ai_protocol = IPPROTO_TCP;
+
+        int result = getaddrinfo(hostname, nullptr, &targetAddressHints, &targetAddress);
+        if (result != 0) {
+            LOG_ERROR("Failed to get target host information");
+            return;
+        }
+
+        memcpy(&targetAddressHints, targetAddress, sizeof(addrinfo));
+        freeaddrinfo(targetAddress);
+        targetAddress = &targetAddressHints;
+        reinterpret_cast<sockaddr_in*>(targetAddress->ai_addr)->sin_port = port;
+
+        SOCKET connection_socket =
+            socket(targetAddress->ai_family, targetAddress->ai_socktype, targetAddress->ai_protocol);
+        if (connection_socket == INVALID_SOCKET) {
+            LOG_ERROR("Failed to initialize connection socket");
+            return;
+        }
+
+        result = connect(connection_socket, targetAddress->ai_addr, (int)targetAddress->ai_addrlen);
+        if(result == SOCKET_ERROR)
+        {
+            LOG_ERROR("Failed to connect client socket to server");
+            return;
+        }
+
+        this->m_socket = connection_socket;
+    };
+};
+
 export class TCPServerSocket
 {
 private:
     SOCKET m_server_socket = INVALID_SOCKET;
 
 public:
-    TCPServerSocket(u32 port = 8080)
+    TCPServerSocket(u16 port = 8080)
     {
         addrinfo* resultInfo = nullptr;
         addrinfo hints = {};
@@ -126,6 +167,8 @@ public:
 
         result = ::listen(this->m_server_socket, SOMAXCONN);
         ASSERT(result != SOCKET_ERROR, "failed to listen to socket");
+
+        freeaddrinfo(resultInfo);
     }
 
     TCPConnectionSocket listenForConnection()

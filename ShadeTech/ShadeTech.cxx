@@ -22,7 +22,7 @@ public:
         using namespace SHD::POSIX::Networking;
 #endif
 
-#if 1
+#if 0
         TCPServerSocket server;
         auto con = server.listenForConnection();
         while (true) {
@@ -30,12 +30,12 @@ public:
             std::cout << packet.packet << std::endl;
         }
 #else
-        TCPClientSocket client("192.168.1.237", 8080);
-        while (true) {
-            std::string input;
-            getline(std::cin, input);
-            client.send((const u8*)input.c_str(), input.size());
-        }
+        TCPClientSocket client("google.com", 8080);
+        // while (true) {
+        // std::string input;
+        // getline(std::cin, input);
+        // client.send((const u8*)input.c_str(), input.size());
+        //}
 #endif
         return 0;
     }
