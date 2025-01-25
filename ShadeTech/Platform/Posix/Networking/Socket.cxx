@@ -1,6 +1,7 @@
 module;
 
 #include "Platform.h"
+#include "core/result.h"
 
 #define BYTE(value, byte) ((value & (0xFFull << (byte * 8ull))) >> (byte * 8ull))
 
@@ -62,7 +63,7 @@ public:
         }
     }
 
-    Packet receive()
+    result<Packet, int> receive()
     {
         ASSERT(this->m_socket != -1, "Socket is not connected");
         Packet result;
@@ -70,8 +71,9 @@ public:
         if (result.packet_size == -1) {
             LOG_WARN("Failed to read from socket");
             this->closeConnection();
+            return ErrorResult{ 5 };
         }
-        return result;
+        return { result };
     }
 
     void send(const u8* packet, u64 packet_size)
@@ -95,6 +97,8 @@ public:
         ::close(this->m_socket);
         this->m_socket = -1;
     }
+
+    bool isConnected() const { return this->m_socket != -1; }
 
 public:
     TCPConnectionSocket(const TCPConnectionSocket& other) = delete;
@@ -201,4 +205,3 @@ public:
 };
 
 }
-

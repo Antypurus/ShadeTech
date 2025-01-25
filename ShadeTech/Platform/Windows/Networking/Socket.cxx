@@ -2,9 +2,10 @@ module;
 
 #include "Types.h"
 #include "assert.h"
+#include "core/result.h"
 
 #include <WS2tcpip.h>
-#include <winsock2.h>
+#include <Winsock2.h>
 
 export module windows.socket;
 
@@ -54,7 +55,7 @@ public:
         }
     }
 
-    Packet receive()
+    result<Packet, int> receive()
     {
         ASSERT(this->m_socket != INVALID_SOCKET, "Socket is not connected");
         Packet result;
@@ -62,6 +63,11 @@ public:
         if (result.packet_size == SOCKET_ERROR) {
             LOG_WARN("Failed to read from socket");
             this->closeConnection();
+            return ErrorResult{ 5 };
+        } else if (result.packet_size == 0) {
+            LOG_WARN("Client Has Disconnected");
+            this->closeConnection();
+            return ErrorResult{ 5 };
         }
         return result;
     }
@@ -126,8 +132,7 @@ public:
         }
 
         result = connect(connection_socket, targetAddress->ai_addr, (int)targetAddress->ai_addrlen);
-        if(result == SOCKET_ERROR)
-        {
+        if (result == SOCKET_ERROR) {
             LOG_ERROR("Failed to connect client socket to server");
             return;
         }

@@ -22,20 +22,25 @@ public:
         using namespace SHD::POSIX::Networking;
 #endif
 
-#if 0
+#if 1
         TCPServerSocket server;
-        auto con = server.listenForConnection();
-        while (true) {
-            auto packet = con.receive();
-            std::cout << packet.packet << std::endl;
+        TCPConnectionSocket con = server.listenForConnection();
+        while (con.isConnected()) {
+            auto readResult = con.receive();
+            if (readResult.hasValue()) {
+                auto packet = *readResult;
+                std::cout << packet.packet << std::endl;
+            } else {
+                break;
+            }
         }
 #else
-        TCPClientSocket client("google.com", 8080);
-        // while (true) {
-        // std::string input;
-        // getline(std::cin, input);
-        // client.send((const u8*)input.c_str(), input.size());
-        //}
+        TCPClientSocket client("192.168.1.237", 8080);
+        while (true) {
+            std::string input;
+            getline(std::cin, input);
+            client.send((const u8*)input.c_str(), input.size());
+        }
 #endif
         return 0;
     }
