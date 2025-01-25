@@ -2,6 +2,7 @@ module;
 
 #include "Types.h"
 #include "assert.h"
+#include "core/result.h"
 
 #include <WS2tcpip.h>
 #include <winsock2.h>
@@ -126,8 +127,7 @@ public:
         }
 
         result = connect(connection_socket, targetAddress->ai_addr, (int)targetAddress->ai_addrlen);
-        if(result == SOCKET_ERROR)
-        {
+        if (result == SOCKET_ERROR) {
             LOG_ERROR("Failed to connect client socket to server");
             return;
         }
