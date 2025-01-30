@@ -1,6 +1,9 @@
+=== Misc ===
+ - [ ] Test Framework
+
 === Core Utilities ===
  - [X] Result Type
- - [ ] Optinal Type
+ - [X] Optinal Type
  - [ ] Basic String View Type
  - [ ] String
  - [ ] Dynamic Array

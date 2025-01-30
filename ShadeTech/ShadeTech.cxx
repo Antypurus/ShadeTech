@@ -5,6 +5,7 @@ module;
 
 #include "Platform.h"
 #include "Types.h"
+#include "core/optional.h"
 
 import Application;
 import Networking;
