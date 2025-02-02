@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Types.h"
-#include "move.h"
+#include "core/move.h"
+#include "assert.h"
 
 namespace SHD {
 

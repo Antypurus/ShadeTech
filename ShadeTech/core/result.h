@@ -1,6 +1,8 @@
 #pragma once
 
-#include "move.h"
+#include "core/move.h"
+
+namespace SHD {
 
 template<typename T>
 struct ErrorResult
@@ -10,7 +12,7 @@ struct ErrorResult
     ErrorResult(const T& error) :
         error(error) {};
     ErrorResult(T&& error) :
-        error(std::move(error)) {};
+        error(move(error)) {};
 };
 
 template<typename ValueType, typename ErrorType>
@@ -34,7 +36,7 @@ public:
     result(ValueType&& value) :
         m_hasValue(true)
     {
-        new (&m_value) ValueType(std::move(value));
+        new (&m_value) ValueType(move(value));
     }
 
     result(const ErrorResult<ErrorType>& error)
@@ -48,7 +50,7 @@ public:
     {
         result<ValueType, ErrorType> res;
         res.m_hasValue = false;
-        new (&res.m_error) ErrorType(std::move(error.error));
+        new (&res.m_error) ErrorType(move(error.error));
     }
 
     result(const result& other)
@@ -65,9 +67,9 @@ public:
     {
         this->m_hasValue = other.m_hasValue;
         if (this->m_hasValue) {
-            new (&this->m_value) ValueType(std::move(other.m_value));
+            new (&this->m_value) ValueType(move(other.m_value));
         } else {
-            new (&this->m_error) ErrorType(std::move(other.m_error));
+            new (&this->m_error) ErrorType(move(other.m_error));
         }
         other.m_hasValue = false;
     }
@@ -96,9 +98,9 @@ public:
         this->~result();
         this->m_hasValue = other.m_hasValue;
         if (this->m_hasValue) {
-            new (&this->m_value) ValueType(std::move(other.m_value));
+            new (&this->m_value) ValueType(move(other.m_value));
         } else {
-            new (&this->m_error) ErrorType(std::move(other.m_error));
+            new (&this->m_error) ErrorType(move(other.m_error));
         }
         other.m_hasValue = false;
 
@@ -125,3 +127,5 @@ private:
         m_error(ErrorType()),
         m_hasValue(false) {};
 };
+
+}

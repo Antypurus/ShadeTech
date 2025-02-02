@@ -7,18 +7,11 @@ module;
 #include <WS2tcpip.h>
 #include <Winsock2.h>
 
+import networking.packet;
+
 export module windows.socket;
 
 namespace SHD::Windows::Networking {
-
-export constexpr u32 MTU = 1500;
-export struct Packet
-{
-    u8 packet[MTU] = {};
-    i64 packet_size = 0;
-
-    bool isValid() { return !(this->packet_size == SOCKET_ERROR); }
-};
 
 export class TCPConnectionSocket
 {
@@ -55,20 +48,21 @@ public:
         }
     }
 
-    result<Packet, int> receive()
+    result<SHD::Networking::Packet, int> receive()
     {
         ASSERT(this->m_socket != INVALID_SOCKET, "Socket is not connected");
-        Packet result;
-        result.packet_size = ::recv(this->m_socket, (char*)result.packet, MTU, 0);
-        if (result.packet_size == SOCKET_ERROR) {
+        SHD::Networking::Packet result;
+        i32 recv_result = ::recv(this->m_socket, (char*)result.packet, SHD::Networking::MTU, 0);
+        if (recv_result == SOCKET_ERROR) {
             LOG_WARN("Failed to read from socket");
             this->closeConnection();
             return ErrorResult{ 5 };
-        } else if (result.packet_size == 0) {
+        } else if (recv_result == 0) {
             LOG_WARN("Client Has Disconnected");
             this->closeConnection();
             return ErrorResult{ 5 };
         }
+        result.packet_size = (u64)recv_result;
         return result;
     }
 
@@ -176,16 +170,17 @@ public:
         freeaddrinfo(resultInfo);
     }
 
-    TCPConnectionSocket listenForConnection()
+    result<TCPConnectionSocket, int> listenForConnection()
     {
         sockaddr connection_address;
         int connection_addr_len = sizeof(sockaddr);
         SOCKET connection_socket = accept(this->m_server_socket, &connection_address, &connection_addr_len);
-        int error = WSAGetLastError();
-        std::cout << error << std::endl;
-        ASSERT(connection_socket != INVALID_SOCKET, "Failed to Accept client connection");
-
-        return { connection_socket };
+        if (connection_socket == INVALID_SOCKET) {
+            int error = WSAGetLastError();
+            std::cout << error << std::endl;
+            return ErrorResult{ error };
+        }
+        return TCPConnectionSocket{ connection_socket };
     }
 };
 

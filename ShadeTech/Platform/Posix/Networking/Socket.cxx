@@ -1,21 +1,19 @@
 module;
 
-#include "Platform.h"
-#include "core/result.h"
-
 #define BYTE(value, byte) ((value & (0xFFull << (byte * 8ull))) >> (byte * 8ull))
 
 #include "Log.h"
 #include "Types.h"
 #include "assert.h"
+#include "core/result.h"
 
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <sys/fcntl.h>
 #include <sys/socket.h>
 #include <unistd.h>
-
-#include <iostream>
 
 export module posix.socket;
 
@@ -69,9 +67,10 @@ public:
         Packet result;
         result.packet_size = ::recv(this->m_socket, (char*)result.packet, MTU, 0);
         if (result.packet_size == -1) {
+            const int error = errno;
             LOG_WARN("Failed to read from socket");
             this->closeConnection();
-            return ErrorResult{ 5 };
+            return ErrorResult{ error };
         }
         return { result };
     }
@@ -157,49 +156,48 @@ private:
 export class TCPServerSocket
 {
 private:
-    int m_socket = -1;
+    int m_server_socket = -1;
 
 public:
     TCPServerSocket(u16 port = 8080)
     {
-        this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
+        this->m_server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
         sockaddr_in address = {};
         address.sin_family = AF_INET;
         address.sin_port = htons(port);
         address.sin_addr.s_addr = INADDR_ANY;
 
-        auto result = bind(this->m_socket, (sockaddr*)&address, sizeof(address));
+        auto result = bind(this->m_server_socket, (sockaddr*)&address, sizeof(address));
         if (result < 0) {
             LOG_ERROR("Failed to bind server socket");
             return;
         }
 
-        result = listen(this->m_socket, 1);
+        result = listen(this->m_server_socket, 1);
         if (result < 0) {
             LOG_ERROR("Failed to listen for connectios");
             return;
         }
     }
 
-    TCPConnectionSocket listenForConnection()
+    result<TCPConnectionSocket, int> listenForConnection()
     {
-        const auto connection_socket = accept(this->m_socket, NULL, NULL);
+        ASSERT(this->m_server_socket != -1, "Server socket must be initialized properly");
+        const int connection_socket = accept(this->m_server_socket, NULL, NULL);
         if (connection_socket < 0) {
             LOG_ERROR("Failed to accept inbound connection");
-            return {};
+            return ErrorResult{ errno };
         }
-
-        // TODO(Tiago): add cloe_exec to socket via fcntl
-
-        return { connection_socket };
+        fcntl(connection_socket, F_SETFD, FD_CLOEXEC);
+        return TCPConnectionSocket{ connection_socket };
     }
 
     ~TCPServerSocket()
     {
-        if (this->m_socket != -1) {
-            close(this->m_socket);
-            this->m_socket = -1;
+        if (this->m_server_socket != -1) {
+            close(this->m_server_socket);
+            this->m_server_socket = -1;
         }
     }
 };

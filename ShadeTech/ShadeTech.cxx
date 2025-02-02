@@ -25,7 +25,7 @@ public:
 
 #if 1
         TCPServerSocket server;
-        TCPConnectionSocket con = server.listenForConnection();
+        TCPConnectionSocket con = std::move(*server.listenForConnection());
         while (con.isConnected()) {
             auto readResult = con.receive();
             if (readResult.hasValue()) {
