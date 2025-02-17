@@ -9,3 +9,5 @@ export import windows.networking;
 #else
 export import posix.networking;
 #endif
+
+export import networking.socket;

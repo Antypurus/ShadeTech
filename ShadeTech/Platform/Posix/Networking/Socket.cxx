@@ -17,16 +17,9 @@ module;
 
 export module posix.socket;
 
+export import networking.packet;
+
 namespace SHD::POSIX::Networking {
-
-export constexpr u32 MTU = 1500;
-export struct Packet
-{
-    u8 packet[MTU] = {};
-    i64 packet_size = 0;
-
-    bool isValid() { return this->packet_size != -1; }
-};
 
 export class TCPConnectionSocket
 {
@@ -36,7 +29,7 @@ protected:
 public:
     TCPConnectionSocket() = default;
     TCPConnectionSocket(int socket_fd) :
-        m_socket(socket_fd) {};
+        m_socket(socket_fd){};
 
     TCPConnectionSocket(TCPConnectionSocket&& other) :
         m_socket(other.m_socket)
@@ -61,17 +54,18 @@ public:
         }
     }
 
-    result<Packet, int> receive()
+    result<SHD::Networking::Packet, int> receive()
     {
         ASSERT(this->m_socket != -1, "Socket is not connected");
-        Packet result;
-        result.packet_size = ::recv(this->m_socket, (char*)result.packet, MTU, 0);
-        if (result.packet_size == -1) {
+        SHD::Networking::Packet result;
+        i64 recv_result = ::recv(this->m_socket, (char*)result.packet, SHD::Networking::MTU, 0);
+        if (recv_result == -1) {
             const int error = errno;
             LOG_WARN("Failed to read from socket");
             this->closeConnection();
             return ErrorResult{ error };
         }
+        result.packet_size = (u64)recv_result;
         return { result };
     }
 
@@ -181,6 +175,36 @@ public:
         }
     }
 
+    ~TCPServerSocket()
+    {
+        if (this->m_server_socket != -1) {
+            close(this->m_server_socket);
+            this->m_server_socket = -1;
+        }
+    }
+
+    TCPServerSocket(TCPServerSocket&& other)
+    {
+        if (this == &other)
+            return;
+
+        this->~TCPServerSocket();
+        this->m_server_socket = other.m_server_socket;
+        other.m_server_socket = -1;
+    }
+
+    TCPServerSocket& operator=(TCPServerSocket&& other)
+    {
+        if (this == &other)
+            return *this;
+
+        this->~TCPServerSocket();
+        this->m_server_socket = other.m_server_socket;
+        other.m_server_socket = -1;
+
+        return *this;
+    }
+
     result<TCPConnectionSocket, int> listenForConnection()
     {
         ASSERT(this->m_server_socket != -1, "Server socket must be initialized properly");
@@ -193,13 +217,9 @@ public:
         return TCPConnectionSocket{ connection_socket };
     }
 
-    ~TCPServerSocket()
-    {
-        if (this->m_server_socket != -1) {
-            close(this->m_server_socket);
-            this->m_server_socket = -1;
-        }
-    }
+public:
+    TCPServerSocket(const TCPServerSocket&) = delete;
+    TCPServerSocket& operator=(const TCPServerSocket&) = delete;
 };
 
 }
