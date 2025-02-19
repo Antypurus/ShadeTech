@@ -14,6 +14,7 @@ public:
     {
 #if 1
         SHD::Networking::TCPServerSocket server;
+        auto con = server.listenForConnection();
 
         // TCPConnectionSocket con = std::move(*server.listenForConnection());
         // while (con.isConnected()) {
