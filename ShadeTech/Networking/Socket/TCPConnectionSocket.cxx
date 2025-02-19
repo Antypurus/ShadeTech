@@ -6,6 +6,8 @@ module;
 #include "core/result.h"
 
 #if PLATFORM_WINDOWS
+import windows.socket;
+using TCPConnectionSocketType = SHD::Windows::Networking::TCPConnectionSocket;
 #else
 import posix.socket;
 using TCPConnectionSocketType = SHD::POSIX::Networking::TCPConnectionSocket;
@@ -26,7 +28,7 @@ public:
     ~TCPConnectionSocket() = default;
 
     TCPConnectionSocket(TCPConnectionSocketType connection) :
-        m_connection(move(connection)){};
+        m_connection(move(connection)) {};
 
     TCPConnectionSocket(TCPConnectionSocket&& other)
     {

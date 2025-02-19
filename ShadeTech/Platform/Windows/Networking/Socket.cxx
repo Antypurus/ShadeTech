@@ -66,13 +66,15 @@ public:
         return result;
     }
 
-    void send(const u8* packet, i32 packet_size)
+    void send(const u8* packet, u64 packet_size)
     {
         ASSERT(this->m_socket != INVALID_SOCKET, "Socket is not connected");
-        i32 totalDataSend = 0;
+        u64 totalDataSend = 0;
         while (totalDataSend < packet_size) {
-            const i32 result = ::send(this->m_socket, (const char*)packet, packet_size - totalDataSend, 0);
-            totalDataSend += result;
+            u64 dataToSend = packet_size - totalDataSend;
+            dataToSend = dataToSend > INT32_MAX ? INT32_MAX : dataToSend;
+            const i32 result = ::send(this->m_socket, (const char*)packet, (i32)dataToSend, 0);
+            totalDataSend += (u64)result;
             if (result == SOCKET_ERROR) {
                 LOG_WARN("Data Transfer Failed");
                 this->closeConnection();
