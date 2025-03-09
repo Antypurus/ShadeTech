@@ -8,6 +8,7 @@ module;
 #include <netinet/in.h>
 #include <unistd.h>
 
+import networking.ip;
 import posix.socket.TCPConnectionSocket;
 
 export module posix.socket.TCPClientSocket;
@@ -18,11 +19,7 @@ export class TCPClientSocket : public TCPConnectionSocket
 {
 public:
     TCPClientSocket() = default;
-    TCPClientSocket(const char* hostname, u16 port)
-    {
-        u32 addr = this->resolveHostname(hostname);
-        this->connect(addr, port);
-    }
+    TCPClientSocket(const SHD::Networking::IPv4Address& address, u16 port) { this->connect(address, port); }
 
 private:
     u32 resolveHostname(const char* hostname)
@@ -46,14 +43,14 @@ private:
         return addr;
     }
 
-    void connect(u32 address, u16 port)
+    void connect(const SHD::Networking::IPv4Address& address, u16 port)
     {
         this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
         sockaddr_in target = {};
         target.sin_family = AF_UNSPEC;
         target.sin_port = htons(port);
-        target.sin_addr.s_addr = address;
+        target.sin_addr.s_addr = address.getAddress();
 
         int result = ::connect(this->m_socket, (sockaddr*)&target, 16);
         if (result != 0) {

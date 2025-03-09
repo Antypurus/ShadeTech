@@ -1,6 +1,10 @@
 module;
 
 #include "Types.h"
+#include "core/move.h"
+
+#include <iostream>
+#include <string>
 
 import Application;
 import Networking;
@@ -14,20 +18,18 @@ public:
     {
 #if 1
         SHD::Networking::TCPServerSocket server;
-        auto con = server.listenForConnection();
-
-        // TCPConnectionSocket con = std::move(*server.listenForConnection());
-        // while (con.isConnected()) {
-        //     auto readResult = con.receive();
-        //     if (readResult.hasValue()) {
-        //         auto packet = *readResult;
-        //         std::cout << packet.packet << std::endl;
-        //     } else {
-        //         break;
-        //     }
-        // }
+        auto con = SHD::move(*server.listenForConnection());
+        while (con.isConnected()) {
+            auto readResult = con.receive();
+            if (readResult.hasValue()) {
+                auto packet = *readResult;
+                std::cout << packet.packet << std::endl;
+            } else {
+                break;
+            }
+        }
 #else
-        TCPClientSocket client("192.168.1.237", 8080);
+        SHD::Networking::TCPClientSocket client({ 192, 168, 1, 249 }, 8080);
         while (true) {
             std::string input;
             getline(std::cin, input);
