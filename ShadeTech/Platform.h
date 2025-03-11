@@ -62,3 +62,15 @@
 #define COMPILER_CLANG 0
 
 #endif
+
+#if __x86_64__
+
+#define PLATFORM_X64 1
+#define PLATFORM_ARM 0
+
+#elif defined(__aarch64__)
+
+#define PLATFORM_X64 0
+#define PLATFORM_ARM 1
+
+#endif

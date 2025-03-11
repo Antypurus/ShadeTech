@@ -14,7 +14,6 @@ function(configure_compiler_warnings
         -Wall
         -Wextra
         -Wnon-virtual-dtor
-        -Wcast-align
         -Woverloaded-virtual
         -Wpedantic
         -Wconversion

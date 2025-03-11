@@ -8,6 +8,7 @@ module;
 
 import Application;
 import Networking;
+import string.utils;
 
 export module ShadeTech;
 
@@ -16,7 +17,10 @@ export class ShadeTech : public SHD::Application
 public:
     int Run(u32 argument_count, char** arguments) override
     {
-#if 1
+        const char* str = "123456789012345678901234567890";
+        std::cout << SHD::StringLenght(str) << std::endl;
+
+#if 0
         SHD::Networking::TCPServerSocket server;
         auto con = SHD::move(*server.listenForConnection());
         while (con.isConnected()) {
@@ -28,7 +32,8 @@ public:
                 break;
             }
         }
-#else
+#endif
+#if 0
         SHD::Networking::TCPClientSocket client({ 192, 168, 1, 249 }, 8080);
         while (true) {
             std::string input;
