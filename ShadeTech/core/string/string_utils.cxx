@@ -9,7 +9,7 @@ module;
 #include <arm_neon.h>
 #endif
 
-export module string.utils;
+export module core.string.utils;
 
 namespace SHD {
 

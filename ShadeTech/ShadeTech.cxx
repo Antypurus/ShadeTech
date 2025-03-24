@@ -8,7 +8,8 @@ module;
 
 import Application;
 import Networking;
-import string.utils;
+import core.string;
+import core.string.utils;
 
 export module ShadeTech;
 
