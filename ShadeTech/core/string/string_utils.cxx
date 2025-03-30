@@ -62,10 +62,16 @@ inline usize x64StringLenght(const char* string)
     }
 }
 #elif PLATFORM_ARM
+
+/*
+ * TODO: Implement an emulation function for the x64 movemask_epi8
+ * which makes a single int value out of the comparison mask thereby
+ * making the check for the index of 0-byte even more effecient.
 static inline u16 NEON_movemask_eip8(const uint8x16_t& mask)
 {
     return 0;
 }
+*/
 
 static inline usize NEONStringLenght(const char* string)
 {

@@ -13,9 +13,14 @@ export void* AllocateMemory(usize size)
     return malloc(size);
 }
 
-export void Copy(void* source, usize size, void* destination)
+export void free_memory(void* ptr)
 {
-    memcpy(destination, source, size);
+    free(ptr);
+}
+
+export void Copy(void* source, usize size, void* destination, usize offset = 0)
+{
+    memcpy((char*)destination + offset, source, size);
 }
 
 }

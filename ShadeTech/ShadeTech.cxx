@@ -18,8 +18,10 @@ export class ShadeTech : public SHD::Application
 public:
     int Run(u32 argument_count, char** arguments) override
     {
-        const char* str = "123456789012345678901234567890";
-        std::cout << SHD::StringLenght(str) << std::endl;
+        SHD::string str1 = "hello";
+        SHD::string str2 = " stuff";
+        std::cout << str1.str << str2.str << std::endl;
+        std::cout << (str1 + " stuff").str << std::endl;
 
 #if 0
         SHD::Networking::TCPServerSocket server;
