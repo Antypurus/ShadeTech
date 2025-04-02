@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Types.h"
+#include "types.h"
 
 namespace SHD {
 
-usize StringLenght(const char* str);
+usize string_lenght(const char* str);
 
 }

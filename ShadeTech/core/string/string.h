@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "types.h"
 
 /*
  * TODO: very crap impl to lay the ground for the API needs. Improve later

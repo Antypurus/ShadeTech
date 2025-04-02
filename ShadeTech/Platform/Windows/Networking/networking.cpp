@@ -1,10 +1,10 @@
-#include "Networking.h"
+#include "networking.h"
 
 namespace SHD::Windows::Networking {
-void InitNetworkingModule()
+void init_networking_module()
 {
-    WSADATA wsaData;
-    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    WSADATA wsa_data;
+    int result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
     ASSERT(result == 0, "Failed to initialize Window Networking (Winsock2)");
     LOG_SUCCESS("Windows Networking Initialized");
 };

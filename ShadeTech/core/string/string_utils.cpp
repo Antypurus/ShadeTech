@@ -1,6 +1,6 @@
 #include "string_utils.h"
 
-#include "Platform.h"
+#include "platform.h"
 
 #if PLATFORM_X64
 #include <immintrin.h>
@@ -11,7 +11,7 @@
 namespace SHD {
 
 #if PLATFORM_X64
-inline usize x64StringLenght(const char* string)
+inline usize x64_string_lenght(const char* string)
 {
     const usize avx2_alignment = 32;
     const usize avx_alignment = 16;
@@ -104,10 +104,10 @@ static inline usize NEONStringLenght(const char* string)
 }
 #endif
 
-usize StringLenght(const char* str)
+usize string_lenght(const char* str)
 {
 #if PLATFORM_X64
-    return x64StringLenght(str);
+    return x64_string_lenght(str);
 #elif PLATFORM_ARM
     return NEONStringLenght(str);
 #else

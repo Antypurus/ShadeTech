@@ -1,8 +1,8 @@
-#include "TCPServerSocket.h"
+#include "Posix_TCP_server_socket.h"
 
 namespace SHD::POSIX::Networking {
 
-TCPServerSocket::TCPServerSocket(u16 port)
+TCP_server_socket::TCP_server_socket(u16 port)
 {
     this->m_server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -24,7 +24,7 @@ TCPServerSocket::TCPServerSocket(u16 port)
     }
 }
 
-TCPServerSocket::~TCPServerSocket()
+TCP_server_socket::~TCP_server_socket()
 {
     if (this->m_server_socket != -1) {
         close(this->m_server_socket);
@@ -32,38 +32,38 @@ TCPServerSocket::~TCPServerSocket()
     }
 }
 
-TCPServerSocket::TCPServerSocket(TCPServerSocket&& other)
+TCP_server_socket::TCP_server_socket(TCP_server_socket&& other)
 {
     if (this == &other)
         return;
 
-    this->~TCPServerSocket();
+    this->~TCP_server_socket();
     this->m_server_socket = other.m_server_socket;
     other.m_server_socket = -1;
 }
 
-TCPServerSocket& TCPServerSocket::operator=(TCPServerSocket&& other)
+TCP_server_socket& TCP_server_socket::operator=(TCP_server_socket&& other)
 {
     if (this == &other)
         return *this;
 
-    this->~TCPServerSocket();
+    this->~TCP_server_socket();
     this->m_server_socket = other.m_server_socket;
     other.m_server_socket = -1;
 
     return *this;
 }
 
-result<TCPConnectionSocket, int> TCPServerSocket::listenForConnection()
+result<TCP_connection_socket, int> TCP_server_socket::listen_for_connection()
 {
     ASSERT(this->m_server_socket != -1, "Server socket must be initialized properly");
     const int connection_socket = accept(this->m_server_socket, NULL, NULL);
     if (connection_socket < 0) {
         LOG_ERROR("Failed to accept inbound connection");
-        return ErrorResult{ errno };
+        return error{ errno };
     }
     fcntl(connection_socket, F_SETFD, FD_CLOEXEC);
-    return TCPConnectionSocket{ connection_socket };
+    return TCP_connection_socket{ connection_socket };
 }
 
 }

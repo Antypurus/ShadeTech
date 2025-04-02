@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Log.h"
-#include "Platform.h"
+#include "log.h"
+#include "platform.h"
 #include <cpptrace/cpptrace.hpp>
 
 #define ASSERT(X, message, ...)                                                                                        \

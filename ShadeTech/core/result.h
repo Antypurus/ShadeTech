@@ -5,73 +5,73 @@
 namespace SHD {
 
 template<typename T>
-struct ErrorResult
+struct error
 {
-    T error;
+    T m_error;
 
-    ErrorResult(const T& error) :
-        error(error) {};
-    ErrorResult(T&& error) :
-        error(move(error)) {};
+    error(const T& error) :
+        m_error(error) {};
+    error(T&& error) :
+        m_error(move(error)) {};
 };
 
-template<typename ValueType, typename ErrorType>
+template<typename value_type, typename error_type>
 class result
 {
 private:
     union
     {
-        ValueType m_value;
-        ErrorType m_error;
+        value_type m_value;
+        error_type m_error;
     };
-    bool m_hasValue = false;
+    bool m_has_value = false;
 
 public:
-    result(const ValueType& value) :
-        m_hasValue(true)
+    result(const value_type& value) :
+        m_has_value(true)
     {
-        new (&m_value) ValueType(value);
+        new (&m_value) value_type(value);
     }
 
-    result(ValueType&& value) :
-        m_hasValue(true)
+    result(value_type&& value) :
+        m_has_value(true)
     {
-        new (&m_value) ValueType(move(value));
+        new (&m_value) value_type(move(value));
     }
 
-    result(const ErrorResult<ErrorType>& error)
+    result(const error<error_type>& error)
     {
-        result<ValueType, ErrorType> res;
-        new (&res.m_error) ErrorType(error.error);
-        res.m_hasValue = false;
+        result<value_type, error_type> res;
+        new (&res.m_error) error_type(error.m_error);
+        res.m_has_value = false;
     }
 
-    result(ErrorResult<ErrorType>&& error)
+    result(error<error_type>&& error)
     {
-        result<ValueType, ErrorType> res;
-        res.m_hasValue = false;
-        new (&res.m_error) ErrorType(move(error.error));
+        result<value_type, error_type> res;
+        res.m_has_value = false;
+        new (&res.m_error) error_type(move(error.m_error));
     }
 
     result(const result& other)
     {
-        this->m_hasValue = other.m_hasValue;
-        if (this->m_hasValue) {
-            new (&this->m_value) ValueType(other.m_value);
+        this->m_has_value = other.m_has_value;
+        if (this->m_has_value) {
+            new (&this->m_value) value_type(other.m_value);
         } else {
-            new (&this->m_error) ErrorType(other.m_error);
+            new (&this->m_error) error_type(other.m_error);
         }
     }
 
     result(result&& other)
     {
-        this->m_hasValue = other.m_hasValue;
-        if (this->m_hasValue) {
-            new (&this->m_value) ValueType(move(other.m_value));
+        this->m_has_value = other.m_has_value;
+        if (this->m_has_value) {
+            new (&this->m_value) value_type(move(other.m_value));
         } else {
-            new (&this->m_error) ErrorType(move(other.m_error));
+            new (&this->m_error) error_type(move(other.m_error));
         }
-        other.m_hasValue = false;
+        other.m_has_value = false;
     }
 
     result& operator=(const result& other)
@@ -80,11 +80,11 @@ public:
             return *this;
 
         this->~result();
-        this->m_hasValue = other.m_hasValue;
-        if (this->m_hasValue) {
-            new (&this->m_value) ValueType(other.m_value);
+        this->m_has_value = other.m_has_value;
+        if (this->m_has_value) {
+            new (&this->m_value) value_type(other.m_value);
         } else {
-            new (&this->m_error) ErrorType(other.m_error);
+            new (&this->m_error) error_type(other.m_error);
         }
 
         return *this;
@@ -96,36 +96,36 @@ public:
             return *this;
 
         this->~result();
-        this->m_hasValue = other.m_hasValue;
-        if (this->m_hasValue) {
-            new (&this->m_value) ValueType(move(other.m_value));
+        this->m_has_value = other.m_has_value;
+        if (this->m_has_value) {
+            new (&this->m_value) value_type(move(other.m_value));
         } else {
-            new (&this->m_error) ErrorType(move(other.m_error));
+            new (&this->m_error) error_type(move(other.m_error));
         }
-        other.m_hasValue = false;
+        other.m_has_value = false;
 
         return *this;
     }
 
     ~result()
     {
-        if (this->m_hasValue) {
-            this->m_value.~ValueType();
+        if (this->m_has_value) {
+            this->m_value.~value_type();
         } else {
-            this->m_error.~ErrorType();
+            this->m_error.~error_type();
         }
     }
 
-    ValueType& getValue() { return this->m_value; }
-    ErrorType& getError() { return this->m_error; }
-    bool hasValue() const { return this->m_hasValue; };
-    bool hasError() const { return !this->m_hasValue; };
-    ValueType& operator*() { return this->m_value; }
+    value_type& get_value() { return this->m_value; }
+    error_type& get_error() { return this->m_error; }
+    bool has_value() const { return this->m_has_value; };
+    bool has_error() const { return !this->m_has_value; };
+    value_type& operator*() { return this->m_value; }
 
 private:
     result() :
-        m_error(ErrorType()),
-        m_hasValue(false) {};
+        m_error(error_type()),
+        m_has_value(false) {};
 };
 
 }
