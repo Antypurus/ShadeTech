@@ -1,13 +1,11 @@
-module;
+#pragma once
 
 #include "Log.h"
+#include "Networking/Networking.h"
 #include "Platform.h"
 
-import windows.networking;
-export module windows.application;
-
 namespace SHD::Windows {
-export class Application
+class Application
 {
 public:
     Application()

@@ -1,15 +1,12 @@
-module;
+#include "string_utils.h"
 
 #include "Platform.h"
-#include "Types.h"
 
 #if PLATFORM_X64
 #include <immintrin.h>
 #elif PLATFORM_ARM
 #include <arm_neon.h>
 #endif
-
-export module core.string.utils;
 
 namespace SHD {
 
@@ -107,7 +104,7 @@ static inline usize NEONStringLenght(const char* string)
 }
 #endif
 
-export constexpr usize StringLenght(const char* str)
+usize StringLenght(const char* str)
 {
 #if PLATFORM_X64
     return x64StringLenght(str);

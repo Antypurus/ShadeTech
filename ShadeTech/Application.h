@@ -1,4 +1,4 @@
-module;
+#pragma once
 
 #include "Log.h"
 #include "Platform.h"
@@ -7,17 +7,15 @@ module;
 #include <iostream>
 
 #if PLATFORM_WINDOWS
-import windows.application;
+#include "Platform/Windows/WindowsApplication.h"
 #define PLATFORM_APPLICATION_DERIVE :private Windows::Application
 #else
 #define PLATFORM_APPLICATION_DERIVE
 #endif
 
-export module Application;
-
 namespace SHD {
 
-export class Application PLATFORM_APPLICATION_DERIVE
+class Application PLATFORM_APPLICATION_DERIVE
 {
 public:
     Application() = default;

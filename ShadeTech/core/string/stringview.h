@@ -1,8 +1,6 @@
-module;
+#pragma once
 
 #include "Types.h"
-
-export module core.stringview;
 
 namespace SHD {
 

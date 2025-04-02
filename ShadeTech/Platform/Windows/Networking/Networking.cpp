@@ -1,22 +1,12 @@
-module;
-
-#include "Log.h"
-#include "Platform.h"
-#include "assert.h"
-
-#include <WS2tcpip.h>
-#include <Windows.h>
-#include <winsock2.h>
-
-export module windows.networking;
-export import windows.socket;
+#include "Networking.h"
 
 namespace SHD::Windows::Networking {
-export void InitNetworkingModule()
+void InitNetworkingModule()
 {
     WSADATA wsaData;
     int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
     ASSERT(result == 0, "Failed to initialize Window Networking (Winsock2)");
     LOG_SUCCESS("Windows Networking Initialized");
 };
+
 }

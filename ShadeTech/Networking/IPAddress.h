@@ -1,12 +1,10 @@
-module;
+#pragma once
 
 #include "Types.h"
 
-export module networking.ip;
-
 namespace SHD::Networking {
 
-export class IPv4Address
+class IPv4Address
 {
 private:
     union

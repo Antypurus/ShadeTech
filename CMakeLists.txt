@@ -66,11 +66,11 @@ function(setup_vulkan_dependency
         target_include_directories(${target_name} SYSTEM PRIVATE ${Vulkan_INCLUDE_DIRS})
         target_link_libraries(${target_name} PRIVATE Vulkan::Vulkan)
     endif()
-
 endfunction()
 
 file(GLOB_RECURSE SHD_GLOBAL_MODULE_SOURCES CONFIGURE_DEPENDS
-    ShadeTech/**.cxx)
+    ShadeTech/**.cpp
+    ShadeTech/**.h)
 extract_platform_dependent_sources(
     "${SHD_GLOBAL_MODULE_SOURCES}"
     SHD_GENERAL_SOURCES
@@ -90,24 +90,12 @@ elseif(UNIX)
     list(APPEND SHD_MODULE_SOURCES ${SHD_POSIX_SOURCES})
 endif()
 
-add_library(modules)
-target_sources(modules
-        PUBLIC
-        FILE_SET CXX_MODULES FILES
-        ${SHD_MODULE_SOURCES}
-)
-target_include_directories(modules PRIVATE
-    ./ShadeTech/
-)
-target_link_libraries(modules PRIVATE glfw ${GLFW_LIBRARIES} cpptrace::cpptrace)
-configure_compiler_warnings(modules)
-setup_vulkan_dependency(modules)
-
+add_executable(${CMAKE_PROJECT_NAME} ${SHD_MODULE_SOURCES})
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw ${GLFW_LIBRARIES} cpptrace::cpptrace)
+setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
+configure_compiler_warnings(${CMAKE_PROJECT_NAME})
 if(WIN32)
     #windows networking lib
-    target_link_libraries(modules PRIVATE Ws2_32)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Ws2_32)
 endif()
-
-add_executable(${CMAKE_PROJECT_NAME} ShadeTech/main.cpp)
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
-target_link_libraries(${CMAKE_PROJECT_NAME} modules)

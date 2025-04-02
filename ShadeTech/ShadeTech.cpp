@@ -1,19 +1,14 @@
-module;
-
+#include "Application.h"
+#include "Networking/Socket/TCPClientSocket.h"
+#include "Networking/Socket/TCPServerSocket.h"
 #include "Types.h"
 #include "core/move.h"
+#include "core/string/string.h"
 
 #include <iostream>
 #include <string>
 
-import Application;
-import Networking;
-import core.string;
-import core.string.utils;
-
-export module ShadeTech;
-
-export class ShadeTech : public SHD::Application
+class ShadeTech : public SHD::Application
 {
 public:
     int Run(u32 argument_count, char** arguments) override

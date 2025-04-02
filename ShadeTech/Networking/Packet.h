@@ -1,14 +1,12 @@
-module;
+#pragma once
 
 #include "Types.h"
 
-export module networking.packet;
-
 namespace SHD::Networking {
 
-export constexpr u32 MTU = 1500;
+constexpr u32 MTU = 1500;
 
-export struct Packet
+struct Packet
 {
     u8 packet[MTU] = {};
     u64 packet_size = 0;
