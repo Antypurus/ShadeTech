@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Types.h"
+#include "types.h"
 
 namespace SHD {
 
-void* AllocateMemory(usize size);
+void* allocate_memory(usize size);
 void free_memory(void* ptr);
-void Copy(void* source, usize size, void* destination, usize offset = 0);
+void copy(void* source, usize size, void* destination, usize offset = 0);
+void memset(void* ptr, usize size, u8 value);
 
 }

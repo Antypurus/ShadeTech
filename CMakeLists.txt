@@ -93,7 +93,7 @@ endif()
 add_executable(${CMAKE_PROJECT_NAME} ${SHD_MODULE_SOURCES})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw ${GLFW_LIBRARIES} cpptrace::cpptrace)
-setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
+#setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
 configure_compiler_warnings(${CMAKE_PROJECT_NAME})
 if(WIN32)
     #windows networking lib
