@@ -40,33 +40,18 @@ endif()
 # CMake configs
 include(CMake/Warnings.cmake)
 include(CMake/Platform.cmake)
+include(CMake/Vulkan.cmake)
 
 # third party dependencies
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-add_subdirectory(ThirdParty/GLFW EXCLUDE_FROM_ALL)
-add_subdirectory(ThirdParty/Catch2 EXCLUDE_FROM_ALL)
-
 if(NOT WIN32)
     set(CPPTRACE_GET_SYMBOLS_WITH_ADDR2LINE ON)
 endif()
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(ThirdParty/cpptrace)
-
-function(setup_vulkan_dependency
-        target_name #input
-)
-    find_package(Vulkan REQUIRED)
-    if(WIN32)
-        set(VK_SDK_PATH "$ENV{VULKAN_SDK}")
-        target_include_directories(${target_name} SYSTEM PRIVATE ${VK_SDK_PATH}/Include/)
-        target_link_libraries(${target_name} PRIVATE ${VK_SDK_PATH}/Lib/vulkan-1.lib)
-
-    else()
-        target_include_directories(${target_name} SYSTEM PRIVATE ${Vulkan_INCLUDE_DIRS})
-        target_link_libraries(${target_name} PRIVATE Vulkan::Vulkan)
-    endif()
-endfunction()
+add_subdirectory(ThirdParty/GLFW EXCLUDE_FROM_ALL)
+add_subdirectory(ThirdParty/Catch2 EXCLUDE_FROM_ALL)
 
 file(GLOB_RECURSE SHD_GLOBAL_MODULE_SOURCES CONFIGURE_DEPENDS
     ShadeTech/**.cpp
@@ -78,6 +63,7 @@ extract_platform_dependent_sources(
     SHD_LINUX_SOURCES
     SHD_MACOS_SOURCES
     SHD_POSIX_SOURCES)
+
 set(SDH_MODULE_SOURCES)
 list(APPEND SHD_MODULE_SOURCES ${SHD_GENERAL_SOURCES})
 if(WIN32)
@@ -93,7 +79,6 @@ endif()
 add_executable(${CMAKE_PROJECT_NAME} ${SHD_MODULE_SOURCES})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ./ShadeTech/)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw ${GLFW_LIBRARIES} cpptrace::cpptrace)
-#setup_vulkan_dependency(${CMAKE_PROJECT_NAME})
 configure_compiler_warnings(${CMAKE_PROJECT_NAME})
 if(WIN32)
     #windows networking lib
