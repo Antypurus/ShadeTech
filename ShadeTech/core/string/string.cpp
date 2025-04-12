@@ -11,6 +11,7 @@ string::~string()
 {
     if (this->str != nullptr) {
         free_memory(this->str);
+        this->str = nullptr;
         this->length = 0;
         this->capacity = 0;
     }
@@ -39,6 +40,57 @@ string::string(char*&& string, usize length) :
     length(length),
     capacity(length)
 {
+}
+
+string::string(const string& other) :
+    length(other.length),
+    capacity(other.capacity)
+{
+    this->str = (char*)allocate_memory(this->capacity);
+    copy((void*)other.str, other.capacity, (void*)this->str);
+}
+
+string& string::operator=(const string& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->~string();
+
+    this->length = other.length;
+    this->capacity = other.capacity;
+
+    this->str = (char*)allocate_memory(this->capacity);
+    copy((void*)other.str, other.capacity, (void*)this->str);
+
+    return *this;
+}
+
+string::string(string&& other) :
+    str(other.str),
+    length(other.length),
+    capacity(other.capacity)
+{
+    other.str = nullptr;
+    other.length = 0;
+    other.capacity = 0;
+}
+
+string& string::operator=(string&& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->~string();
+
+    this->str = other.str;
+    this->length = other.length;
+    this->capacity = other.capacity;
+    other.str = nullptr;
+    other.length = 0;
+    other.capacity = 0;
+
+    return *this;
 }
 
 string string::operator+(const string& other) const
