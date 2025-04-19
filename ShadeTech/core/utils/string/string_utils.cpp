@@ -1,7 +1,7 @@
 #include "string_utils.h"
 
-#include <core/types.h>
 #include <core/platform.h>
+#include <core/types.h>
 
 #if PLATFORM_X64
 #include <immintrin.h>
@@ -30,7 +30,7 @@ inline usize x64_string_lenght(const char* string)
             }
         }
         __m128i zeroMask = _mm_setzero_si128();
-        __m128i chunk = _mm_load_si128((__m128i*)string);
+        __m128i chunk = _mm_load_si128((__m128i*)(string + pre_avx_alignment));
         i32 mask = _mm_movemask_epi8(_mm_cmpeq_epi8(chunk, zeroMask));
         if (mask) {
             return pre_avx_alignment + _tzcnt_u32(mask);
