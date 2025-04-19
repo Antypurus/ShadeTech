@@ -1,5 +1,5 @@
 #include "ShadeTech.cpp"
-#include "types.h"
+#include <core/types.h>
 
 int main(int argc, char** argv)
 {
