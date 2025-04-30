@@ -19,8 +19,10 @@ public:
         std::cout << str1.str << std::endl;
         std::cout << (str1 + " stuff").str << std::endl;
 
+#if PLATFORM_MACOS
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);
+#endif
 
 #if 0
         SHD::Networking::TCP_server_socket server;

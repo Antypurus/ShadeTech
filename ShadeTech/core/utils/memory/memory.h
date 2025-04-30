@@ -2,13 +2,8 @@
 
 #include <core/types.h>
 
-#include <mutex>
-#include <unordered_map>
-
 namespace SHD {
 
-void* allocate_memory(usize size);
-void free_memory(void* ptr);
 void copy(void* source, usize size, void* destination, usize offset = 0);
 void memset(void* ptr, usize size, u8 value);
 
@@ -24,58 +19,71 @@ T align(T value, AlignT alignment)
     return value + to_alignment(value, alignment);
 }
 
-struct allocator;
-struct allocation_registry
-{
-private:
-    static allocation_registry s_instance;
-    std::unordered_map<u8*, allocator*> m_registry;
-    std::mutex m_registry_guard;
-
-public:
-    static allocation_registry& instance();
-
-    allocation_registry() = default;
-    void register_allocation(u8* ptr, allocator* allocator);
-    void remove_allocation(u8* ptr);
-};
+/*
+ * =========== Allocator Interface =============
+ */
 
 struct allocator
 {
-protected:
-    u8* m_allocator_base = nullptr;
-    allocator* m_parent = nullptr;
-    const char* m_name = "";
-
 public:
-    allocator(u8* base, allocator* parent = nullptr, const char* name = "");
-    virtual ~allocator();
+    virtual ~allocator() = default;
+
+    template<typename T>
+    T* allocate(usize size)
+    {
+        return (T*)this->alloc(size);
+    }
+
+    template<typename T>
+    void free(T* ptr, usize size)
+    {
+        this->free((void*)ptr, size);
+    }
+
+protected:
+    virtual void* alloc(usize size) = 0;
+    virtual void free(void* ptr, usize size) = 0;
 };
+
+/*
+ * =========== System Allocator =============
+ */
 
 struct system_allocator : public allocator
 {
-private:
+public:
     static system_allocator s_instance;
 
 public:
+    ~system_allocator() override = default;
     static system_allocator& instance();
 
-    system_allocator();
+private:
+    system_allocator() = default;
+
+protected:
+    void* alloc(usize size) override;
+    void free(void* ptr, usize size) override;
 };
 
-struct arena
+/*
+ * =========== Arena Allocator =============
+ */
+
+struct arena : public allocator
 {
-public:
-    u8* m_arena = nullptr;
-    usize m_capacity = 0;
-    usize m_used = 0;
-    u16 m_alignment = 0;
-
 private:
-    arena() = default;
-    arena(u8* ptr, usize capacity, u16 alignment = 0);
+    u8* m_arena = nullptr;
+    usize m_used = 0;
+    usize m_capacity = 0;
 
-    u8* allocate_buffer(usize size);
+public:
+    arena() = default;
+    ~arena() override = default;
+
+protected:
+    void* alloc(usize size) override;
+    void free(void* ptr, usize size) override;
 };
 
 }

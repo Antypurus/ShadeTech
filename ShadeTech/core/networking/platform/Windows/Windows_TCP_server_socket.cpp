@@ -38,7 +38,7 @@ result<TCP_connection_socket, int> TCP_server_socket::listen_for_connection()
     SOCKET connection_socket = accept(this->m_server_socket, &connection_address, &connection_addr_len);
     if (connection_socket == INVALID_SOCKET) {
         int connection_error = WSAGetLastError();
-        std::cout << connection_error << std::endl;
+        LOG_INFO("%d", connection_error);
         return error{ connection_error };
     }
     return TCP_connection_socket{ connection_socket };
