@@ -7,6 +7,8 @@
 #include <core/utils/move.h>
 #include <core/utils/string/string.h>
 
+#include <core/audio/platform/windows/win_microphone.h>
+
 #include <iostream>
 
 class shade_tech : public SHD::application
@@ -22,6 +24,10 @@ public:
 #if PLATFORM_MACOS
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);
+#endif
+
+#if PLATFORM_WINDOWS
+        SHD::Audio::Windows::Microphone mic;
 #endif
 
 #if 0

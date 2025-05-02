@@ -28,6 +28,8 @@ function(configure_compiler_warnings
         -Wno-error=unused-private-field
         -Wno-error=unused-variable
         -Wno-error=include-angled-in-module-purview
+        -Wno-error=language-extension-token
+        -Wno-language-extension-token
     )
 
     set(EDGELEAP_GCC_EXTRA_WARNINGS

@@ -2,7 +2,7 @@
 
 #include <core/platform.h>
 
-#include <iostream>
+#include <stdio.h>
 
 #define LOGGING_ENABLED 1
 
