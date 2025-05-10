@@ -9,14 +9,15 @@ import shutil
 
 
 PROJECT_BUILD_TARGET_MAP = {
-    "": "ShadeTech",
-    "ShadeTech": "ShadeTech"
+    "": "",
+    "client": "ShadeTech-client",
+    "core": "ShadeTech",
 }
 
 
 PROJECT_RUN_TARGET_MAP = {
-    "": "ShadeTech",
-    "ShadeTech": "ShadeTech"
+    "": "ShadeTech-client",
+    "ShadeTech": "ShadeTech-client"
 }
 
 

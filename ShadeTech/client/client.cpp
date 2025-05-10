@@ -27,30 +27,13 @@ public:
 #endif
 
 #if PLATFORM_WINDOWS
-        SHD::Audio::Windows::Microphone mic;
-#endif
-
-#if 0
-        SHD::Networking::TCP_server_socket server;
-        auto con = SHD::move(*server.listen_for_connection());
-        while (con.is_connected()) {
-            auto readResult = con.receive();
-            if (readResult.has_value()) {
-                auto packet = *readResult;
-                std::cout << packet.packet << std::endl;
-            } else {
-                break;
-            }
-        }
-#endif
-#if 0
-        SHD::Networking::TCP_client_socket client({ 192, 168, 1, 249 }, 8080);
-        while (true) {
-            std::string input;
-            getline(std::cin, input);
-            client.send((const u8*)input.c_str(), input.size());
-        }
+        // SHD::Audio::Windows::Microphone mic;
 #endif
         return 0;
     }
 };
+
+int main(int argc, char** argv)
+{
+    SHD::application::run_application(shade_tech{}, argc, argv);
+}

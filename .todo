@@ -5,5 +5,5 @@
  - [X] Result Type
  - [X] Optinal Type
  - [ ] Basic String View Type
- - [ ] String
+ - [X] Basic String String Support
  - [ ] Dynamic Array
