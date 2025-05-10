@@ -2,6 +2,7 @@
 
 #include <core/types.h>
 #include <core/utils/log.h>
+#include <core/utils/ring_buffer.h>
 
 #include <Windows.h>
 #include <audioclient.h>
