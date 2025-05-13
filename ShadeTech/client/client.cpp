@@ -1,15 +1,20 @@
 #include "core/utils/log.h"
 #include <core/application.h>
+#include <core/audio/platform/windows/win_microphone.h>
 #include <core/networking/Socket/TCP_client_socket.h>
 #include <core/networking/Socket/TCP_server_socket.h>
 #include <core/rendering/platform/macos/macos_window.h>
 #include <core/types.h>
+#include <core/utils/function.h>
 #include <core/utils/move.h>
 #include <core/utils/string/string.h>
 
-#include <core/audio/platform/windows/win_microphone.h>
-
 #include <iostream>
+
+int test(int a)
+{
+    return a;
+}
 
 class shade_tech : public SHD::application
 {
@@ -21,13 +26,17 @@ public:
         std::cout << str1.str << std::endl;
         std::cout << (str1 + " stuff").str << std::endl;
 
+        SHD::function<int(int)> f = [&](int i) -> int { return str1.length + i; };
+
+        std::cout << f(2) << std::endl;
+
 #if PLATFORM_MACOS
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);
 #endif
 
 #if PLATFORM_WINDOWS
-        // SHD::Audio::Windows::Microphone mic;
+        SHD::Audio::Windows::Microphone mic;
 #endif
         return 0;
     }

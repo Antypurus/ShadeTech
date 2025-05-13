@@ -23,6 +23,8 @@ T align(T value, AlignT alignment)
  * =========== Allocator Interface =============
  */
 
+#define DEFAULT_ALLOCATOR &system_allocator::instance()
+
 struct allocator
 {
 public:
