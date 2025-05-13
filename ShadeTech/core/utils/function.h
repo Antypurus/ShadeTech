@@ -60,6 +60,68 @@ public:
         };
     }
 
+    function(const function& other) :
+        m_call_adapter(other.m_call_adapter),
+        m_allocator(other.m_allocator),
+        m_capture_group_storage_size(other.m_capture_group_storage_size)
+    {
+        if (this->m_allocator != nullptr && this->m_capture_group_storage_size > 0) {
+            this->m_function_storage = this->m_allocator->allocate<u8>(this->m_capture_group_storage_size);
+            copy(other.m_function_storage, other.m_capture_group_storage_size, this->m_function_storage);
+        } else {
+            this->m_function_storage = other.m_function_storage;
+        }
+    }
+
+    function& operator=(const function& other)
+    {
+        if (this == &other)
+            return *this;
+
+        this->~function();
+        this->m_call_adapter = other.m_call_adapter;
+        this->m_allocator = other.m_allocator;
+        this->m_capture_group_storage_size = other.m_capture_group_storage_size;
+        if (this->m_allocator != nullptr && this->m_capture_group_storage_size > 0) {
+            this->m_function_storage = this->m_allocator->allocate<u8>(this->m_capture_group_storage_size);
+            copy(other.m_function_storage, other.m_capture_group_storage_size, this->m_function_storage);
+        } else {
+            this->m_function_storage = other.m_function_storage;
+        }
+
+        return *this;
+    }
+
+    function(function&& other) :
+        m_call_adapter(other.m_call_adapter),
+        m_allocator(other.m_allocator),
+        m_function_storage(other.m_function_storage),
+        m_capture_group_storage_size(other.m_capture_group_storage_size)
+    {
+        other.m_call_adapter = nullptr;
+        other.m_allocator = nullptr;
+        other.m_function_storage = nullptr;
+        other.m_capture_group_storage_size = 0;
+    }
+
+    function& operator=(function&& other)
+    {
+        if (this == &other)
+            return *this;
+
+        this->~function();
+        this->m_call_adapter = other.m_call_adapter;
+        this->m_allocator = other.m_allocator;
+        this->m_function_storage = other.m_function_storage;
+        this->m_capture_group_storage_size = other.m_capture_group_storage_size;
+        other.m_call_adapter = nullptr;
+        other.m_allocator = nullptr;
+        other.m_function_storage = nullptr;
+        other.m_capture_group_storage_size = 0;
+
+        return *this;
+    }
+
     return_T operator()(params_T... params)
     {
         ASSERT(this->m_call_adapter != nullptr, "Un-Initialized function calling is not permitted");
