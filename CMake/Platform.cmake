@@ -13,16 +13,16 @@ function(extract_platform_dependent_sources
     set(posix_result)
 
     foreach(source ${all_sources})
-        if(source MATCHES ".*\/[W|w]indows\/.*") #windows source file
+        if(source MATCHES ".*[W|w]indows.*") #windows source file
             list(APPEND windows_result ${source})
-        elseif(source MATCHES ".*\/[L|l]inux\/.*") #linux source file
+        elseif(source MATCHES ".*[L|l]inux.*") #linux source file
             list(APPEND linux_result ${source})
-        elseif(source MATCHES ".*\/[M|m][A|a][C|c][O|o][S|s]\/.*") #macos source file
+        elseif(source MATCHES ".*[M|m][A|a][C|c][O|o][S|s].*") #macos source file
             list(APPEND macos_result ${source})
-        elseif(source MATCHES ".*\/[P|p][O|o][S|s][I|i][X|x]\/.*") #posix source file
+        elseif(source MATCHES ".*[P|p][O|o][S|s][I|i][X|x].*") #posix source file
             list(APPEND posix_result ${source})
-        elseif(source MATCHES ".*\/tests\/.*") # ignore tests files
-        elseif(source MATCHES ".*\/ThirdParty\/.*") # ignore third party files
+        elseif(source MATCHES ".*tests.*") # ignore tests files
+        elseif(source MATCHES ".*ThirdParty.*") # ignore third party files
         else()
             list(APPEND platform_independent_result ${source})
         endif()
