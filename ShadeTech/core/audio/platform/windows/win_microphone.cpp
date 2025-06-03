@@ -37,7 +37,9 @@ using namespace Microsoft::WRL;
         LOG_ERROR(message " Error:0x%lx", CAT(result_code, __LINE__));                                                 \
     }
 
-Microphone::Microphone()
+
+Microphone::Microphone():
+ m_audio_samples(5)
 {
     LOG_INFO("Initializng mic");
     std::vector<float> frames;

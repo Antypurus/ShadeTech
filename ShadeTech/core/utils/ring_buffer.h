@@ -29,7 +29,7 @@ public:
     {
         if(this->m_allocator != nullptr && this->m_buffer != nullptr)
         {
-            this->m_allocator->free(this->m_buffer);
+            this->m_allocator->free(this->m_buffer, this->m_ring_element_count * sizeof(T));
             this->m_ring_element_count = 0;
             this->m_head = 0;
             this->m_tail = 0;
