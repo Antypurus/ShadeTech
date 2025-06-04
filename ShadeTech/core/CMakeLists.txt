@@ -47,6 +47,6 @@ if(APPLE)
 endif()
 if(WIN32)
     #windows networking lib
-    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Ws2_32 ole32 mmdevapi)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Ws2_32 ole32 mmdevapi DXGI)
 endif()
 

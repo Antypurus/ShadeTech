@@ -9,6 +9,8 @@
 #include <core/utils/move.h>
 #include <core/utils/string/string.h>
 
+#include <core/rendering/platform/windows/D3D12/D3D12.h>
+
 #include <iostream>
 
 int test(int a)
@@ -41,7 +43,9 @@ public:
 #endif
 
 #if PLATFORM_WINDOWS
-        SHD::Audio::Windows::Microphone mic;
+        //SHD::Audio::Windows::Microphone mic;
+
+        init_d3d12();
 #endif
         return 0;
     }
