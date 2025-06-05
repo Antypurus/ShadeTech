@@ -22,7 +22,7 @@ u32 TCP_client_socket::resolve_hostname(const char* hostname)
     }
 
     u32 addr = reinterpret_cast<sockaddr_in*>(target_address->ai_addr)->sin_addr.s_addr;
-    LOG_INFO("size:%d", target_address->ai_addrlen);
+    LOG_INFO("size:{}", target_address->ai_addrlen);
 
     freeaddrinfo(target_address);
     return addr;
@@ -39,7 +39,7 @@ void TCP_client_socket::connect(const SHD::Networking::IPv4_address& address, u1
 
     int result = ::connect(this->m_socket, (sockaddr*)&target, 16);
     if (result != 0) {
-        LOG_ERROR("Failed to connect socket: %d", errno);
+        LOG_ERROR("Failed to connect socket: {}", errno);
         return;
     }
 }

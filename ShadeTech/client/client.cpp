@@ -23,15 +23,6 @@ class shade_tech : public SHD::application
 public:
     int run(u32 /*argument_count*/, char** /*arguments*/) override
     {
-        SHD::string str1("hello");
-        SHD::string str2(" stuff");
-        std::cout << str1.str << std::endl;
-        std::cout << (str1 + " stuff").str << std::endl;
-
-        SHD::function<int(int)> f = [&](int i) -> int { return str1.length + i; };
-
-        std::cout << f(2) << std::endl;
-
 #if PLATFORM_MACOS
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);

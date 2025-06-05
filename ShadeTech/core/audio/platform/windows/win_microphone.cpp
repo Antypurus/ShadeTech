@@ -34,7 +34,7 @@ using namespace Microsoft::WRL;
 #define COM_CALL(function, message)                                                                                    \
     HRESULT CAT(result_code, __LINE__) = function;                                                                     \
     if (CAT(result_code, __LINE__) != S_OK) {                                                                          \
-        LOG_ERROR(message " Error:0x%lx", CAT(result_code, __LINE__));                                                 \
+        LOG_ERROR(message " Error:{}", CAT(result_code, __LINE__));                                                 \
     }
 
 
@@ -145,7 +145,7 @@ Microphone::Microphone():
         audio_client->Stop();
         LOG_INFO("Recording Stopped");
 
-        LOG_INFO("Final sample count: %llu", frames.size());
+        LOG_INFO("Final sample count: {}", frames.size());
     }
 
     /*

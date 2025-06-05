@@ -2,7 +2,7 @@
 
 #include <core/platform.h>
 
-#include <stdio.h>
+#include <print>
 
 #define LOGGING_ENABLED 1
 
@@ -24,16 +24,16 @@
 #endif
 
 #define LOG_ERROR(message, ...)                                                                                        \
-    printf(RED_FG "[ERROR][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
+    std::print(RED_FG "[ERROR][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
 
 #define LOG_WARN(message, ...)                                                                                         \
-    printf(YELLOW_FG "[WARNING][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
+    std::print(YELLOW_FG "[WARNING][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
 
 #define LOG_SUCCESS(message, ...)                                                                                      \
-    printf(GREEN_FG "[SUCCESS][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
+    std::print(GREEN_FG "[SUCCESS][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
 
 #define LOG_INFO(message, ...)                                                                                         \
-    printf(BLUE_FG "[INFO][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
+    std::print(BLUE_FG "[INFO][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
 
 #else
 
