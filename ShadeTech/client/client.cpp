@@ -8,6 +8,7 @@
 #include <core/utils/function.h>
 #include <core/utils/move.h>
 #include <core/utils/string/string.h>
+#include <core/utils/string/string_view.h>
 
 #include <core/rendering/platform/windows/D3D12/D3D12.h>
 
@@ -23,6 +24,13 @@ class shade_tech : public SHD::application
 public:
     int run(u32 /*argument_count*/, char** /*arguments*/) override
     {
+        SHD::string_view view{__FILE__};
+        SHD::pair<SHD::string_view, SHD::string_view> split_result = view.rsplit('/');
+        SHD::string head = split_result.first.to_string();
+        SHD::string tail = split_result.second.to_string();
+        std::cout << head.str << std::endl;
+        std::cout << tail.str << std::endl;
+        
 #if PLATFORM_MACOS
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);

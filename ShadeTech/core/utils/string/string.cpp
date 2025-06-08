@@ -32,10 +32,10 @@ string::string(const char* string, allocator* allocator) :
 string::string(const char* string, usize length, allocator* allocator) :
     m_allocator(allocator),
     length(length),
-    capacity(length)
+    capacity(length + 1)
 {
-    this->str = this->m_allocator->allocate<char>(this->length);
-    memset(this->str, this->length, 0);
+    this->str = this->m_allocator->allocate<char>(this->capacity);
+    memset(this->str, this->capacity, 0);
     copy((void*)string, this->length, (void*)this->str);
 }
 
@@ -43,7 +43,7 @@ string::string(char*&& string, usize length, allocator* allocator) :
     m_allocator(allocator),
     str(string),
     length(length),
-    capacity(length)
+    capacity(length + 1)
 {
 }
 

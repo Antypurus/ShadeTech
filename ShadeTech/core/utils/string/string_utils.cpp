@@ -121,4 +121,34 @@ usize string_lenght(const char* str)
 #endif
 }
 
+//TODO(Tiago): SIMD Optimize
+usize last_token_occurence(const char* str, usize strlen, char token)
+{
+    for(isize i = (isize)strlen - 1; i >= 0; --i)
+    {
+        if(str[i] == token)
+        {
+            return (usize)i;
+        }
+    }
+
+    // index 0 is returned if not matches are found for the token
+    return 0;
+}
+
+//TODO(Tiago): SIMD Optimize
+usize first_token_occurence(const char* str, usize strlen, char token)
+{
+    for(usize i = 0; i < strlen; ++i)
+    {
+        if(str[i] == token)
+        {
+            return i;
+        }
+    }
+
+    // the last tring index is returned if no matches for the token are found
+    return 0;
+}
+
 }
