@@ -10,13 +10,19 @@ struct string_view
 {
 public:
     const char* string = nullptr;
-    const usize length = 0;
+    usize length = 0;
 
 public:
     string_view() = default;
     string_view(const char* str);
     string_view(const char* str, usize length);
     string_view(const string_view& other);
+    string_view& operator=(const string_view& other);
+    string_view& operator=(const char* str);
+
+    const char* begin();
+    const char* end();
+    char operator[](usize index) const;
 
     SHD::string to_string() const;
     string_view substring(usize start = 0, usize end = 0) const;
@@ -33,7 +39,6 @@ public:
 
 public:
     string_view(string_view&& other) = delete;
-    string_view& operator=(const string_view& other) = delete;
     string_view& operator=(string_view&& other) = delete;
 };
 
