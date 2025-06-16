@@ -1,6 +1,7 @@
 #include "string_view.h"
 
-#include "string_utils.h"
+#include <core/utils/assert.h>
+#include <core/utils/string/string_utils.h>
 
 namespace SHD {
 
@@ -20,6 +21,44 @@ string_view::string_view(const string_view& other) :
     string(other.string),
     length(other.length)
 {
+}
+
+string_view& string_view::operator=(const string_view& other)
+{
+    if (this == &other)
+        return *this;
+
+    this->string = other.string;
+    this->length = other.length;
+
+    return *this;
+}
+
+string_view& string_view::operator=(const char* str)
+{
+    if (this->string == str)
+        return *this;
+
+    this->string = str;
+    this->length = string_lenght(str);
+
+    return *this;
+}
+
+const char* string_view::begin()
+{
+    return this->string;
+}
+
+const char* string_view::end()
+{
+    return this->string + (this->length - 1);
+}
+
+char string_view::operator[](usize index) const
+{
+    ASSERT(index < this->length, "index must be withing string_view bounds");
+    return this->string[index];
 }
 
 SHD::string string_view::to_string() const
@@ -68,7 +107,7 @@ string_view string_view::rsplit_tail(char token) const
 {
     usize idx = this->rsplit_index(token);
     if (idx > 0) {
-        return string_view{ this->string, this->length - idx - 1 };
+        return string_view{ this->string + idx + 1, this->length - idx - 1 };
     } else {
         return string_view{ this->string, this->length };
     }

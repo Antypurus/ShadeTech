@@ -1,8 +1,24 @@
 #pragma once
 
 #include <core/platform.h>
+#include <core/utils/string/string_view.h>
 
-#include <print>
+#include <vector>
+
+namespace SHD {
+
+enum class log_level
+{
+    error,
+    warning,
+    info,
+    success
+};
+
+std::vector<usize> find_pattern_replacement_fields(string_view pattern);
+void print(string_view file, usize line, log_level level, string_view message, ...);
+
+}
 
 #define LOGGING_ENABLED 1
 
@@ -11,29 +27,20 @@
 #define TO_STR(X) STR(X)
 #define STR(X) #X
 
-#define GREEN_FG "\033[0;32m"
-#define RED_FG "\033[0;31m"
-#define YELLOW_FG "\033[1;33m"
-#define BLUE_FG "\033[1;36m"
-#define RESET_FG "\033[0m"
-
 #if COMPILER_MSVC
 #define SHD_OPT_EXPAND(...) , __VA_ARGS__
 #else
 #define SHD_OPT_EXPAND(...) __VA_OPT__(, ) __VA_ARGS__
 #endif
 
+//[ERROR_LEVEL][file@line]: message \n"
 #define LOG_ERROR(message, ...)                                                                                        \
-    std::print(RED_FG "[ERROR][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
-
+    SHD::print(__FILE__, __LINE__, SHD::log_level::error, message SHD_OPT_EXPAND(__VA_ARGS__))
 #define LOG_WARN(message, ...)                                                                                         \
-    std::print(YELLOW_FG "[WARNING][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
-
+    SHD::print(__FILE__, __LINE__, SHD::log_level::warning, message SHD_OPT_EXPAND(__VA_ARGS__))
 #define LOG_SUCCESS(message, ...)                                                                                      \
-    std::print(GREEN_FG "[SUCCESS][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
-
-#define LOG_INFO(message, ...)                                                                                         \
-    std::print(BLUE_FG "[INFO][" __FILE__ "@" TO_STR(__LINE__) "]" message "\n" RESET_FG SHD_OPT_EXPAND(__VA_ARGS__))
+    SHD::print(__FILE__, __LINE__, SHD::log_level::success, message SHD_OPT_EXPAND(__VA_ARGS__))
+#define LOG_INFO(message, ...) SHD::print(__FILE__, __LINE__, SHD::log_level::info, message SHD_OPT_EXPAND(__VA_ARGS__))
 
 #else
 
