@@ -1,6 +1,5 @@
 #include "core/utils/log.h"
 #include <core/application.h>
-#include <core/audio/platform/windows/win_microphone.h>
 #include <core/networking/Socket/TCP_client_socket.h>
 #include <core/networking/Socket/TCP_server_socket.h>
 #include <core/rendering/platform/macos/macos_window.h>
@@ -10,14 +9,10 @@
 #include <core/utils/string/string.h>
 #include <core/utils/string/string_view.h>
 
+#if PLATFORM_WINDOWS
+#include <core/audio/platform/windows/win_microphone.h>
 #include <core/rendering/platform/windows/D3D12/D3D12.h>
-
-#include <iostream>
-
-int test(int a)
-{
-    return a;
-}
+#endif
 
 class shade_tech : public SHD::application
 {

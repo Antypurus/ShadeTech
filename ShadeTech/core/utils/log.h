@@ -34,10 +34,13 @@ void print(string_view file, usize line, log_level level, string_view message, .
 #endif
 
 //[ERROR_LEVEL][file@line]: message \n"
-#define LOG_ERROR(message, ...) SHD::print(__FILE__, __LINE__, SHD::log_level::error, message, __VA_ARGS__)
-#define LOG_WARN(message, ...) SHD::print(__FILE__, __LINE__, SHD::log_level::warning, message, __VA_ARGS__)
-#define LOG_SUCCESS(message, ...) SHD::print(__FILE__, __LINE__, SHD::log_level::success, message, __VA_ARGS__)
-#define LOG_INFO(message, ...) SHD::print(__FILE__, __LINE__, SHD::log_level::info, message, __VA_ARGS__)
+#define LOG_ERROR(message, ...)                                                                                        \
+    SHD::print(__FILE__, __LINE__, SHD::log_level::error, message SHD_OPT_EXPAND(__VA_ARGS__))
+#define LOG_WARN(message, ...)                                                                                         \
+    SHD::print(__FILE__, __LINE__, SHD::log_level::warning, message SHD_OPT_EXPAND(__VA_ARGS__))
+#define LOG_SUCCESS(message, ...)                                                                                      \
+    SHD::print(__FILE__, __LINE__, SHD::log_level::success, message SHD_OPT_EXPAND(__VA_ARGS__))
+#define LOG_INFO(message, ...) SHD::print(__FILE__, __LINE__, SHD::log_level::info, message SHD_OPT_EXPAND(__VA_ARGS__))
 
 #else
 
