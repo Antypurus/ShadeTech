@@ -45,7 +45,21 @@ Application::Application()
     AppDelegate* delegate = [[AppDelegate alloc] init];
     this->m_delegate = (__bridge AppDelegateHandle)delegate;
     [app setDelegate:delegate];
-    //[app run];
+}
+
+Application::~Application()
+{
+    if(this->m_window != nullptr)
+    {
+        NSWindow* window = (__bridge NSWindow*)this->m_window;
+        [window release];
+    }
+    
+    AppDelegate* delegate = (__bridge AppDelegate*)this->m_delegate;
+    NSApplication* app = (__bridge NSApplication*)this->m_app;
+    
+    [delegate release];
+    [app release];
 }
 
 void Application::set_activation_policy(ApplicationActivationPolicy policy)
@@ -85,7 +99,7 @@ void Application::create_window()
     [window setTitle:@"My First macOS Window"];
     [window makeKeyAndOrderFront:nil];
 
-    g_window = (__bridge NSWindowHandle)window;
+    this->m_window = (__bridge NSWindowHandle)window;
 }
 
 void Application::run()

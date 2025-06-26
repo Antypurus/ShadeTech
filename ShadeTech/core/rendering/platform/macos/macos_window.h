@@ -23,10 +23,11 @@ struct Application
 private:
     NSApplicationHandle m_app = nullptr;
     AppDelegateHandle m_delegate = nullptr;
-    // NSWindowHandle m_window = nullptr;
+    NSWindowHandle m_window = nullptr;
 
 public:
     Application();
+    ~Application();
 
     void set_activation_policy(ApplicationActivationPolicy policy);
     void create_window();
