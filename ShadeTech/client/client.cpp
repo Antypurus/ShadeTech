@@ -4,6 +4,7 @@
 #include <core/networking/Socket/TCP_server_socket.h>
 #include <core/rendering/platform/macos/macos_window.h>
 #include <core/types.h>
+#include <core/utils/atomic.h>
 #include <core/utils/function.h>
 #include <core/utils/move.h>
 #include <core/utils/string/string.h>
@@ -13,6 +14,8 @@
 #include <core/audio/platform/windows/win_microphone.h>
 #include <core/rendering/platform/windows/D3D12/D3D12.h>
 #endif
+
+#include <iostream>
 
 class shade_tech : public SHD::application
 {
@@ -27,6 +30,14 @@ public:
         //     app.process_event();
         // }
 #endif
+
+        std::cout << UINT64_MAX << std::endl;
+        SHD::atomic_uint val = 5;
+        for (int i = 0; i < 10; i++) {
+            val.decrement();
+            std::cout << *val << std::endl;
+        }
+
 
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;
