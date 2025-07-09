@@ -34,10 +34,9 @@ public:
         std::cout << UINT64_MAX << std::endl;
         SHD::atomic_uint val = 5;
         for (int i = 0; i < 10; i++) {
-            val.decrement();
+            val.increment();
             std::cout << *val << std::endl;
         }
-
 
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;

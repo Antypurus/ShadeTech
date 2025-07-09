@@ -8,8 +8,10 @@
 #include <string>
 #include <vector>
 
+#if COMPILER_MSVC
 #pragma warning(push)
 #pragma warning(disable : 4840)
+#endif
 
 namespace SHD {
 
