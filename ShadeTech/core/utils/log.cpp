@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 
+#pragma warning(push)
+#pragma warning(disable : 4840)
+
 namespace SHD {
 
 #define GREEN_FG "\033[0;32m"
