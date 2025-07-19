@@ -13,8 +13,8 @@ public:
     atomic_uint() = default;
     atomic_uint(u64 initial_value);
 
-    void increment();
-    void decrement();
+    u64 increment();
+    u64 decrement();
     u64 operator*() { return this->m_value; };
 };
 
