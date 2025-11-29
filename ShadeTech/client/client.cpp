@@ -26,17 +26,10 @@ public:
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);
         app.create_window();
-        // while (true) {
-        //     app.process_event();
-        // }
-#endif
-
-        std::cout << UINT64_MAX << std::endl;
-        SHD::atomic_uint val = 5;
-        for (int i = 0; i < 10; i++) {
-            val.increment();
-            std::cout << *val << std::endl;
+        while (true) {
+            app.process_event();
         }
+#endif
 
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;
