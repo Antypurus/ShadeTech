@@ -49,6 +49,7 @@
     std::cout << "window should now be closed" << std::endl;
     self.application->pump_event(SHD::Rendering::MacOS::WindowEvent{
         .window_handle = notification.object,
+        .event_type = SHD::Rendering::MacOS::WindowEventType::close,
     });
 }
 @end
@@ -169,7 +170,27 @@ void Application::process_event()
 bool Application::is_open() const
 {
     NSWindow* window = (__bridge NSWindow*)this->m_window_handles[0];
-    return false;
+    return m_window_open[0];
+}
+
+void Application::pump_event(WindowEvent event)
+{
+    for(size_t i = 0; i < m_current_window_count; ++i)
+    {
+        if(event.window_handle == m_window_handles[i])
+        {
+            switch(event.event_type)
+            {
+                case(WindowEventType::close):{
+                    m_window_open[i] = false;
+                    break;
+                }
+                default:{
+                    break;
+                }
+            }
+        }
+    }
 }
 
 }

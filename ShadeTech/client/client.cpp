@@ -26,7 +26,7 @@ public:
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);
         app.create_window();
-        while (true) {
+        while (app.is_open()) {
             app.process_event();
         }
 #endif

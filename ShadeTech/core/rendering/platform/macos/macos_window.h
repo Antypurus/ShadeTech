@@ -61,6 +61,7 @@ private:
     AppDelegateHandle m_delegate = nullptr;
 
     NSWindowHandle m_window_handles[MAX_WINDOW_HANDLES];
+    bool m_window_open[MAX_WINDOW_HANDLES] = {true};
     usize m_current_window_count = 0;
 
 public:
@@ -73,7 +74,7 @@ public:
     void process_event();
     bool is_open() const;
     
-    void pump_event(WindowEvent event){};
+    void pump_event(WindowEvent event);
 };
 
 }
