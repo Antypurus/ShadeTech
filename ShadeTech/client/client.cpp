@@ -1,3 +1,4 @@
+#include "core/data_containers/array.h"
 #include "core/utils/log.h"
 #include <core/application.h>
 #include <core/networking/Socket/TCP_client_socket.h>
@@ -30,6 +31,8 @@ public:
             app.process_event();
         }
 #endif
+
+        SHD::DynArray<int> values;
 
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;
