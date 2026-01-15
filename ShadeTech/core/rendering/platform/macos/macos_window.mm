@@ -50,6 +50,7 @@
     self.application->pump_event(SHD::Rendering::MacOS::WindowEvent{
         .window_handle = notification.object,
         .event_type = SHD::Rendering::MacOS::WindowEventType::close,
+        .close_event_info = true,
     });
 }
 @end

@@ -23,6 +23,8 @@ class shade_tech : public SHD::application
 public:
     int run(u32 /*argument_count*/, char** /*arguments*/) override
     {
+
+#if 0
 #if PLATFORM_MACOS
         SHD::Rendering::MacOS::Application app;
         app.set_activation_policy(SHD::Rendering::MacOS::ApplicationActivationPolicy::Regular);
@@ -31,8 +33,14 @@ public:
             app.process_event();
         }
 #endif
+#endif
 
         SHD::DynArray<int> values;
+        values.push_back(1);
+        values.push_back(2);
+        for (auto& val : values) {
+            std::cout << val << std::endl;
+        }
 
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;

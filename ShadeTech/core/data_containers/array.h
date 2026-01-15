@@ -2,6 +2,7 @@
 
 #include <core/types.h>
 #include <core/utils/memory/memory.h>
+#include <core/utils/assert.h>
 
 namespace SHD {
 
@@ -25,6 +26,10 @@ public:
         this->m_capacity = capacity;
     }
 
+    T* begin() { return this->m_array; }
+
+    T* end() { return (this->m_array + this->m_size); }
+
     void resize(usize new_size)
     {
         T* new_buffer = this->m_allocator->allocate<T>(new_size);
@@ -38,16 +43,17 @@ public:
     void push_back(const T& value)
     {
         if (this->m_size + 1 > this->m_capacity) {
-            this->resize(this->m_capacity * 2);
+            usize new_capacity = this->m_capacity == 0 ? 1 : this->m_capacity * 2;
+            this->resize(new_capacity);
         }
 
-        new (&this->m_array[this->m_size - 1]) T(value);
+        new (&this->m_array[this->m_size]) T(value);
         this->m_size++;
     }
 
     T& operator[](usize index)
     {
-        assert(index < this->m_size);
+        ASSERT(index < this->m_size, "Out of bounds array access");
         return this->m_array[index];
     }
 };
