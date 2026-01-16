@@ -42,6 +42,11 @@ public:
             std::cout << val << std::endl;
         }
 
+        SHD::DynArray<int> v2 = values;
+        for (usize i = 0; i < v2.length(); ++i) {
+            std::cout << v2[i] << std::endl;
+        }
+
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;
 
