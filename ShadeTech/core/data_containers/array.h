@@ -33,6 +33,9 @@ public:
     {
         if (this->m_array != nullptr) {
             this->m_allocator->free(this->m_array, this->m_capacity);
+            this->m_allocator = nullptr;
+            this->m_capacity = 0;
+            this->m_size = 0;
         }
     }
 
@@ -71,6 +74,19 @@ public:
         return *this;
     }
 
+    bool operator==(const DynArray& other)
+    {
+        if (this->m_size != other.m_size)
+            return false;
+
+        for (size_t i = 0; i < this->m_size; ++i) {
+            if (this->m_array[i] != other.m_array[i])
+                return false;
+        }
+
+        return true;
+    }
+
     usize length() const { return this->m_size; }
 
     T* begin() { return this->m_array; }
@@ -96,6 +112,12 @@ public:
 
         new (&this->m_array[this->m_size]) T(value);
         this->m_size++;
+    }
+
+    void clear()
+    {
+        memset(this->m_allocator, this->m_capacity * sizeof(T), 0);
+        this->m_size = 0;
     }
 
     T& operator[](usize index)
