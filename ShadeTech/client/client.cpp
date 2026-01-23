@@ -40,9 +40,8 @@ public:
         values.push_back(2);
         for (auto& val : values) {
             std::cout << val << std::endl;
-        }
-
-        values.clear();
+        };
+        //values.clear();
 
         SHD::DynArray<int> v2 = values;
         for (usize i = 0; i < v2.length(); ++i) {
@@ -52,7 +51,7 @@ public:
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;
 
-        init_d3d12();
+        // init_d3d12();
 #endif
         return 0;
     }

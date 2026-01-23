@@ -2,9 +2,7 @@
 
 #include <core/types.h>
 #include <core/utils/assert.h>
-#include <cstdlib>
 
-#include "stdlib.h"
 #include "string.h"
 
 namespace SHD {

@@ -32,7 +32,7 @@ public:
     ~DynArray()
     {
         if (this->m_array != nullptr) {
-            this->m_allocator->free(this->m_array, this->m_capacity);
+            this->m_allocator->free(this->m_array, this->m_capacity * sizeof(T));
             this->m_allocator = nullptr;
             this->m_capacity = 0;
             this->m_size = 0;
@@ -48,8 +48,10 @@ public:
         if (&other == this)
             return *this;
 
+        this->~DynArray();
+
         this->m_allocator = other.m_allocator;
-        this->m_array = this->m_allocator->allocate<T>(other.m_capacity);
+        this->m_array = this->m_allocator->allocate<T>(other.m_capacity * sizeof(T));
         this->m_capacity = other.m_capacity;
         this->m_size = other.m_size;
         copy(other.m_array, other.m_size * sizeof(T), this->m_array);
@@ -61,6 +63,8 @@ public:
     {
         if (&other == this)
             return *this;
+
+        this->~DynArray();
 
         this->m_allocator = other.m_allocator;
         this->m_array = other.m_array;
@@ -95,9 +99,11 @@ public:
 
     void resize(usize new_size)
     {
-        T* new_buffer = this->m_allocator->allocate<T>(new_size);
-        copy(this->m_array, this->m_size, new_buffer);
-        this->m_allocator->free(this->m_array, this->m_capacity);
+        T* new_buffer = this->m_allocator->allocate<T>(new_size * sizeof(T));
+        if (this->m_array != nullptr) {
+            copy(this->m_array, this->m_size * sizeof(T), new_buffer);
+            this->m_allocator->free(this->m_array, this->m_capacity * sizeof(T));
+        }
 
         this->m_array = new_buffer;
         this->m_capacity = new_size;
@@ -116,7 +122,7 @@ public:
 
     void clear()
     {
-        memset(this->m_allocator, this->m_capacity * sizeof(T), 0);
+        memset(this->m_array, this->m_capacity * sizeof(T), 0);
         this->m_size = 0;
     }
 
