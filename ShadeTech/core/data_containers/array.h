@@ -120,6 +120,17 @@ public:
         this->m_size++;
     }
 
+    void push_back(T&& value)
+    {
+        if (this->m_size + 1 > this->m_capacity) {
+            usize new_capacity = this->m_capacity == 0 ? 1 : this->m_capacity * 2;
+            this->resize(new_capacity);
+        }
+
+        new (&this->m_array[this->m_size]) T(move(value));
+        this->m_size++;
+    }
+
     void clear()
     {
         memset(this->m_array, this->m_capacity * sizeof(T), 0);
