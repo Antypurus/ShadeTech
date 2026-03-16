@@ -15,10 +15,25 @@ template<typename T> struct remove_reference      { typedef T type; };
 template<typename T> struct remove_reference<T&>  { typedef T type; };
 template<typename T> struct remove_reference<T&&> { typedef T type; };
 
-template<typename T> inline typename remove_reference<T>::type&& move(T&& param) noexcept 
+template<typename T>
+using remove_ref_type = remove_reference<T>::type;
+
+template<typename T> 
+inline typename remove_reference<T>::type&& move(T&& param) noexcept 
 {
     return static_cast<typename remove_reference<T>::type&&>(param);
 }
+
+template<typename T>
+constexpr inline T&& forward(remove_ref_type<T>& arg) noexcept {
+    return static_cast<T&&>(arg);
+}
+
+template<typename T>
+constexpr inline T&& forward(remove_ref_type<T>&& arg) noexcept {
+    return static_cast<T&&>(arg);
+}
+
 // clang-format on
 
 }

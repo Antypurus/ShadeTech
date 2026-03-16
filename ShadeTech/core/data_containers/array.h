@@ -5,8 +5,6 @@
 #include <core/utils/memory/memory.h>
 #include <core/utils/move.h>
 
-#include <iostream>
-
 namespace SHD {
 
 template<typename T>
@@ -109,25 +107,15 @@ public:
         this->m_capacity = new_size;
     }
 
-    void push_back(const T& value)
+    template<typename U>
+    void push_back(U&& value)
     {
         if (this->m_size + 1 > this->m_capacity) {
             usize new_capacity = this->m_capacity == 0 ? 1 : this->m_capacity * 2;
             this->resize(new_capacity);
         }
 
-        new (&this->m_array[this->m_size]) T(value);
-        this->m_size++;
-    }
-
-    void push_back(T&& value)
-    {
-        if (this->m_size + 1 > this->m_capacity) {
-            usize new_capacity = this->m_capacity == 0 ? 1 : this->m_capacity * 2;
-            this->resize(new_capacity);
-        }
-
-        new (&this->m_array[this->m_size]) T(move(value));
+        new (&this->m_array[this->m_size]) T(forward<U>(value));
         this->m_size++;
     }
 
