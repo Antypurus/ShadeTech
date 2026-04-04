@@ -4,6 +4,7 @@
 #include <core/utils/assert.h>
 #include <core/utils/memory/memory.h>
 #include <core/utils/move.h>
+#include <core/utils/type_traits.h>
 
 namespace SHD {
 
@@ -52,7 +53,14 @@ public:
         this->m_array = this->m_allocator->allocate<T>(other.m_capacity * sizeof(T));
         this->m_capacity = other.m_capacity;
         this->m_size = other.m_size;
-        copy(other.m_array, other.m_size * sizeof(T), this->m_array);
+
+        if constexpr (is_trivially_copyable<T>::value) {
+            copy(other.m_array, other.m_size * sizeof(T), this->m_array);
+        } else {
+            for (size_t i = 0; i < this->m_size; ++i) {
+                this->m_array[i] = other.m_array[i];
+            }
+        }
 
         return *this;
     }

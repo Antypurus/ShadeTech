@@ -20,13 +20,9 @@
 struct test
 {
     test() { std::cout << "defualt init" << std::endl; }
-
     test(const int& val) { std::cout << "l-value init" << std::endl; }
-
     test(int&& val) { std::cout << "r-value init" << std::endl; }
-
     test(const test& val) { std::cout << "copy constructor" << std::endl; }
-
     test(test&& val) { std::cout << "move constructor" << std::endl; }
 };
 
