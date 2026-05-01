@@ -84,7 +84,7 @@ public:
         return *this;
     }
 
-    bool operator==(const DynArray& other)
+    bool operator==(const DynArray& other) const
     {
         if (this->m_size != other.m_size)
             return false;
