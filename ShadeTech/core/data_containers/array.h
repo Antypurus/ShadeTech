@@ -24,7 +24,7 @@ public:
     DynArray(usize capacity, allocator* allocator = &system_allocator::instance()) :
         m_allocator(allocator)
     {
-        this->m_array = allocator->allocate<T>(capacity);
+        this->m_array = allocator->allocate<T>(capacity * sizeof(T));
         this->m_capacity = capacity;
     }
 
@@ -75,7 +75,7 @@ public:
         this->m_allocator = other.m_allocator;
         this->m_array = other.m_array;
         this->m_capacity = other.m_capacity;
-        this->m_size = other.m_capacity;
+        this->m_size = other.m_size;
 
         other.m_array = nullptr;
         other.m_capacity = 0;
