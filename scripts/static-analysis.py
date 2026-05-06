@@ -2,6 +2,7 @@
 
 import os
 import re
+import subprocess
 
 def set_cwd_to_project_root():
     script_path = os.path.abspath(__file__)
@@ -29,12 +30,15 @@ def filter_files_for_analysis(files):
 
 
 def run_analysis(files):
-    file_list = ""
-    for file in files:
-        file_list = file_list + " " + file
-    os.system("python3 ./scripts/run-clang-tidy.py " + file_list)
+    if not files:
+        print("No files to analyze.")
+        return
+    abs_files = [re.escape(os.path.abspath(f)) for f in files]
+    cmd = ["python3", "./scripts/run-clang-tidy.py", "-config-file", "./.clang-tidy", "-p", "."] + abs_files
+    subprocess.run(cmd)
 
 
 set_cwd_to_project_root()
 files = filter_files_for_analysis(get_project_tree("."))
+print(files)
 run_analysis(files)
