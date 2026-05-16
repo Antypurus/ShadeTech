@@ -16,16 +16,6 @@
 #include <core/rendering/platform/windows/D3D12/D3D12.h>
 #endif
 
-#include <iostream>
-struct test
-{
-    test() { std::cout << "defualt init" << std::endl; }
-    test(const int& val) { std::cout << "l-value init" << std::endl; }
-    test(int&& val) { std::cout << "r-value init" << std::endl; }
-    test(const test& val) { std::cout << "copy constructor" << std::endl; }
-    test(test&& val) { std::cout << "move constructor" << std::endl; }
-};
-
 class shade_tech : public SHD::application
 {
 public:
@@ -42,15 +32,6 @@ public:
         }
 #endif
 #endif
-        const test t(5);
-        SHD::DynArray<test> values;
-        values.push_back(test(1));
-        values.push_back(test(2));
-        values.push_back(t);
-        for (auto& val : values) {
-            // std::cout << val << std::endl;
-        };
-        // values.clear();
 
 #if PLATFORM_WINDOWS
         // SHD::Audio::Windows::Microphone mic;

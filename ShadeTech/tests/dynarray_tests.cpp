@@ -38,10 +38,6 @@ TEST_CASE("capacity constructor does not add elements", "[dynarray][construct]")
     REQUIRE(arr.length() == 0);
 }
 
-// BUG: capacity constructor passes count instead of count*sizeof(T) to the
-// allocator, so only `capacity` bytes are reserved rather than
-// `capacity * sizeof(T)` bytes. The test below exercises the full capacity to
-// expose the out-of-bounds writes that result.
 TEST_CASE("capacity constructor allocates sufficient memory for all elements", "[dynarray][construct][bug]")
 {
     SHD::DynArray<int> arr(4);
@@ -128,9 +124,6 @@ TEST_CASE("copy assignment self-assignment is a no-op", "[dynarray][assign]")
     REQUIRE(a[0] == 5);
 }
 
-// BUG: move assignment sets `m_size = m_capacity` (array.h:70) instead of
-// `m_size = other.m_size`. After the move the destination reports a length
-// equal to capacity rather than the actual element count.
 TEST_CASE("move assignment transfers correct element count", "[dynarray][assign][bug]")
 {
     SHD::DynArray<int> src;
@@ -141,7 +134,6 @@ TEST_CASE("move assignment transfers correct element count", "[dynarray][assign]
     SHD::DynArray<int> dst;
     dst = static_cast<SHD::DynArray<int>&&>(src);
 
-    // BUG: dst.length() returns 4 (capacity) instead of 3 (size).
     REQUIRE(dst.length() == 3);
     REQUIRE(dst[0] == 1);
     REQUIRE(dst[1] == 2);
@@ -321,25 +313,23 @@ TEST_CASE("resize preserves existing elements", "[dynarray][resize]")
     REQUIRE(arr[1] == 20);
 }
 
+TEST_CASE("pop_back removes last element and decrements length", "[dynarray][pop_back]")
+{
+    SHD::DynArray<int> arr;
+    arr.push_back(1);
+    arr.push_back(2);
+    arr.push_back(3);
+    arr.pop_back();
+    REQUIRE(arr.length() == 2);
+    REQUIRE(arr[0] == 1);
+    REQUIRE(arr[1] == 2);
+}
+
 // ============================================================
 // TDD stubs — features not yet implemented
 // These tests are skipped until the corresponding API is added.
 // Once an API is implemented, remove the SKIP() call and verify.
 // ============================================================
-
-TEST_CASE("pop_back removes last element and decrements length", "[dynarray][tdd]")
-{
-    SKIP("pop_back() not yet implemented");
-    // SHD::DynArray<int> arr;
-    // arr.push_back(1);
-    // arr.push_back(2);
-    // arr.push_back(3);
-    // arr.pop_back();
-    // REQUIRE(arr.length() == 2);
-    // REQUIRE(arr[0] == 1);
-    // REQUIRE(arr[1] == 2);
-}
-
 TEST_CASE("empty returns true for a default-constructed array", "[dynarray][tdd]")
 {
     SKIP("empty() not yet implemented");

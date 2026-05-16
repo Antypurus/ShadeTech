@@ -127,6 +127,15 @@ public:
         this->m_size++;
     }
 
+    void pop_back()
+    {
+        if (this->m_size <= 0)
+            return;
+
+        this->m_array[this->m_size - 1].~T();
+        this->m_size--;
+    }
+
     void clear()
     {
         memset(this->m_array, this->m_capacity * sizeof(T), 0);
