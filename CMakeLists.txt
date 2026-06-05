@@ -52,6 +52,6 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(ThirdParty/cpptrace)
 add_subdirectory(ThirdParty/GLFW EXCLUDE_FROM_ALL)
 add_subdirectory(ThirdParty/Catch2 EXCLUDE_FROM_ALL)
-add_subdirectory(ShadeTech/core)
-add_subdirectory(ShadeTech/client)
-add_subdirectory(ShadeTech/tests)
+
+# mainly code
+add_subdirectory(ShadeTech)
