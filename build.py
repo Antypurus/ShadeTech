@@ -1,42 +1,38 @@
 #!env /usr/bin/python3
 
-from pathlib import Path
-import os
 import enum
+import os
 import platform
-import sys
 import shutil
-
+import sys
+from pathlib import Path
 
 PROJECT_BUILD_TARGET_MAP = {
     "": "",
-    "client": "ShadeTech-client",
     "core": "ShadeTech",
 }
 
 
 PROJECT_RUN_TARGET_MAP = {
-    "": "ShadeTech-client",
-    "ShadeTech": "ShadeTech-client"
+    "": "main",
 }
 
 
 PROJECT_TEST_TARGET_MAP = {
     "": "ShadeTech-tests",
-    "ShadeTech": "ShadeTech-tests"
 }
 
 
 class BuildType(enum.Enum):
-    Debug = 0,
-    Optimized = 1,
+    Debug = (0,)
+    Optimized = (1,)
     Release = 2
 
 
 class BuildSystem(enum.Enum):
-    Make = 0,
-    Ninja = 1,
-    Xcode = 3,
+    Make = (0,)
+    Ninja = (1,)
+    Xcode = (3,)
     MSBuild = 4
 
 
@@ -127,7 +123,7 @@ def validate_build_configuration():
     if platform.system() != "Windows" and COMPILER == "MSVC":
         print("MSVC Is Only Supported On Windows")
         exit(1)
-    if PROJECT != "" and Path("./"+PROJECT+"/").exists() is False:
+    if PROJECT != "" and Path("./" + PROJECT + "/").exists() is False:
         print("Unrecognized/Missing Project {}".format(PROJECT))
         exit(1)
 
@@ -144,8 +140,18 @@ def print_build_details():
 
 
 def create_build_dir():
-    build_dir = "./build/"+TARGET_OS+"-"+TARGET_ARCH+"-" + \
-        BUILD_SYSTEM.name+"-"+COMPILER+"-"+BUILD_TYPE.name
+    build_dir = (
+        "./build/"
+        + TARGET_OS
+        + "-"
+        + TARGET_ARCH
+        + "-"
+        + BUILD_SYSTEM.name
+        + "-"
+        + COMPILER
+        + "-"
+        + BUILD_TYPE.name
+    )
     if Path("build").exists() is False:
         os.mkdir("build")
     if Path(build_dir).exists() is False:
@@ -160,17 +166,23 @@ def cmake_generate(generator, c_compiler, cpp_compiler, build_type):
     if generator is not BuildSystem.MSBuild:
         cmake_generate_command = cmake_generate_command + " -G " + generator.name
 
-    cmake_generate_command = cmake_generate_command +\
-        " -D CMAKE_C_COMPILER=\"" + c_compiler +\
-        "\" -D CMAKE_CXX_COMPILER=\"" + cpp_compiler + "\""
+    cmake_generate_command = (
+        cmake_generate_command
+        + ' -D CMAKE_C_COMPILER="'
+        + c_compiler
+        + '" -D CMAKE_CXX_COMPILER="'
+        + cpp_compiler
+        + '"'
+    )
 
     if build_type is BuildType.Release:
         cmake_generate_command = cmake_generate_command + " -DCMAKE_BUILD_TYPE=Release"
     elif build_type is BuildType.Debug:
         cmake_generate_command = cmake_generate_command + " -DCMAKE_BUILD_TYPE=Debug"
     elif build_type is BuildType.Optimized:
-        cmake_generate_command = cmake_generate_command + \
-            " -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+        cmake_generate_command = (
+            cmake_generate_command + " -DCMAKE_BUILD_TYPE=RelWithDebInfo"
+        )
 
     cmake_generate_command = cmake_generate_command + " ../.."
 
@@ -191,9 +203,9 @@ def cmake_build_target(target):
 def run_target(target):
     target_run_command = ""
     if platform.system() == "Windows":
-        target_run_command = ".\\"+target
+        target_run_command = ".\\" + target
     else:
-        target_run_command = "./"+target
+        target_run_command = "./" + target
     if TARGET_OS == "Windows":
         target_run_command = target_run_command + ".exe"
     print(target_run_command)
