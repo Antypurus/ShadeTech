@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-namespace shd::memory{
+namespace shd::memory {
 
 Arena CreateArena(uint8* arenaBase, uint64 capacity)
 {
@@ -14,8 +14,16 @@ Arena CreateArena(uint8* arenaBase, uint64 capacity)
     };
 }
 
-Arena CreateArenaFromLibC(uint64 capacity){
+Arena CreateArenaFromLibC(uint64 capacity)
+{
     void* base = malloc(capacity);
+    if (base == nullptr) {
+        return Arena{
+            .base = nullptr,
+            .offset = 0,
+            .capacity = 0,
+        };
+    }
     return Arena{
         .base = (uint8*)base,
         .offset = 0,
