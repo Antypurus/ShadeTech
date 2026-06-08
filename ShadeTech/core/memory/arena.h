@@ -1,5 +1,6 @@
 #pragma once
 
+#include <core/result.h>
 #include <core/types.h>
 
 struct Arena
@@ -27,5 +28,5 @@ Arena CreateArena(uint8* arenaBase, uint64 capacity);
  * @return Arena allocated by libc-malloc or with 0 capacity
  * if the allocation failed.
  */
-Arena CreateArenaFromLibC(uint64 capacity);
+Result<Arena, bool> CreateArenaFromLibC(uint64 capacity);
 }
