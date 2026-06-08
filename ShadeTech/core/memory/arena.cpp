@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 
-namespace shd::memory {
+namespace shd {
 
-Arena CreateArena(uint8* arenaBase, uint64 capacity)
+Arena Arena::Create(uint8* arenaBase, uint64 capacity)
 {
     return Arena{
         .base = arenaBase,
@@ -13,7 +13,7 @@ Arena CreateArena(uint8* arenaBase, uint64 capacity)
     };
 }
 
-Result<Arena, bool> CreateArenaFromLibC(uint64 capacity)
+Result<Arena, bool> Arena::CreateFromLibC(uint64 capacity)
 {
     void* base = malloc(capacity);
     if (base == nullptr) {

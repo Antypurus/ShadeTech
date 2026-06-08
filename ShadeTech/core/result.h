@@ -36,6 +36,12 @@ struct Result
     Result(Result&& other);
     Result& operator=(const Result& other);
     Result& operator=(Result&& other);
+
+    ValueT& value();
+    const ValueT& value() const;
+
+    ErrorT& error();
+    const ErrorT& error() const;
 };
 
 template<typename ValueT, typename ErrorT>
@@ -128,6 +134,30 @@ Result<ValueT, ErrorT>& Result<ValueT, ErrorT>::operator=(Result&& other)
 
     other.~Result();
     return *this;
+}
+
+template<typename ValueT, typename ErrorT>
+ValueT& Result<ValueT, ErrorT>::value()
+{
+    return this->resultUnion.value;
+}
+
+template<typename ValueT, typename ErrorT>
+const ValueT& Result<ValueT, ErrorT>::value() const
+{
+    return this->resultUnion.value;
+}
+
+template<typename ValueT, typename ErrorT>
+ErrorT& Result<ValueT, ErrorT>::error()
+{
+    return this->resultUnion.error;
+}
+
+template<typename ValueT, typename ErrorT>
+const ErrorT& Result<ValueT, ErrorT>::error() const
+{
+    return this->resultUnion.error;
 }
 
 }
