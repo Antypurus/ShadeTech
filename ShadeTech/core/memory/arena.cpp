@@ -4,13 +4,10 @@
 
 namespace shd {
 
-Arena Arena::Create(uint8* arenaBase, uint64 capacity)
+Arena::Arena(uint8* arenaBase, uint64 capacity) :
+    base(arenaBase),
+    capacity(capacity)
 {
-    return Arena{
-        .base = arenaBase,
-        .offset = 0,
-        .capacity = capacity,
-    };
 }
 
 Result<Arena, bool> Arena::CreateFromLibC(uint64 capacity)
@@ -20,11 +17,7 @@ Result<Arena, bool> Arena::CreateFromLibC(uint64 capacity)
         return ErrorResult{ false };
     }
 
-    return Arena{
-        .base = (uint8*)base,
-        .offset = 0,
-        .capacity = capacity,
-    };
+    return Arena{ (uint8*)base, capacity };
 }
 
 }

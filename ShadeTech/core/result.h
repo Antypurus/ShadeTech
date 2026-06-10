@@ -21,14 +21,15 @@ struct Result
 {
     union
     {
-        ValueT value;
-        ErrorT error;
-    } resultUnion;
+        ValueT u_value;
+        ErrorT u_error;
+    };
     bool hasValue = false;
     bool hasError = false;
 
     Result() = default;
     Result(const ValueT& value);
+
     Result(const ErrorResult<ErrorT>& error);
     ~Result();
 
@@ -60,26 +61,26 @@ template<typename ValueT, typename ErrorT>
 Result<ValueT, ErrorT>::Result(const ValueT& value) :
     hasValue(true)
 {
-    new (&this->resultUnion.value) ValueT(value);
+    new (&this->u_value) ValueT(value);
 }
 
 template<typename ValueT, typename ErrorT>
 Result<ValueT, ErrorT>::Result(const ErrorResult<ErrorT>& error) :
-    hasError(true)
+    hasError(true),
+    u_error(error.error)
 {
-    new (&this->resultUnion.error) ErrorT(error.error);
 }
 
 template<typename ValueT, typename ErrorT>
 Result<ValueT, ErrorT>::~Result()
 {
     if (this->hasValue) {
-        this->resultUnion.value.~ValueT();
+        this->u_value.~ValueT();
     } else if (this->hasError) {
-        this->resultUnion.error.~ErrorT();
+        this->u_error.~ErrorT();
     }
 
-    memset((void*)&this->resultUnion, 0, sizeof(this->resultUnion));
+    memset((void*)&this->u_value, 0, sizeof(this->u_value));
 
     this->hasError = false;
     this->hasValue = false;
@@ -108,9 +109,9 @@ Result<ValueT, ErrorT>& Result<ValueT, ErrorT>::operator=(const Result& other)
     this->hasError = other.hasError;
     this->hasValue = other.hasValue;
     if (this->hasValue) {
-        new (&this->resultUnion.value) ValueT(other.resultUnion.value);
+        new (&this->u_value) ValueT(other.u_value);
     } else if (this->hasError) {
-        new (&this->resultUnion.error) ErrorT(other.resultUnion.error);
+        new (&this->u_error) ErrorT(other.u_error);
     }
 
     return *this;
@@ -127,9 +128,9 @@ Result<ValueT, ErrorT>& Result<ValueT, ErrorT>::operator=(Result&& other)
     this->hasError = other.hasError;
     this->hasValue = other.hasValue;
     if (this->hasValue) {
-        new (&this->resultUnion.value) ValueT((ValueT&&)other.resultUnion.value);
+        new (&this->u_value) ValueT((ValueT&&)other.u_value);
     } else if (this->hasError) {
-        new (&this->resultUnion.error) ErrorT((ErrorT&&)other.resultUnion.error);
+        new (&this->u_error) ErrorT((ErrorT&&)other.u_error);
     }
 
     other.~Result();
@@ -139,25 +140,25 @@ Result<ValueT, ErrorT>& Result<ValueT, ErrorT>::operator=(Result&& other)
 template<typename ValueT, typename ErrorT>
 ValueT& Result<ValueT, ErrorT>::value()
 {
-    return this->resultUnion.value;
+    return this->u_value;
 }
 
 template<typename ValueT, typename ErrorT>
 const ValueT& Result<ValueT, ErrorT>::value() const
 {
-    return this->resultUnion.value;
+    return this->u_value;
 }
 
 template<typename ValueT, typename ErrorT>
 ErrorT& Result<ValueT, ErrorT>::error()
 {
-    return this->resultUnion.error;
+    return this->u_error;
 }
 
 template<typename ValueT, typename ErrorT>
 const ErrorT& Result<ValueT, ErrorT>::error() const
 {
-    return this->resultUnion.error;
+    return this->u_error;
 }
 
 }
