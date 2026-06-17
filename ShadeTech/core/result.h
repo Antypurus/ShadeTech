@@ -2,11 +2,15 @@
 
 #include <string.h>
 
+#include <utility>
+
+#if 0
 // temporary placement new operator overload (should be moved into its own file later)
 inline void* operator new(size_t /*not_used*/, void* ptr) noexcept
 {
     return ptr;
 }
+#endif
 
 namespace shd {
 
@@ -29,6 +33,7 @@ struct Result
 
     Result() = default;
     Result(const ValueT& value);
+    Result(ValueT&& value);
 
     Result(const ErrorResult<ErrorT>& error);
     ~Result();
@@ -62,6 +67,13 @@ Result<ValueT, ErrorT>::Result(const ValueT& value) :
     hasValue(true)
 {
     new (&this->u_value) ValueT(value);
+}
+
+template<typename ValueT, typename ErrorT>
+Result<ValueT, ErrorT>::Result(ValueT&& value) :
+    hasValue(true)
+{
+    new (&this->u_value) ValueT((ValueT&&)value);
 }
 
 template<typename ValueT, typename ErrorT>
