@@ -35,7 +35,10 @@ public:
     template<typename T>
     T* Allocate(uint64 bytes)
     {
-        return this->base;
+        T* result = this->base + offset;
+        this->offset += bytes;
+
+        return result;
     }
 
 public:
