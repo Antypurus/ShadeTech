@@ -24,12 +24,43 @@ public:
     static Result<Arena, bool> CreateFromLibC(uint64 capacity);
 
 public:
+    /**
+     * @brief Constructor that receives a preallocated buffer
+     * to cover the arena
+     *
+     * @param arenaBuffer arena backign buffer
+     * @param arenaCapacity arena memory capacity in bytes
+     */
     Arena(uint8* arenaBuffer, uint64 arenaCapacity);
+
+    /**
+     * @brief Constructor that receives a preallocated buffer
+     * to cover the arena
+     *
+     * @param arenaBuffer arena backign buffer
+     * @param arenaCapacity arena memory capacity in bytes
+     * @param offset offset from the start of the supplied buffer to start the arena at
+     *  - ArenaBasePtr = arenaBuffer + offset
+     *  - ArenaCapacity = arenaCapacity
+     */
     Arena(uint8* arenaBuffer, uint64 arenaCapacity, uint64 offset);
+
     ~Arena() = default;
     Arena(Arena&& other);
 
+    /**
+     * @brief Creates a copy of the calling arena(including its contents)
+     * using the supplied arena to allocate the required memory
+     *
+     * @param backingArena Arena to allocate from to cover memory requirements
+     */
     Result<Arena, bool> CopyArena(Arena& backingArena);
+
+    /**
+     * @brief Creates a copy of the calling arena (including its contents)
+     * using LibC Malloc to allocate the memory required for the arena
+     * copy.
+     */
     Result<Arena, bool> CopyArenaUsingLibc();
 
     template<typename T>
