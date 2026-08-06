@@ -2,6 +2,7 @@
 
 #include <core/memory/arena.h>
 #include <core/platform.h>
+#include <core/string/string_view.h>
 
 #include <stdlib.h>
 
