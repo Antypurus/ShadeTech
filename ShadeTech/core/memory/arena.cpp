@@ -1,7 +1,8 @@
 #include "arena.h"
 
+#include <core/move.h>
+
 #include <stdlib.h>
-#include <utility>
 
 namespace shd {
 
@@ -35,7 +36,7 @@ Result<Arena, bool> Arena::CreateFromLibC(uint64 capacity)
         return ErrorResult{ false };
     }
 
-    return std::move(Arena((uint8*)base, capacity));
+    return move(Arena((uint8*)base, capacity));
 }
 
 Result<Arena, bool> Arena::CopyArena(Arena& backingArena)
@@ -45,7 +46,7 @@ Result<Arena, bool> Arena::CopyArena(Arena& backingArena)
         return ErrorResult(false);
     }
 
-    return std::move(Arena(newArenaBuffer, this->capacity, this->offset));
+    return move(Arena(newArenaBuffer, this->capacity, this->offset));
 }
 
 Result<Arena, bool> Arena::CopyArenaUsingLibc()

@@ -2,9 +2,7 @@
 
 #include <string.h>
 
-#include <utility>
-
-#if 0
+#if 1
 // temporary placement new operator overload (should be moved into its own file later)
 inline void* operator new(size_t /*not_used*/, void* ptr) noexcept
 {
